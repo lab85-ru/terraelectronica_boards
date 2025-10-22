@@ -6,4 +6,8 @@ te-stm32f417
 te-stm32f439lcd35
 te-tm4c123
 TE-LPC4088LCD5.6
+te-lpc2478lcd56
+te-cc430f51-433
+TE-LPC4088LCD5.6
+
 
