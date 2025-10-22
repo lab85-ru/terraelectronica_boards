@@ -1,0 +1,652 @@
+###############################################################################
+#                                                                             #
+# IAR ELF Linker V6.50.2.4510/W32 for ARM               27/Jun/2013  10:43:42 #
+# Copyright 2007-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Output file  =  D:\Demo_prj\IAR-LPC4088\uip_webserver\Flash              #
+#                    Debug\Exe\uip_webserver.out.tmp                          #
+#    Map file     =  D:\Demo_prj\IAR-LPC4088\uip_webserver\Flash              #
+#                    Debug\List\uip_webserver.map                             #
+#    Command line =  "D:\Demo_prj\IAR-LPC4088\uip_webserver\Flash             #
+#                    Debug\Obj\LPC40xx_enet.o" "D:\Demo_prj\IAR-LPC4088\uip_w #
+#                    ebserver\Flash Debug\Obj\Terminal_18_24x12.o"            #
+#                    "D:\Demo_prj\IAR-LPC4088\uip_webserver\Flash             #
+#                    Debug\Obj\Terminal_6_8x6.o"                              #
+#                    "D:\Demo_prj\IAR-LPC4088\uip_webserver\Flash             #
+#                    Debug\Obj\Terminal_9_12x6.o"                             #
+#                    "D:\Demo_prj\IAR-LPC4088\uip_webserver\Flash             #
+#                    Debug\Obj\clock-arch.o" "D:\Demo_prj\IAR-LPC4088\uip_web #
+#                    server\Flash Debug\Obj\drv_glcd.o"                       #
+#                    "D:\Demo_prj\IAR-LPC4088\uip_webserver\Flash             #
+#                    Debug\Obj\http-strings.o" "D:\Demo_prj\IAR-LPC4088\uip_w #
+#                    ebserver\Flash Debug\Obj\httpd-cgi.o"                    #
+#                    "D:\Demo_prj\IAR-LPC4088\uip_webserver\Flash             #
+#                    Debug\Obj\httpd-fs.o" "D:\Demo_prj\IAR-LPC4088\uip_webse #
+#                    rver\Flash Debug\Obj\httpd.o"                            #
+#                    "D:\Demo_prj\IAR-LPC4088\uip_webserver\Flash             #
+#                    Debug\Obj\psock.o" "D:\Demo_prj\IAR-LPC4088\uip_webserve #
+#                    r\Flash Debug\Obj\sdram_64M_32bit_drv.o"                 #
+#                    "D:\Demo_prj\IAR-LPC4088\uip_webserver\Flash             #
+#                    Debug\Obj\startup_LPC407x_8x.o"                          #
+#                    "D:\Demo_prj\IAR-LPC4088\uip_webserver\Flash             #
+#                    Debug\Obj\system_LPC407x_8x.o"                           #
+#                    "D:\Demo_prj\IAR-LPC4088\uip_webserver\Flash             #
+#                    Debug\Obj\timer.o" "D:\Demo_prj\IAR-LPC4088\uip_webserve #
+#                    r\Flash Debug\Obj\uip.o" "D:\Demo_prj\IAR-LPC4088\uip_we #
+#                    bserver\Flash Debug\Obj\uip_arp.o"                       #
+#                    "D:\Demo_prj\IAR-LPC4088\uip_webserver\Flash             #
+#                    Debug\Obj\uip_webserver.o" --redirect                    #
+#                    _Printf=_PrintfSmallNoMb --redirect                      #
+#                    _Scanf=_ScanfSmallNoMb -o "D:\Demo_prj\IAR-LPC4088\uip_w #
+#                    ebserver\Flash Debug\Exe\uip_webserver.out.tmp" --map    #
+#                    "D:\Demo_prj\IAR-LPC4088\uip_webserver\Flash             #
+#                    Debug\List\uip_webserver.map" --config                   #
+#                    D:\Demo_prj\IAR-LPC4088\common\config\LPC4088_Flash.icf  #
+#                    --semihosting --entry __iar_program_start --redirect     #
+#                    __iar_sh_stdout=__iar_sh_stdout_swo --vfe                #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+*******************************************************************************
+*** RUNTIME MODEL ATTRIBUTES
+***
+
+CppFlavor       = *
+__Heap_Handler  = Basic
+__SystemLibrary = DLib
+
+
+*******************************************************************************
+*** PLACEMENT SUMMARY
+***
+
+"A1":  place at 0x00000000 { ro section .intvec };
+"P1":  place in [from 0x00000000 to 0x000002fb] |
+                [from 0x00000300 to 0x0007ffff] { ro };
+"P2":  place in [from 0x10000000 to 0x1000ffdf] { rw, block CSTACK };
+"P3":  place in [from 0x20000000 to 0x20007fff] {
+          rw data section AHB_RAM_MEMORY, section USB_DMA_RAM,
+          section EMAC_DMA_RAM };
+"P6":  place in [from 0x000002fc to 0x000002ff] { section .crp };
+
+  Section            Kind        Address    Size  Object
+  -------            ----        -------    ----  ------
+"A1":                                       0xe4
+  .intvec            ro code  0x00000000    0xe4  startup_LPC407x_8x.o [1]
+                            - 0x000000e4    0xe4
+
+"P1", part 1 of 2:                          0x74
+  Initializer bytes  ro data  0x000000e4    0x74  <for P2 s0>
+                            - 0x00000158    0x74
+
+"P6":                                        0x4
+  .crp               ro code  0x000002fc     0x4  startup_LPC407x_8x.o [1]
+                            - 0x00000300     0x4
+
+"P1", part 2 of 2:                        0x8390
+  .rodata            const    0x00000300  0x3014  Terminal_18_24x12.o [1]
+  .rodata            const    0x00003314  0x1660  httpd-fs.o [1]
+  .text              ro code  0x00004974   0xbec  uip.o [1]
+  .text              ro code  0x00005560   0x658  httpd.o [1]
+  .text              ro code  0x00005bb8     0xc  uip_arp.o [1]
+  .text              ro code  0x00005bc4   0x2b2  psock.o [1]
+  .text              ro code  0x00005e76    0x2e  copy_init3.o [5]
+  .text              ro code  0x00005ea4    0x16  strchr.o [5]
+  .text              ro code  0x00005eba    0x22  zero_init3.o [5]
+  .text              ro code  0x00005edc    0x9c  httpd-fs.o [1]
+  .text              ro code  0x00005f78   0x2bc  httpd-cgi.o [1]
+  .text              ro code  0x00006234    0x36  strlen.o [5]
+  .text              ro code  0x0000626a     0x4  httpd.o [1]
+  .text              ro code  0x0000626e    0x2a  strncmp.o [3]
+  .text              ro code  0x00006298    0x44  strcpy.o [5]
+  .text              ro code  0x000062dc    0x6c  strncpy.o [5]
+  .text              ro code  0x00006348    0x76  ABImemcpy.o [5]
+  .text              ro code  0x000063be    0x1a  xsnprout.o [3]
+  .text              ro code  0x000063d8    0x44  snprintf.o [3]
+  .text              ro code  0x0000641c    0x18  strrchr.o [3]
+  .text              ro code  0x00006434    0x66  ABImemset.o [5]
+  .text              ro code  0x0000649a     0xa  xsprout.o [3]
+  .text              ro code  0x000064a4   0x490  xprintfsmall_nomb.o [3]
+  .text              ro code  0x00006934    0x58  memchr.o [5]
+  .text              ro code  0x0000698c   0x714  drv_glcd.o [1]
+  .text              ro code  0x000070a0    0x4c  xassert.o [3]
+  .text              ro code  0x000070ec    0x2c  vsprintf.o [3]
+  .text              ro code  0x00007118    0xb4  xreportassert.o [3]
+  .text              ro code  0x000071cc     0x6  abort.o [3]
+  .text              ro code  0x000071d2    0x28  putchar.o [3]
+  .text              ro code  0x000071fc    0x14  exit.o [6]
+  .text              ro code  0x00007210    0x10  write.o [6]
+  .text              ro code  0x00007220    0x1e  dwrite.o [6]
+  .text              ro code  0x00007240    0x4c  iarwstdswo.o [6]
+  .text              ro code  0x0000728c    0x22  iarwrite.o [6]
+  .text              ro code  0x000072b0   0x3e4  LPC40xx_enet.o [1]
+  .text              ro code  0x00007694   0x3b0  system_LPC407x_8x.o [1]
+  .text              ro code  0x00007a44   0x384  uip_webserver.o [1]
+  .text              ro code  0x00007dc8   0x160  sdram_64M_32bit_drv.o [1]
+  .text              ro code  0x00007f28    0x10  clock-arch.o [1]
+  .text              ro code  0x00007f38    0x30  timer.o [1]
+  .text              ro code  0x00007f68   0x30c  uip_arp.o [1]
+  .text              ro code  0x00008274    0x14  uip_arp.o [1]
+  .rodata            const    0x00008288   0x1e8  http-strings.o [1]
+  .rodata            const    0x00008470    0xa4  httpd-cgi.o [1]
+  .text              ro code  0x00008514    0x28  data_init.o [5]
+  .iar.init_table    const    0x0000853c    0x2c  - Linker created -
+  .text              ro code  0x00008568    0x1a  fpinit_M.o [4]
+  .text              ro code  0x00008584    0x16  cmain.o [5]
+  .text              ro code  0x0000859a     0x4  exit.o [3]
+  .text              ro code  0x000085a0     0xa  cexit.o [5]
+  .text              ro code  0x000085ac    0x10  startup_LPC407x_8x.o [1]
+  .text              ro code  0x000085bc     0xc  cstartup_M.o [5]
+  .rodata            const    0x000085c8     0x8  uip.o [1]
+  .text              ro code  0x000085d0     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x000085d4     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x000085d8     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x000085dc     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x000085e0     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x000085e4     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x000085e8     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x000085ec     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x000085f0     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x000085f4     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x000085f8     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x000085fc     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008600     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008604     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008608     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x0000860c     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008610     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008614     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008618     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x0000861c     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008620     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008624     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008628     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x0000862c     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008630     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008634     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008638     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x0000863c     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008640     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008644     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008648     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x0000864c     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008650     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008654     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008658     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x0000865c     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008660     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008664     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008668     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x0000866c     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008670     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008674     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008678     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x0000867c     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008680     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008684     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x00008688     0x4  startup_LPC407x_8x.o [1]
+  .text              ro code  0x0000868c     0x4  startup_LPC407x_8x.o [1]
+  .rodata            const    0x00008690     0x0  zero_init3.o [5]
+  .rodata            const    0x00008690     0x0  copy_init3.o [5]
+                            - 0x00008690  0x8390
+
+"P2", part 1 of 3:                          0x74
+  P2 s0                       0x10000000    0x74  <Init block>
+    .data            inited   0x10000000    0x28  drv_glcd.o [1]
+    .data            inited   0x10000028    0x24  httpd-cgi.o [1]
+    .data            inited   0x1000004c    0x18  Terminal_18_24x12.o [1]
+    .data            inited   0x10000064    0x10  httpd-cgi.o [1]
+                            - 0x10000074    0x74
+
+"P2", part 2 of 3:                        0x271c
+  .bss               zero     0x10000074  0x1fe0  uip.o [1]
+  .bss               zero     0x10002054   0x5f4  uip.o [1]
+  .bss               zero     0x10002648    0x68  uip.o [1]
+  .bss               zero     0x100026b0    0x68  uip_arp.o [1]
+  .bss               zero     0x10002718    0x3c  uip.o [1]
+  .bss               zero     0x10002754    0x18  drv_glcd.o [1]
+  .bss               zero     0x1000276c    0x14  httpd-fs.o [1]
+  .bss               zero     0x10002780     0x4  uip.o [1]
+  .bss               zero     0x10002784     0x4  uip.o [1]
+  .bss               zero     0x10002788     0x4  uip_webserver.o [1]
+  .bss               zero     0x1000278c     0x1  LPC40xx_enet.o [1]
+                            - 0x1000278d  0x2719
+
+"P2", part 3 of 3:                        0x2018
+  .noinit            uninit   0x10002790    0x14  system_LPC407x_8x.o [1]
+  CSTACK                      0x100027a8  0x2000  <Block>
+    CSTACK           uninit   0x100027a8  0x2000  <Block tail>
+                            - 0x100047a8  0x2018
+
+"P3":                                     0x1838
+  EMAC_DMA_RAM       zero     0x20000000  0x1838  LPC40xx_enet.o [1]
+                            - 0x20001838  0x1838
+
+
+*******************************************************************************
+*** INIT TABLE
+***
+
+          Address     Size
+          -------     ----
+Zero (__iar_zero_init3)
+    2 destination ranges, total size 0x3f51:
+          0x10000074  0x2719
+          0x20000000  0x1838
+
+Copy (__iar_copy_init3)
+    1 source range, total size 0x74:
+          0x000000e4    0x74
+    1 destination range, total size 0x74:
+          0x10000000    0x74
+
+
+
+*******************************************************************************
+*** MODULE SUMMARY
+***
+
+    Module                 ro code  ro data  rw data
+    ------                 -------  -------  -------
+D:\Demo_prj\IAR-LPC4088\uip_webserver\Flash Debug\Obj: [1]
+    LPC40xx_enet.o             996             6 201
+    Terminal_18_24x12.o              12 332       24
+    clock-arch.o                16
+    drv_glcd.o               1 812       40       64
+    http-strings.o                      488
+    httpd-cgi.o                700      216       52
+    httpd-fs.o                 156    5 728       20
+    httpd.o                  1 628
+    psock.o                    690
+    sdram_64M_32bit_drv.o      352
+    startup_LPC407x_8x.o       440
+    system_LPC407x_8x.o        944                20
+    timer.o                     48
+    uip.o                    3 052        8    9 856
+    uip_arp.o                  812               104
+    uip_webserver.o            900                 4
+    ------------------------------------------------
+    Total:                  12 546   18 812   16 345
+
+command line: [2]
+    ------------------------------------------------
+    Total:
+
+dl7M_tln.a: [3]
+    abort.o                      6
+    exit.o                       4
+    putchar.o                   40
+    snprintf.o                  68
+    strncmp.o                   42
+    strrchr.o                   24
+    vsprintf.o                  44
+    xassert.o                   76
+    xprintfsmall_nomb.o      1 168
+    xreportassert.o            180
+    xsnprout.o                  26
+    xsprout.o                   10
+    ------------------------------------------------
+    Total:                   1 688
+
+m7M_tlv.a: [4]
+    fpinit_M.o                  26
+    ------------------------------------------------
+    Total:                      26
+
+rt7M_tl.a: [5]
+    ABImemcpy.o                118
+    ABImemset.o                102
+    cexit.o                     10
+    cmain.o                     22
+    copy_init3.o                46
+    cstartup_M.o                12
+    data_init.o                 40
+    memchr.o                    88
+    strchr.o                    22
+    strcpy.o                    68
+    strlen.o                    54
+    strncpy.o                  108
+    zero_init3.o                34
+    ------------------------------------------------
+    Total:                     724
+
+shb_l.a: [6]
+    dwrite.o                    30
+    exit.o                      20
+    iarwrite.o                  34
+    iarwstdswo.o                76
+    write.o                     16
+    ------------------------------------------------
+    Total:                     176
+
+    Gaps                        12
+    Linker created                       44    8 192
+----------------------------------------------------
+    Grand Total:            15 172   18 856   24 537
+
+
+*******************************************************************************
+*** ENTRY LIST
+***
+
+Entry                      Address    Size  Type      Object
+-----                      -------    ----  ----      ------
+?main                   0x00008585          Code  Gb  cmain.o [5]
+ADC_IRQHandler          0x00008645          Code  Wk  startup_LPC407x_8x.o [1]
+BOD_IRQHandler          0x00008649          Code  Wk  startup_LPC407x_8x.o [1]
+BusFault_Handler        0x000085dd          Code  Wk  startup_LPC407x_8x.o [1]
+CANActivity_IRQHandler  0x00008675          Code  Wk  startup_LPC407x_8x.o [1]
+CAN_IRQHandler          0x00008651          Code  Wk  startup_LPC407x_8x.o [1]
+CSTACK$$Base            0x100027a8           --   Gb  - Linker created -
+CSTACK$$Limit           0x100047a8           --   Gb  - Linker created -
+CurrX_Size              0x10002760     0x4  Data  Lc  drv_glcd.o [1]
+CurrY_Size              0x1000275c     0x4  Data  Lc  drv_glcd.o [1]
+DMA_IRQHandler          0x00008655          Code  Wk  startup_LPC407x_8x.o [1]
+DebugMon_Handler        0x000085e9          Code  Wk  startup_LPC407x_8x.o [1]
+EEPROM_IRQHandler       0x0000868d          Code  Wk  startup_LPC407x_8x.o [1]
+EINT0_IRQHandler        0x00008635          Code  Wk  startup_LPC407x_8x.o [1]
+EINT1_IRQHandler        0x00008639          Code  Wk  startup_LPC407x_8x.o [1]
+EINT2_IRQHandler        0x0000863d          Code  Wk  startup_LPC407x_8x.o [1]
+EINT3_IRQHandler        0x00008641          Code  Wk  startup_LPC407x_8x.o [1]
+EMCClock                0x10002798     0x4  Data  Gb  system_LPC407x_8x.o [1]
+ENET_IRQHandler         0x0000865d          Code  Wk  startup_LPC407x_8x.o [1]
+ENET_MIIReadRegister    0x00007615    0x1c  Code  Lc  LPC40xx_enet.o [1]
+ENET_MIIWriteRegister   0x000075fb    0x1a  Code  Lc  LPC40xx_enet.o [1]
+EnetDmaRx               0x20000000    0x10  Data  Gb  LPC40xx_enet.o [1]
+EnetDmaRxSta            0x20000020    0x10  Data  Gb  LPC40xx_enet.o [1]
+EnetDmaTx               0x20000010    0x10  Data  Gb  LPC40xx_enet.o [1]
+EnetDmaTxSta            0x20000030     0x8  Data  Gb  LPC40xx_enet.o [1]
+GLCD_Ctrl               0x00006afb    0x52  Code  Gb  drv_glcd.o [1]
+GLCD_Cursor_Dis         0x0000698d     0xe  Code  Gb  drv_glcd.o [1]
+GLCD_Init               0x0000699b   0x12c  Code  Gb  drv_glcd.o [1]
+GLCD_SetFont            0x00006b4d     0xc  Code  Gb  drv_glcd.o [1]
+GLCD_SetPallet          0x00006ac7    0x34  Code  Gb  drv_glcd.o [1]
+GLCD_SetWindow          0x00006b59    0x7c  Code  Gb  drv_glcd.o [1]
+GLCD_ShowPic            0x00006f31    0x92  Code  Gb  drv_glcd.o [1]
+GLCD_TextCalcWindow     0x00006c49    0x96  Code  Lc  drv_glcd.o [1]
+GLCD_TextSetPos         0x00006bd5     0xa  Code  Gb  drv_glcd.o [1]
+GLCD_print              0x00006f03    0x2e  Code  Gb  drv_glcd.o [1]
+GLCD_putchar            0x00006ce1   0x222  Code  Gb  drv_glcd.o [1]
+GPIO_IRQHandler         0x00008685          Code  Wk  startup_LPC407x_8x.o [1]
+HardFault_Handler       0x000085d5          Code  Wk  startup_LPC407x_8x.o [1]
+I2C0_IRQHandler         0x00008619          Code  Wk  startup_LPC407x_8x.o [1]
+I2C1_IRQHandler         0x0000861d          Code  Wk  startup_LPC407x_8x.o [1]
+I2C2_IRQHandler         0x00008621          Code  Wk  startup_LPC407x_8x.o [1]
+I2S_IRQHandler          0x00008659          Code  Wk  startup_LPC407x_8x.o [1]
+LCD_IRQHandler          0x00008681          Code  Wk  startup_LPC407x_8x.o [1]
+LCD_SET_WINDOW          0x00006bdf    0x2c  Code  Lc  drv_glcd.o [1]
+LCD_WRITE_PIXEL         0x00006c0b    0x3e  Code  Lc  drv_glcd.o [1]
+MCI_IRQHandler          0x00008661          Code  Wk  startup_LPC407x_8x.o [1]
+MCPWM_IRQHandler        0x00008665          Code  Wk  startup_LPC407x_8x.o [1]
+MemManage_Handler       0x000085d9          Code  Wk  startup_LPC407x_8x.o [1]
+NMI_Handler             0x000085d1          Code  Wk  startup_LPC407x_8x.o [1]
+NVIC_EnableIRQ          0x00007a45    0x14  Code  Lc  uip_webserver.o [1]
+PLL0_IRQHandler         0x0000862d          Code  Wk  startup_LPC407x_8x.o [1]
+PLL1_IRQHandler         0x0000866d          Code  Wk  startup_LPC407x_8x.o [1]
+PWM0_IRQHandler         0x00008689          Code  Wk  startup_LPC407x_8x.o [1]
+PWM1_IRQHandler         0x00008615          Code  Wk  startup_LPC407x_8x.o [1]
+PendSV_Handler          0x000085ed          Code  Wk  startup_LPC407x_8x.o [1]
+PeripheralClock         0x10002794     0x4  Data  Gb  system_LPC407x_8x.o [1]
+PhyAddr                 0x1000278c     0x1  Data  Lc  LPC40xx_enet.o [1]
+QEI_IRQHandler          0x00008669          Code  Wk  startup_LPC407x_8x.o [1]
+RTC_IRQHandler          0x00008631          Code  Wk  startup_LPC407x_8x.o [1]
+Region$$Table$$Base     0x0000853c           --   Gb  - Linker created -
+Region$$Table$$Limit    0x00008568           --   Gb  - Linker created -
+Reset_Handler           0x000085ad          Code  Wk  startup_LPC407x_8x.o [1]
+RxBuff0                 0x20000038   0x600  Data  Gb  LPC40xx_enet.o [1]
+RxBuff1                 0x20000638   0x600  Data  Gb  LPC40xx_enet.o [1]
+SDRAM_BASE_ADDR {Abs}   0xa0000000           --   Gb  command line/config [2]
+SDRAM_Init              0x00007dc9   0x160  Code  Gb  sdram_64M_32bit_drv.o [1]
+SDRAM_VRAM_BASE_ADDR {Abs}
+                        0xa2000000           --   Gb  command line/config [2]
+SPIFIClock              0x100027a0     0x4  Data  Gb  system_LPC407x_8x.o [1]
+SSP0_IRQHandler         0x00008625          Code  Wk  startup_LPC407x_8x.o [1]
+SSP1_IRQHandler         0x00008629          Code  Wk  startup_LPC407x_8x.o [1]
+SSP2_IRQHandler         0x0000867d          Code  Wk  startup_LPC407x_8x.o [1]
+SVC_Handler             0x000085e5          Code  Wk  startup_LPC407x_8x.o [1]
+SysTick_Handler         0x000085f1          Code  Wk  startup_LPC407x_8x.o [1]
+SystemCoreClock         0x10002790     0x4  Data  Gb  system_LPC407x_8x.o [1]
+SystemCoreClockUpdate   0x00007695   0x2f6  Code  Gb  system_LPC407x_8x.o [1]
+SystemInit              0x0000798b    0x8a  Code  Gb  system_LPC407x_8x.o [1]
+TIMER0_IRQHandler       0x00007a63    0x16  Code  Gb  uip_webserver.o [1]
+TIMER1_IRQHandler       0x000085f9          Code  Wk  startup_LPC407x_8x.o [1]
+TIMER2_IRQHandler       0x000085fd          Code  Wk  startup_LPC407x_8x.o [1]
+TIMER3_IRQHandler       0x00008601          Code  Wk  startup_LPC407x_8x.o [1]
+TMR0_Init               0x00007a79    0x38  Code  Gb  uip_webserver.o [1]
+TabSize                 0x10000024     0x4  Data  Lc  drv_glcd.o [1]
+Terminal_18_24_12       0x1000004c    0x18  Data  Gb  Terminal_18_24x12.o [1]
+TextBackgndColour       0x10000008     0x4  Data  Lc  drv_glcd.o [1]
+TextColour              0x10000004     0x4  Data  Lc  drv_glcd.o [1]
+TextStream              0x00000314  0x3000  Data  Lc  Terminal_18_24x12.o [1]
+TextX_Pos               0x1000000c     0x4  Data  Lc  drv_glcd.o [1]
+TextY_Pos               0x10000010     0x4  Data  Lc  drv_glcd.o [1]
+Ticks                   0x10002788     0x4  Data  Gb  uip_webserver.o [1]
+TxBuff0                 0x20000c38   0x600  Data  Gb  LPC40xx_enet.o [1]
+TxBuff1                 0x20001238   0x600  Data  Gb  LPC40xx_enet.o [1]
+UART0_IRQHandler        0x00008605          Code  Wk  startup_LPC407x_8x.o [1]
+UART1_IRQHandler        0x00008609          Code  Wk  startup_LPC407x_8x.o [1]
+UART2_IRQHandler        0x0000860d          Code  Wk  startup_LPC407x_8x.o [1]
+UART3_IRQHandler        0x00008611          Code  Wk  startup_LPC407x_8x.o [1]
+UART4_IRQHandler        0x00008679          Code  Wk  startup_LPC407x_8x.o [1]
+USBActivity_IRQHandler  0x00008671          Code  Wk  startup_LPC407x_8x.o [1]
+USBClock                0x1000279c     0x4  Data  Gb  system_LPC407x_8x.o [1]
+USB_IRQHandler          0x0000864d          Code  Wk  startup_LPC407x_8x.o [1]
+UsageFault_Handler      0x000085e1          Code  Wk  startup_LPC407x_8x.o [1]
+WDT_IRQHandler          0x000085f5          Code  Wk  startup_LPC407x_8x.o [1]
+WindX_Size              0x10002758     0x4  Data  Lc  drv_glcd.o [1]
+WindY_Size              0x10002754     0x4  Data  Lc  drv_glcd.o [1]
+XL_Win                  0x10000014     0x4  Data  Lc  drv_glcd.o [1]
+XR_Win                  0x1000001c     0x4  Data  Lc  drv_glcd.o [1]
+YD_Win                  0x10000020     0x4  Data  Lc  drv_glcd.o [1]
+YU_Win                  0x10000018     0x4  Data  Lc  drv_glcd.o [1]
+_LitobSmallNoMb         0x0000682f    0xce  Code  Lc  xprintfsmall_nomb.o [3]
+_PrintfSmallNoMb        0x000064a5   0x384  Code  Gb  xprintfsmall_nomb.o [3]
+_PutcharsSmallNoMb      0x000068fd    0x2e  Code  Lc  xprintfsmall_nomb.o [3]
+_SNProut                0x000063bf    0x1a  Code  Gb  xsnprout.o [3]
+_SProut                 0x0000649b     0xa  Code  Gb  xsprout.o [3]
+__Vectors               0x00000000           --   Gb  startup_LPC407x_8x.o [1]
+__Vectors_End           0x000000e4          Data  Gb  startup_LPC407x_8x.o [1]
+__Vectors_Size {Abs}    0x000000e4           --   Gb  startup_LPC407x_8x.o [1]
+__aeabi_assert          0x000070a3    0x4a  Code  Gb  xassert.o [3]
+__aeabi_memcpy          0x00006349          Code  Gb  ABImemcpy.o [5]
+__aeabi_memcpy4         0x00006369          Code  Gb  ABImemcpy.o [5]
+__aeabi_memcpy8         0x00006369          Code  Gb  ABImemcpy.o [5]
+__aeabi_memset          0x00006435          Code  Gb  ABImemset.o [5]
+__cmain                 0x00008585          Code  Gb  cmain.o [5]
+__dwrite                0x00007221    0x1e  Code  Gb  dwrite.o [6]
+__exit                  0x000071fd    0x14  Code  Gb  exit.o [6]
+__iar_EmptyStepPoint    0x000070a1     0x2  Code  Gb  xassert.o [3]
+__iar_Memchr            0x00006935          Code  Gb  memchr.o [5]
+__iar_Memset            0x00006435          Code  Gb  ABImemset.o [5]
+__iar_Memset_word       0x0000643d          Code  Gb  ABImemset.o [5]
+__iar_ReportAssert      0x0000712f    0x64  Code  Gb  xreportassert.o [3]
+__iar_Strchr            0x00005ea5          Code  Gb  strchr.o [5]
+__iar_Strrchr           0x0000641d    0x18  Code  Gb  strrchr.o [3]
+__iar_copy_init3        0x00005e77    0x2e  Code  Gb  copy_init3.o [5]
+__iar_data_init3        0x00008515    0x28  Code  Gb  data_init.o [5]
+__iar_init_vfp          0x00008569          Code  Gb  fpinit_M.o [4]
+__iar_program_start     0x000085bd          Code  Gb  cstartup_M.o [5]
+__iar_sh_stdout_swo     0x00007241    0x4c  Code  Gb  iarwstdswo.o [6]
+__iar_sh_write          0x0000728d    0x22  Code  Gb  iarwrite.o [6]
+__iar_zero_init3        0x00005ebb    0x22  Code  Gb  zero_init3.o [5]
+__low_level_init        0x00007a59     0xa  Code  Gb  uip_webserver.o [1]
+__vector_table          0x00000000          Data  Gb  startup_LPC407x_8x.o [1]
+__vector_table_0x1c     0x0000001c          Data  Gb  startup_LPC407x_8x.o [1]
+__write                 0x00007211    0x10  Code  Gb  write.o [6]
+_call_main              0x00008591          Code  Gb  cmain.o [5]
+_exit                   0x000085a1          Code  Gb  cexit.o [5]
+_main                   0x00008597          Code  Gb  cmain.o [5]
+abort                   0x000071cd     0x6  Code  Gb  abort.o [3]
+arp_table               0x100026b8    0x60  Data  Lc  uip_arp.o [1]
+arptime                 0x100026b2     0x1  Data  Lc  uip_arp.o [1]
+broadcast_ethaddr       0x0000826c     0x8  Data  Lc  uip_arp.o [1]
+buf_bufto               0x00005bcb    0x64  Code  Lc  psock.o [1]
+buf_setup               0x00005bc5     0x6  Code  Lc  psock.o [1]
+c                       0x10002650     0x1  Data  Lc  uip.o [1]
+c                       0x100026b1     0x1  Data  Lc  uip_arp.o [1]
+calls                   0x10000064    0x10  Data  Lc  httpd-cgi.o [1]
+chksum                  0x000049cf    0x3a  Code  Lc  uip.o [1]
+clock_init              0x00007f29     0x6  Code  Gb  clock-arch.o [1]
+clock_time              0x00007f2f     0x6  Code  Gb  clock-arch.o [1]
+closed                  0x000084b0     0x8  Data  Lc  httpd-cgi.o [1]
+closing                 0x000084f4     0x8  Data  Lc  httpd-cgi.o [1]
+count                   0x1000276c    0x14  Data  Lc  httpd-fs.o [1]
+data_404_html           0x000033f8    0xac  Data  Lc  httpd-fs.o [1]
+data_acked              0x00005c6b    0x44  Code  Lc  psock.o [1]
+data_fade_png           0x00004498    0xd0  Data  Lc  httpd-fs.o [1]
+data_files_shtml        0x000034a4   0x4f4  Data  Lc  httpd-fs.o [1]
+data_footer_html        0x00003998    0x20  Data  Lc  httpd-fs.o [1]
+data_header_html        0x000039b8   0x284  Data  Lc  httpd-fs.o [1]
+data_index_html         0x00003c3c   0x378  Data  Lc  httpd-fs.o [1]
+data_processes_shtml    0x00003314    0xe4  Data  Lc  httpd-fs.o [1]
+data_stats_shtml        0x00004568   0x344  Data  Lc  httpd-fs.o [1]
+data_style_css          0x00003fb4   0x404  Data  Lc  httpd-fs.o [1]
+data_tcp_shtml          0x000043b8    0xe0  Data  Lc  httpd-fs.o [1]
+established             0x000084d0     0xc  Data  Lc  httpd-cgi.o [1]
+exit                    0x0000859b     0x4  Code  Gb  exit.o [3]
+file                    0x00008498     0x8  Data  Lc  httpd-cgi.o [1]
+file_404_html           0x000048c0    0x14  Data  Gb  httpd-fs.o [1]
+file_fade_png           0x0000494c    0x14  Data  Gb  httpd-fs.o [1]
+file_files_shtml        0x000048d4    0x14  Data  Gb  httpd-fs.o [1]
+file_footer_html        0x000048e8    0x14  Data  Gb  httpd-fs.o [1]
+file_header_html        0x000048fc    0x14  Data  Gb  httpd-fs.o [1]
+file_index_html         0x00004910    0x14  Data  Gb  httpd-fs.o [1]
+file_processes_shtml    0x000048ac    0x14  Data  Gb  httpd-fs.o [1]
+file_stats              0x00005fd9    0x44  Code  Lc  httpd-cgi.o [1]
+file_stats_shtml        0x00004960    0x14  Data  Gb  httpd-fs.o [1]
+file_style_css          0x00004924    0x14  Data  Gb  httpd-fs.o [1]
+file_tcp_shtml          0x00004938    0x14  Data  Gb  httpd-fs.o [1]
+fin_wait_1              0x000084dc     0xc  Data  Lc  httpd-cgi.o [1]
+fin_wait_2              0x000084e8     0xc  Data  Lc  httpd-cgi.o [1]
+generate_file_stats     0x00005fbf    0x1a  Code  Lc  httpd-cgi.o [1]
+generate_net_stats      0x0000612d    0x20  Code  Lc  httpd-cgi.o [1]
+generate_part_of_file   0x00005561    0x30  Code  Lc  httpd.o [1]
+generate_tcp_stats      0x0000601d    0xaa  Code  Lc  httpd-cgi.o [1]
+handle_connection       0x00005ac7    0x1a  Code  Lc  httpd.o [1]
+handle_input            0x000059e5    0xe2  Code  Lc  httpd.o [1]
+handle_output           0x00005909    0xdc  Code  Lc  httpd.o [1]
+handle_script           0x00005649   0x120  Code  Lc  httpd.o [1]
+htons                   0x00005529     0xa  Code  Gb  uip.o [1]
+http_404_html           0x0000829c     0xc  Data  Gb  http-strings.o [1]
+http_content_type_binary
+                        0x00008414    0x2c  Data  Gb  http-strings.o [1]
+http_content_type_css   0x000083a0    0x1c  Data  Gb  http-strings.o [1]
+http_content_type_gif   0x000083d8    0x1c  Data  Gb  http-strings.o [1]
+http_content_type_html  0x00008384    0x1c  Data  Gb  http-strings.o [1]
+http_content_type_jpg   0x000083f4    0x20  Data  Gb  http-strings.o [1]
+http_content_type_plain
+                        0x00008364    0x20  Data  Gb  http-strings.o [1]
+http_content_type_png   0x000083bc    0x1c  Data  Gb  http-strings.o [1]
+http_css                0x00008450     0x8  Data  Gb  http-strings.o [1]
+http_get                0x00008288     0x8  Data  Gb  http-strings.o [1]
+http_gif                0x00008460     0x8  Data  Gb  http-strings.o [1]
+http_header_200         0x000082b4    0x54  Data  Gb  http-strings.o [1]
+http_header_404         0x00008308    0x5c  Data  Gb  http-strings.o [1]
+http_html               0x00008440     0x8  Data  Gb  http-strings.o [1]
+http_index_html         0x00008290     0xc  Data  Gb  http-strings.o [1]
+http_jpg                0x00008468     0x8  Data  Gb  http-strings.o [1]
+http_png                0x00008458     0x8  Data  Gb  http-strings.o [1]
+http_referer            0x000082a8     0xc  Data  Gb  http-strings.o [1]
+http_shtml              0x00008448     0x8  Data  Gb  http-strings.o [1]
+httpd_appcall           0x00005ae1    0x72  Code  Gb  httpd.o [1]
+httpd_cgi               0x00005f8f    0x30  Code  Gb  httpd-cgi.o [1]
+httpd_fs_count          0x00005f45    0x2c  Code  Gb  httpd-fs.o [1]
+httpd_fs_open           0x00005f07    0x3e  Code  Gb  httpd-fs.o [1]
+httpd_fs_strcmp         0x00005edd    0x2a  Code  Lc  httpd-fs.o [1]
+httpd_init              0x00005bb1     0x8  Code  Gb  httpd.o [1]
+i                       0x100026b0     0x1  Data  Lc  uip_arp.o [1]
+ipaddr                  0x100026b4     0x4  Data  Lc  uip_arp.o [1]
+ipid                    0x10002654     0x2  Data  Lc  uip.o [1]
+iss                     0x10002648     0x4  Data  Lc  uip.o [1]
+last_ack                0x00008508     0xc  Data  Lc  httpd-cgi.o [1]
+lastport                0x10002656     0x2  Data  Lc  uip.o [1]
+main                    0x00007ab1   0x1b8  Code  Gb  uip_webserver.o [1]
+memchr                  0x00006935          Code  Gb  memchr.o [5]
+memcpy                  0x00005bb9     0xc  Code  Gb  uip_arp.o [1]
+memset                  0x00008275    0x14  Code  Gb  uip_arp.o [1]
+net                     0x000084a8     0x8  Data  Lc  httpd-cgi.o [1]
+net_stats               0x0000614d    0x56  Code  Lc  httpd-cgi.o [1]
+next_scriptstate        0x00005621    0x28  Code  Lc  httpd.o [1]
+nullfunction            0x00005f79    0x16  Code  Lc  httpd-cgi.o [1]
+opt                     0x10002745     0x1  Data  Lc  uip.o [1]
+out                     0x00007119    0x16  Code  Lc  xreportassert.o [3]
+pCurrFont               0x10000000     0x4  Data  Lc  drv_glcd.o [1]
+pPix                    0x10002768     0x4  Data  Lc  drv_glcd.o [1]
+pWind                   0x10002764     0x4  Data  Lc  drv_glcd.o [1]
+psock_datalen           0x00005d83     0xa  Code  Gb  psock.o [1]
+psock_generator_send    0x00005d0d    0x76  Code  Gb  psock.o [1]
+psock_init              0x00005e55    0x22  Code  Gb  psock.o [1]
+psock_newdata           0x00005d8d    0x2c  Code  Gb  psock.o [1]
+psock_readto            0x00005db9    0x8c  Code  Gb  psock.o [1]
+psock_send              0x00005caf    0x5e  Code  Gb  psock.o [1]
+putchar                 0x000071d3    0x28  Code  Gb  putchar.o [3]
+send_data               0x00005c2f    0x3c  Code  Lc  psock.o [1]
+send_file               0x00005591    0x54  Code  Lc  httpd.o [1]
+send_headers            0x00005769   0x1a0  Code  Lc  httpd.o [1]
+send_part_of_file       0x000055e5    0x3c  Code  Lc  httpd.o [1]
+snprintf                0x000063d9    0x44  Code  Gb  snprintf.o [3]
+states                  0x10000028    0x24  Data  Lc  httpd-cgi.o [1]
+strchr                  0x00005ea5          Code  Gb  strchr.o [5]
+strcpy                  0x00006299          Code  Gb  strcpy.o [5]
+strlen                  0x00006235          Code  Gb  strlen.o [5]
+strncmp                 0x0000626f    0x2a  Code  Gb  strncmp.o [3]
+strncpy                 0x000062dd          Code  Gb  strncpy.o [5]
+strrchr                 0x0000626b     0x4  Code  Gb  httpd.o [1]
+syn_rcvd                0x000084b8     0xc  Data  Lc  httpd-cgi.o [1]
+syn_sent                0x000084c4     0xc  Data  Lc  httpd-cgi.o [1]
+tapdev_init             0x000072b1   0x2b6  Code  Gb  LPC40xx_enet.o [1]
+tapdev_read             0x00007567    0x44  Code  Gb  LPC40xx_enet.o [1]
+tapdev_send             0x000075ab    0x50  Code  Gb  LPC40xx_enet.o [1]
+tcp                     0x000084a0     0x8  Data  Lc  httpd-cgi.o [1]
+tcp_stats               0x000060c7    0x66  Code  Lc  httpd-cgi.o [1]
+time_wait               0x000084fc     0xc  Data  Lc  httpd-cgi.o [1]
+timer_expired           0x00007f51    0x18  Code  Gb  timer.o [1]
+timer_reset             0x00007f47     0xa  Code  Gb  timer.o [1]
+timer_set               0x00007f39     0xe  Code  Gb  timer.o [1]
+tmp16                   0x1000274e     0x2  Data  Lc  uip.o [1]
+tmpage                  0x100026b3     0x1  Data  Lc  uip_arp.o [1]
+uip_acc32               0x1000264c     0x4  Data  Gb  uip.o [1]
+uip_add32               0x00004975    0x5a  Code  Gb  uip.o [1]
+uip_add_rcv_nxt         0x00004adf    0x2a  Code  Lc  uip.o [1]
+uip_appdata             0x10002750     0x4  Data  Gb  uip.o [1]
+uip_arp_arpin           0x0000807d    0xba  Code  Gb  uip_arp.o [1]
+uip_arp_out             0x00008137   0x112  Code  Gb  uip_arp.o [1]
+uip_arp_timer           0x00007f69    0x42  Code  Gb  uip_arp.o [1]
+uip_arp_update          0x00007fab    0xd2  Code  Lc  uip_arp.o [1]
+uip_buf                 0x10002054   0x5f4  Data  Gb  uip.o [1]
+uip_conn                0x100026ac     0x4  Data  Gb  uip.o [1]
+uip_conns               0x10000074  0x1fe0  Data  Gb  uip.o [1]
+uip_draddr              0x10002780     0x4  Data  Gb  uip.o [1]
+uip_ethaddr             0x000085c8     0x8  Data  Gb  uip.o [1]
+uip_flags               0x10002744     0x1  Data  Gb  uip.o [1]
+uip_hostaddr            0x10002748     0x4  Data  Gb  uip.o [1]
+uip_init                0x00004a6d    0x4a  Code  Gb  uip.o [1]
+uip_ipchksum            0x00004a09    0x20  Code  Gb  uip.o [1]
+uip_len                 0x1000274c     0x2  Data  Gb  uip.o [1]
+uip_listen              0x00004ab7    0x28  Code  Gb  uip.o [1]
+uip_listenports         0x10002658    0x50  Data  Gb  uip.o [1]
+uip_netmask             0x10002784     0x4  Data  Gb  uip.o [1]
+uip_process             0x00004b0d   0xa1c  Code  Gb  uip.o [1]
+uip_sappdata            0x100026a8     0x4  Data  Gb  uip.o [1]
+uip_send                0x00005533    0x1a  Code  Gb  uip.o [1]
+uip_slen                0x10002652     0x2  Data  Gb  uip.o [1]
+uip_stat                0x10002718    0x2c  Data  Gb  uip.o [1]
+uip_tcpchksum           0x00004a69     0x4  Code  Gb  uip.o [1]
+upper_layer_chksum      0x00004a29    0x40  Code  Lc  uip.o [1]
+vsprintf                0x000070ed    0x2c  Code  Gb  vsprintf.o [3]
+
+
+[1] = D:\Demo_prj\IAR-LPC4088\uip_webserver\Flash Debug\Obj
+[2] = command line
+[3] = dl7M_tln.a
+[4] = m7M_tlv.a
+[5] = rt7M_tl.a
+[6] = shb_l.a
+
+  15 172 bytes of readonly  code memory
+  18 856 bytes of readonly  data memory
+  24 537 bytes of readwrite data memory
+
+Errors: none
+Warnings: none

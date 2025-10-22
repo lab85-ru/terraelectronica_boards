@@ -1,0 +1,403 @@
+###############################################################################
+#                                                                             #
+# IAR ELF Linker V6.50.2.4510/W32 for ARM               27/Mar/2013  11:30:48 #
+# Copyright 2007-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Output file  =  D:\Demo_prj\IAR-LPC4088\LCD_jpg\Flash                    #
+#                    Debug\Exe\LCD.out.tmp                                    #
+#    Map file     =  D:\Demo_prj\IAR-LPC4088\LCD_jpg\Flash Debug\List\LCD.map #
+#    Command line =  "D:\Demo_prj\IAR-LPC4088\LCD_jpg\Flash Debug\Obj\LCD.o"  #
+#                    "D:\Demo_prj\IAR-LPC4088\LCD_jpg\Flash                   #
+#                    Debug\Obj\drv_glcd.o" "D:\Demo_prj\IAR-LPC4088\LCD_jpg\F #
+#                    lash Debug\Obj\sdram_64M_32bit_drv.o"                    #
+#                    "D:\Demo_prj\IAR-LPC4088\LCD_jpg\Flash                   #
+#                    Debug\Obj\startup_LPC407x_8x.o"                          #
+#                    "D:\Demo_prj\IAR-LPC4088\LCD_jpg\Flash                   #
+#                    Debug\Obj\system_LPC407x_8x.o"                           #
+#                    "D:\Demo_prj\IAR-LPC4088\LCD_jpg\Flash                   #
+#                    Debug\Obj\tjpgd.o" --redirect _Printf=_PrintfSmallNoMb   #
+#                    --redirect _Scanf=_ScanfSmallNoMb -o                     #
+#                    "D:\Demo_prj\IAR-LPC4088\LCD_jpg\Flash                   #
+#                    Debug\Exe\LCD.out.tmp" --map                             #
+#                    "D:\Demo_prj\IAR-LPC4088\LCD_jpg\Flash                   #
+#                    Debug\List\LCD.map" --config                             #
+#                    D:\Demo_prj\IAR-LPC4088\LCD_jpg\..\common\config\LPC4088 #
+#                    _Flash.icf --semihosting --entry __iar_program_start     #
+#                    --redirect __iar_sh_stdout=__iar_sh_stdout_swo --vfe     #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+*******************************************************************************
+*** RUNTIME MODEL ATTRIBUTES
+***
+
+CppFlavor       = *
+__Heap_Handler  = Basic
+__SystemLibrary = DLib
+
+
+*******************************************************************************
+*** PLACEMENT SUMMARY
+***
+
+"A1":  place at 0x00000000 { ro section .intvec };
+"P1":  place in [from 0x00000000 to 0x000002fb] |
+                [from 0x00000300 to 0x0007ffff] { ro };
+"P2":  place in [from 0x10000000 to 0x1000ffdf] { rw, block CSTACK };
+"P6":  place in [from 0x000002fc to 0x000002ff] { section .crp };
+
+  Section          Kind        Address     Size  Object
+  -------          ----        -------     ----  ------
+"A1":                                      0xe4
+  .intvec          ro code  0x00000000     0xe4  startup_LPC407x_8x.o [1]
+                          - 0x000000e4     0xe4
+
+"P1", part 1 of 2:                        0x204
+  .text            ro code  0x000000e4     0x2c  I32ToDbl.o [4]
+  .text            ro code  0x00000110    0x1a2  DblMul.o [4]
+  .text            ro code  0x000002b2     0x22  zero_init3.o [5]
+  .text            ro code  0x000002d4      0x6  abort.o [3]
+  .rodata          const    0x000002dc      0xc  drv_glcd.o [1]
+  .rodata          const    0x000002e8      0x0  zero_init3.o [5]
+                          - 0x000002e8    0x204
+
+"P6":                                       0x4
+  .crp             ro code  0x000002fc      0x4  startup_LPC407x_8x.o [1]
+                          - 0x00000300      0x4
+
+"P1", part 2 of 2:                      0x7f4e4
+  .rodata          const    0x00000300  0x13e00  LCD.o [1]
+  .rodata          const    0x00014100  0x12280  LCD.o [1]
+  .rodata          const    0x00026380  0x1061c  LCD.o [1]
+  .rodata          const    0x0003699c   0xef24  LCD.o [1]
+  .rodata          const    0x000458c0   0xe754  LCD.o [1]
+  .rodata          const    0x00054014   0xc938  LCD.o [1]
+  .rodata          const    0x0006094c   0xa80c  LCD.o [1]
+  .text            ro code  0x0006b158    0xfa0  tjpgd.o [1]
+  .text            ro code  0x0006c0f8     0x4c  DblToI32.o [4]
+  .text            ro code  0x0006c144    0x5bc  system_LPC407x_8x.o [1]
+  .text            ro code  0x0006c700    0x44c  drv_glcd.o [1]
+  .text            ro code  0x0006cb4c     0x4c  xassert.o [3]
+  .text            ro code  0x0006cb98     0xb4  xreportassert.o [3]
+  .text            ro code  0x0006cc4c     0x28  putchar.o [3]
+  .text            ro code  0x0006cc74     0x14  exit.o [6]
+  .text            ro code  0x0006cc88     0x10  write.o [6]
+  .text            ro code  0x0006cc98     0x1e  dwrite.o [6]
+  .text            ro code  0x0006ccb8     0x4c  iarwstdswo.o [6]
+  .text            ro code  0x0006cd04     0x22  iarwrite.o [6]
+  .rodata          const    0x0006cd28    0x400  tjpgd.o [1]
+  .text            ro code  0x0006d128    0x384  sdram_64M_32bit_drv.o [1]
+  .text            ro code  0x0006d4ac    0x350  LCD.o [1]
+  .text            ro code  0x0006d7fc      0xc  memcpy.o [3]
+  .text            ro code  0x0006d808     0x76  ABImemcpy.o [5]
+  .rodata          const    0x0006d880     0x80  tjpgd.o [1]
+  .rodata          const    0x0006d900     0x40  tjpgd.o [1]
+  .rodata          const    0x0006d940     0x34  drv_glcd.o [1]
+  .text            ro code  0x0006d974     0x28  data_init.o [5]
+  .iar.init_table  const    0x0006d99c     0x10  - Linker created -
+  .text            ro code  0x0006d9ac     0x1a  fpinit_M.o [4]
+  .text            ro code  0x0006d9c8     0x16  cmain.o [5]
+  .text            ro code  0x0006d9de      0x4  exit.o [3]
+  .text            ro code  0x0006d9e4      0xa  cexit.o [5]
+  .text            ro code  0x0006d9f0     0x10  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da00      0xc  cstartup_M.o [5]
+  .text            ro code  0x0006da0c      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da10      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da14      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da18      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da1c      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da20      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da24      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da28      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da2c      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da30      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da34      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da38      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da3c      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da40      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da44      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da48      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da4c      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da50      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da54      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da58      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da5c      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da60      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da64      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da68      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da6c      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da70      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da74      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da78      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da7c      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da80      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da84      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da88      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da8c      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da90      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da94      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da98      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006da9c      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006daa0      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006daa4      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006daa8      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006daac      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006dab0      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006dab4      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006dab8      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006dabc      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006dac0      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006dac4      0x4  startup_LPC407x_8x.o [1]
+  .text            ro code  0x0006dac8      0x4  startup_LPC407x_8x.o [1]
+  .rodata          const    0x0006dacc   0x7600  LCD.o [1]
+  .rodata          const    0x000750cc   0xa718  LCD.o [1]
+                          - 0x0007f7e4  0x7f4e4
+
+"P2", part 1 of 2:                          0x4
+  .bss             zero     0x10000000      0x4  LCD.o [1]
+                          - 0x10000004      0x4
+
+"P2", part 2 of 2:                       0x2014
+  .noinit          uninit   0x10000004      0x4  system_LPC407x_8x.o [1]
+  .noinit          uninit   0x10000008      0x4  system_LPC407x_8x.o [1]
+  .noinit          uninit   0x1000000c      0x4  system_LPC407x_8x.o [1]
+  .noinit          uninit   0x10000010      0x4  system_LPC407x_8x.o [1]
+  .noinit          uninit   0x10000014      0x4  system_LPC407x_8x.o [1]
+  CSTACK                    0x10000018   0x2000  <Block>
+    CSTACK         uninit   0x10000018   0x2000  <Block tail>
+                          - 0x10002018   0x2014
+
+
+*******************************************************************************
+*** INIT TABLE
+***
+
+          Address     Size
+          -------     ----
+Zero (__iar_zero_init3)
+    1 destination range, total size 0x4:
+          0x10000000   0x4
+
+
+
+*******************************************************************************
+*** MODULE SUMMARY
+***
+
+    Module                 ro code  ro data  rw data
+    ------                 -------  -------  -------
+D:\Demo_prj\IAR-LPC4088\LCD_jpg\Flash Debug\Obj: [1]
+    LCD.o                      848  510 832        4
+    drv_glcd.o               1 100       64
+    sdram_64M_32bit_drv.o      900
+    startup_LPC407x_8x.o       440
+    system_LPC407x_8x.o      1 468                20
+    tjpgd.o                  4 000    1 216
+    ------------------------------------------------
+    Total:                   8 756  512 112       24
+
+command line: [2]
+    ------------------------------------------------
+    Total:
+
+dl7M_tln.a: [3]
+    abort.o                      6
+    exit.o                       4
+    memcpy.o                    12
+    putchar.o                   40
+    xassert.o                   76
+    xreportassert.o            180
+    ------------------------------------------------
+    Total:                     318
+
+m7M_tlv.a: [4]
+    DblMul.o                   418
+    DblToI32.o                  76
+    I32ToDbl.o                  44
+    fpinit_M.o                  26
+    ------------------------------------------------
+    Total:                     564
+
+rt7M_tl.a: [5]
+    ABImemcpy.o                118
+    cexit.o                     10
+    cmain.o                     22
+    cstartup_M.o                12
+    data_init.o                 40
+    zero_init3.o                34
+    ------------------------------------------------
+    Total:                     236
+
+shb_l.a: [6]
+    dwrite.o                    30
+    exit.o                      20
+    iarwrite.o                  34
+    iarwstdswo.o                76
+    write.o                     16
+    ------------------------------------------------
+    Total:                     176
+
+    Gaps                         8        6
+    Linker created                       16    8 192
+----------------------------------------------------
+    Grand Total:            10 058  512 134    8 216
+
+
+*******************************************************************************
+*** ENTRY LIST
+***
+
+Entry                      Address     Size  Type      Object
+-----                      -------     ----  ----      ------
+?main                   0x0006d9c9           Code  Gb  cmain.o [5]
+ADC_IRQHandler          0x0006da81           Code  Wk  startup_LPC407x_8x.o [1]
+BOD_IRQHandler          0x0006da85           Code  Wk  startup_LPC407x_8x.o [1]
+BusFault_Handler        0x0006da19           Code  Wk  startup_LPC407x_8x.o [1]
+CANActivity_IRQHandler  0x0006dab1           Code  Wk  startup_LPC407x_8x.o [1]
+CAN_IRQHandler          0x0006da8d           Code  Wk  startup_LPC407x_8x.o [1]
+CSTACK$$Base            0x10000018            --   Gb  - Linker created -
+CSTACK$$Limit           0x10002018            --   Gb  - Linker created -
+Clip8                   0x0006cd28    0x400  Data  Lc  tjpgd.o [1]
+DMA_IRQHandler          0x0006da91           Code  Wk  startup_LPC407x_8x.o [1]
+DebugMon_Handler        0x0006da25           Code  Wk  startup_LPC407x_8x.o [1]
+Draw_pix                0x0006d539     0x1a  Code  Gb  LCD.o [1]
+EEPROM_IRQHandler       0x0006dac9           Code  Wk  startup_LPC407x_8x.o [1]
+EINT0_IRQHandler        0x0006da71           Code  Wk  startup_LPC407x_8x.o [1]
+EINT1_IRQHandler        0x0006da75           Code  Wk  startup_LPC407x_8x.o [1]
+EINT2_IRQHandler        0x0006da79           Code  Wk  startup_LPC407x_8x.o [1]
+EINT3_IRQHandler        0x0006da7d           Code  Wk  startup_LPC407x_8x.o [1]
+EMCClock                0x1000000c      0x4  Data  Gb  system_LPC407x_8x.o [1]
+ENET_IRQHandler         0x0006da99           Code  Wk  startup_LPC407x_8x.o [1]
+GLCD_Ctrl               0x0006c953     0x74  Code  Gb  drv_glcd.o [1]
+GLCD_Cursor_Dis         0x0006c701     0x12  Code  Gb  drv_glcd.o [1]
+GLCD_Init               0x0006c713    0x20c  Code  Gb  drv_glcd.o [1]
+GLCD_SetPallet          0x0006c91f     0x34  Code  Gb  drv_glcd.o [1]
+GLCD_ShowPic            0x0006c9c7     0xba  Code  Gb  drv_glcd.o [1]
+GPIO_IRQHandler         0x0006dac1           Code  Wk  startup_LPC407x_8x.o [1]
+HardFault_Handler       0x0006da11           Code  Wk  startup_LPC407x_8x.o [1]
+I2C0_IRQHandler         0x0006da55           Code  Wk  startup_LPC407x_8x.o [1]
+I2C1_IRQHandler         0x0006da59           Code  Wk  startup_LPC407x_8x.o [1]
+I2C2_IRQHandler         0x0006da5d           Code  Wk  startup_LPC407x_8x.o [1]
+I2S_IRQHandler          0x0006da95           Code  Wk  startup_LPC407x_8x.o [1]
+Ipsf                    0x0006d880     0x80  Data  Lc  tjpgd.o [1]
+LCD_IRQHandler          0x0006dabd           Code  Wk  startup_LPC407x_8x.o [1]
+MCI_IRQHandler          0x0006da9d           Code  Wk  startup_LPC407x_8x.o [1]
+MCPWM_IRQHandler        0x0006daa1           Code  Wk  startup_LPC407x_8x.o [1]
+MemManage_Handler       0x0006da15           Code  Wk  startup_LPC407x_8x.o [1]
+NMI_Handler             0x0006da0d           Code  Wk  startup_LPC407x_8x.o [1]
+NVIC_EnableIRQ          0x0006d4ad     0x16  Code  Lc  LCD.o [1]
+PLL0_IRQHandler         0x0006da69           Code  Wk  startup_LPC407x_8x.o [1]
+PLL1_IRQHandler         0x0006daa9           Code  Wk  startup_LPC407x_8x.o [1]
+PWM0_IRQHandler         0x0006dac5           Code  Wk  startup_LPC407x_8x.o [1]
+PWM1_IRQHandler         0x0006da51           Code  Wk  startup_LPC407x_8x.o [1]
+PendSV_Handler          0x0006da29           Code  Wk  startup_LPC407x_8x.o [1]
+PeripheralClock         0x10000008      0x4  Data  Gb  system_LPC407x_8x.o [1]
+QEI_IRQHandler          0x0006daa5           Code  Wk  startup_LPC407x_8x.o [1]
+RTC_IRQHandler          0x0006da6d           Code  Wk  startup_LPC407x_8x.o [1]
+Region$$Table$$Base     0x0006d99c            --   Gb  - Linker created -
+Region$$Table$$Limit    0x0006d9ac            --   Gb  - Linker created -
+Reset_Handler           0x0006d9f1           Code  Wk  startup_LPC407x_8x.o [1]
+SDRAM_BASE_ADDR {Abs}   0xa0000000            --   Gb  command line/config [2]
+SDRAM_Init              0x0006d129    0x384  Code  Gb  sdram_64M_32bit_drv.o [1]
+SDRAM_VRAM_BASE_ADDR {Abs}
+                        0xa2000000            --   Gb  command line/config [2]
+SPIFIClock              0x10000014      0x4  Data  Gb  system_LPC407x_8x.o [1]
+SSP0_IRQHandler         0x0006da61           Code  Wk  startup_LPC407x_8x.o [1]
+SSP1_IRQHandler         0x0006da65           Code  Wk  startup_LPC407x_8x.o [1]
+SSP2_IRQHandler         0x0006dab9           Code  Wk  startup_LPC407x_8x.o [1]
+SVC_Handler             0x0006da21           Code  Wk  startup_LPC407x_8x.o [1]
+SysTick_Handler         0x0006da2d           Code  Wk  startup_LPC407x_8x.o [1]
+SystemCoreClock         0x10000004      0x4  Data  Gb  system_LPC407x_8x.o [1]
+SystemCoreClockUpdate   0x0006c145    0x494  Code  Gb  system_LPC407x_8x.o [1]
+SystemInit              0x0006c5d9     0xb4  Code  Gb  system_LPC407x_8x.o [1]
+TIMER0_IRQHandler       0x0006d4cd     0x18  Code  Gb  LCD.o [1]
+TIMER1_IRQHandler       0x0006da35           Code  Wk  startup_LPC407x_8x.o [1]
+TIMER2_IRQHandler       0x0006da39           Code  Wk  startup_LPC407x_8x.o [1]
+TIMER3_IRQHandler       0x0006da3d           Code  Wk  startup_LPC407x_8x.o [1]
+TMR0_Init               0x0006d4e5     0x54  Code  Gb  LCD.o [1]
+Tick                    0x10000000      0x4  Data  Gb  LCD.o [1]
+UART0_IRQHandler        0x0006da41           Code  Wk  startup_LPC407x_8x.o [1]
+UART1_IRQHandler        0x0006da45           Code  Wk  startup_LPC407x_8x.o [1]
+UART2_IRQHandler        0x0006da49           Code  Wk  startup_LPC407x_8x.o [1]
+UART3_IRQHandler        0x0006da4d           Code  Wk  startup_LPC407x_8x.o [1]
+UART4_IRQHandler        0x0006dab5           Code  Wk  startup_LPC407x_8x.o [1]
+USBActivity_IRQHandler  0x0006daad           Code  Wk  startup_LPC407x_8x.o [1]
+USBClock                0x10000010      0x4  Data  Gb  system_LPC407x_8x.o [1]
+USB_IRQHandler          0x0006da89           Code  Wk  startup_LPC407x_8x.o [1]
+UsageFault_Handler      0x0006da1d           Code  Wk  startup_LPC407x_8x.o [1]
+WDT_IRQHandler          0x0006da31           Code  Wk  startup_LPC407x_8x.o [1]
+Zig                     0x0006d900     0x40  Data  Lc  tjpgd.o [1]
+__Vectors               0x00000000            --   Gb  startup_LPC407x_8x.o [1]
+__Vectors_End           0x000000e4           Data  Gb  startup_LPC407x_8x.o [1]
+__Vectors_Size {Abs}    0x000000e4            --   Gb  startup_LPC407x_8x.o [1]
+__aeabi_assert          0x0006cb4f     0x4a  Code  Gb  xassert.o [3]
+__aeabi_d2iz            0x0006c0f9           Code  Gb  DblToI32.o [4]
+__aeabi_dmul            0x00000111           Code  Gb  DblMul.o [4]
+__aeabi_i2d             0x000000e5           Code  Gb  I32ToDbl.o [4]
+__aeabi_memcpy          0x0006d809           Code  Gb  ABImemcpy.o [5]
+__aeabi_memcpy4         0x0006d829           Code  Gb  ABImemcpy.o [5]
+__aeabi_memcpy8         0x0006d829           Code  Gb  ABImemcpy.o [5]
+__cmain                 0x0006d9c9           Code  Gb  cmain.o [5]
+__dwrite                0x0006cc99     0x1e  Code  Gb  dwrite.o [6]
+__exit                  0x0006cc75     0x14  Code  Gb  exit.o [6]
+__iar_EmptyStepPoint    0x0006cb4d      0x2  Code  Gb  xassert.o [3]
+__iar_ReportAssert      0x0006cbaf     0x64  Code  Gb  xreportassert.o [3]
+__iar_d2uiz             0x0006c125           Code  Gb  DblToI32.o [4]
+__iar_data_init3        0x0006d975     0x28  Code  Gb  data_init.o [5]
+__iar_init_vfp          0x0006d9ad           Code  Gb  fpinit_M.o [4]
+__iar_program_start     0x0006da01           Code  Gb  cstartup_M.o [5]
+__iar_sh_stdout_swo     0x0006ccb9     0x4c  Code  Gb  iarwstdswo.o [6]
+__iar_sh_write          0x0006cd05     0x22  Code  Gb  iarwrite.o [6]
+__iar_ui2d              0x000000f9           Code  Gb  I32ToDbl.o [4]
+__iar_zero_init3        0x000002b3     0x22  Code  Gb  zero_init3.o [5]
+__low_level_init        0x0006d4c3      0xa  Code  Gb  LCD.o [1]
+__vector_table          0x00000000           Data  Gb  startup_LPC407x_8x.o [1]
+__vector_table_0x1c     0x0000001c           Data  Gb  startup_LPC407x_8x.o [1]
+__write                 0x0006cc89     0x10  Code  Gb  write.o [6]
+_call_main              0x0006d9d5           Code  Gb  cmain.o [5]
+_exit                   0x0006d9e5           Code  Gb  cexit.o [5]
+_main                   0x0006d9db           Code  Gb  cmain.o [5]
+abort                   0x000002d5      0x6  Code  Gb  abort.o [3]
+alloc_pool              0x0006b159     0x1e  Code  Lc  tjpgd.o [1]
+bitext                  0x0006b2e5     0x8c  Code  Lc  tjpgd.o [1]
+block_idct              0x0006b43f    0x234  Code  Lc  tjpgd.o [1]
+create_huffman_tbl      0x0006b1e3    0x102  Code  Lc  tjpgd.o [1]
+create_qt_tbl           0x0006b177     0x6c  Code  Lc  tjpgd.o [1]
+exit                    0x0006d9df      0x4  Code  Gb  exit.o [3]
+huffext                 0x0006b371     0xce  Code  Lc  tjpgd.o [1]
+input_func              0x0006d553     0x34  Code  Gb  LCD.o [1]
+jd_decomp               0x0006c053     0xa6  Code  Gb  tjpgd.o [1]
+jd_prepare              0x0006bcd9    0x37a  Code  Gb  tjpgd.o [1]
+jpg_d0                  0x0006094c   0xa80c  Data  Gb  LCD.o [1]
+jpg_d1                  0x00014100  0x12280  Data  Gb  LCD.o [1]
+jpg_d2                  0x0003699c   0xef24  Data  Gb  LCD.o [1]
+jpg_d3                  0x00054014   0xc938  Data  Gb  LCD.o [1]
+jpg_d4                  0x000750cc   0xa718  Data  Gb  LCD.o [1]
+jpg_d5                  0x00000300  0x13e00  Data  Gb  LCD.o [1]
+jpg_d6                  0x00026380  0x1061c  Data  Gb  LCD.o [1]
+jpg_d7                  0x000458c0   0xe754  Data  Gb  LCD.o [1]
+jpg_d8                  0x0006dacc   0x7600  Data  Gb  LCD.o [1]
+main                    0x0006d5cd    0x1cc  Code  Gb  LCD.o [1]
+mcu_load                0x0006b673    0x1c4  Code  Lc  tjpgd.o [1]
+mcu_output              0x0006b837    0x3f6  Code  Lc  tjpgd.o [1]
+memcpy                  0x0006d7fd      0xc  Code  Gb  memcpy.o [3]
+out                     0x0006cb99     0x16  Code  Lc  xreportassert.o [3]
+output_func             0x0006d587     0x46  Code  Gb  LCD.o [1]
+putchar                 0x0006cc4d     0x28  Code  Gb  putchar.o [3]
+restart                 0x0006bc59     0x80  Code  Lc  tjpgd.o [1]
+
+
+[1] = D:\Demo_prj\IAR-LPC4088\LCD_jpg\Flash Debug\Obj
+[2] = command line
+[3] = dl7M_tln.a
+[4] = m7M_tlv.a
+[5] = rt7M_tl.a
+[6] = shb_l.a
+
+   10 058 bytes of readonly  code memory
+  512 134 bytes of readonly  data memory
+    8 216 bytes of readwrite data memory
+
+Errors: none
+Warnings: none
