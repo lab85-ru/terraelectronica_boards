@@ -9,5 +9,5 @@ TE-LPC4088LCD5.6
 te-lpc2478lcd56
 te-cc430f51-433
 TE-LPC4088LCD5.6
-
+te-am1705
 
