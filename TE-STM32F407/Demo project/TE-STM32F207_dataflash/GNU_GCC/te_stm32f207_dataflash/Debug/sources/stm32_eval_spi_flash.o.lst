@@ -1,0 +1,1561 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 18, 4
+  12              		.thumb
+  13              		.file	"stm32_eval_spi_flash.c"
+  23              	.Ltext0:
+  24              		.file 1 "../sources/stm32_eval_spi_flash.c"
+ 23518              		.align	2
+ 23519              		.global	sFLASH_DeInit
+ 23520              		.thumb
+ 23521              		.thumb_func
+ 23523              	sFLASH_DeInit:
+ 23524              	.LFB29:
+   1:../sources/stm32_eval_spi_flash.c **** /**
+   2:../sources/stm32_eval_spi_flash.c ****   ******************************************************************************
+   3:../sources/stm32_eval_spi_flash.c ****   * @file    stm32_eval_spi_flash.c
+   4:../sources/stm32_eval_spi_flash.c ****   * @author  MCD Application Team
+   5:../sources/stm32_eval_spi_flash.c ****   * @version V4.6.1
+   6:../sources/stm32_eval_spi_flash.c ****   * @date    18-April-2011
+   7:../sources/stm32_eval_spi_flash.c ****   * @brief   This file provides a set of functions needed to manage the SPI M25Pxxx
+   8:../sources/stm32_eval_spi_flash.c ****   *          FLASH memory mounted on STM32xx-EVAL board (refer to stm32_eval.h
+   9:../sources/stm32_eval_spi_flash.c ****   *          to know about the boards supporting this memory). 
+  10:../sources/stm32_eval_spi_flash.c ****   *          It implements a high level communication layer for read and write 
+  11:../sources/stm32_eval_spi_flash.c ****   *          from/to this memory. The needed STM32 hardware resources (SPI and 
+  12:../sources/stm32_eval_spi_flash.c ****   *          GPIO) are defined in stm32xx_eval.h file, and the initialization is 
+  13:../sources/stm32_eval_spi_flash.c ****   *          performed in sFLASH_LowLevel_Init() function declared in stm32xx_eval.c 
+  14:../sources/stm32_eval_spi_flash.c ****   *          file.
+  15:../sources/stm32_eval_spi_flash.c ****   *          You can easily tailor this driver to any other development board, 
+  16:../sources/stm32_eval_spi_flash.c ****   *          by just adapting the defines for hardware resources and 
+  17:../sources/stm32_eval_spi_flash.c ****   *          sFLASH_LowLevel_Init() function.
+  18:../sources/stm32_eval_spi_flash.c ****   *            
+  19:../sources/stm32_eval_spi_flash.c ****   *          +-----------------------------------------------------------+
+  20:../sources/stm32_eval_spi_flash.c ****   *          |                     Pin assignment                        |
+  21:../sources/stm32_eval_spi_flash.c ****   *          +-----------------------------+---------------+-------------+
+  22:../sources/stm32_eval_spi_flash.c ****   *          |  STM32 SPI Pins             |     sFLASH    |    Pin      |
+  23:../sources/stm32_eval_spi_flash.c ****   *          +-----------------------------+---------------+-------------+
+  24:../sources/stm32_eval_spi_flash.c ****   *          | sFLASH_CS_PIN               | ChipSelect(/S)|    1        |
+  25:../sources/stm32_eval_spi_flash.c ****   *          | sFLASH_SPI_MISO_PIN / MISO  |   DataOut(Q)  |    2        |
+  26:../sources/stm32_eval_spi_flash.c ****   *          |                             |   VCC         |    3 (3.3 V)|
+  27:../sources/stm32_eval_spi_flash.c ****   *          |                             |   GND         |    4 (0 V)  |
+  28:../sources/stm32_eval_spi_flash.c ****   *          | sFLASH_SPI_MOSI_PIN / MOSI  |   DataIn(D)   |    5        |
+  29:../sources/stm32_eval_spi_flash.c ****   *          | sFLASH_SPI_SCK_PIN / SCLK   |   Clock(C)    |    6        |
+  30:../sources/stm32_eval_spi_flash.c ****   *          |                             |    VCC        |    7 (3.3 V)|
+  31:../sources/stm32_eval_spi_flash.c ****   *          |                             |    VCC        |    8 (3.3 V)|  
+  32:../sources/stm32_eval_spi_flash.c ****   *          +-----------------------------+---------------+-------------+  
+  33:../sources/stm32_eval_spi_flash.c ****   ******************************************************************************
+  34:../sources/stm32_eval_spi_flash.c ****   * @attention
+  35:../sources/stm32_eval_spi_flash.c ****   *
+  36:../sources/stm32_eval_spi_flash.c ****   * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+  37:../sources/stm32_eval_spi_flash.c ****   * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+  38:../sources/stm32_eval_spi_flash.c ****   * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+  39:../sources/stm32_eval_spi_flash.c ****   * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+  40:../sources/stm32_eval_spi_flash.c ****   * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+  41:../sources/stm32_eval_spi_flash.c ****   * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  42:../sources/stm32_eval_spi_flash.c ****   *
+  43:../sources/stm32_eval_spi_flash.c ****   * <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
+  44:../sources/stm32_eval_spi_flash.c ****   ******************************************************************************  
+  45:../sources/stm32_eval_spi_flash.c ****   */ 
+  46:../sources/stm32_eval_spi_flash.c **** 
+  47:../sources/stm32_eval_spi_flash.c **** /* Includes ------------------------------------------------------------------*/
+  48:../sources/stm32_eval_spi_flash.c **** #include "stm32f2xx_conf.h"
+  49:../sources/stm32_eval_spi_flash.c **** #include "stm32_eval_spi_flash.h"
+  50:../sources/stm32_eval_spi_flash.c **** #include "TE_STM32F207.h"
+  51:../sources/stm32_eval_spi_flash.c **** 
+  52:../sources/stm32_eval_spi_flash.c **** /** @addtogroup Utilities
+  53:../sources/stm32_eval_spi_flash.c ****   * @{
+  54:../sources/stm32_eval_spi_flash.c ****   */
+  55:../sources/stm32_eval_spi_flash.c ****   
+  56:../sources/stm32_eval_spi_flash.c **** /** @addtogroup STM32_EVAL
+  57:../sources/stm32_eval_spi_flash.c ****   * @{
+  58:../sources/stm32_eval_spi_flash.c ****   */ 
+  59:../sources/stm32_eval_spi_flash.c **** 
+  60:../sources/stm32_eval_spi_flash.c **** /** @addtogroup Common
+  61:../sources/stm32_eval_spi_flash.c ****   * @{
+  62:../sources/stm32_eval_spi_flash.c ****   */
+  63:../sources/stm32_eval_spi_flash.c ****   
+  64:../sources/stm32_eval_spi_flash.c **** /** @addtogroup STM32_EVAL_SPI_FLASH
+  65:../sources/stm32_eval_spi_flash.c ****   * @brief      This file includes the M25Pxxx SPI FLASH driver of STM32-EVAL boards.
+  66:../sources/stm32_eval_spi_flash.c ****   * @{
+  67:../sources/stm32_eval_spi_flash.c ****   */  
+  68:../sources/stm32_eval_spi_flash.c **** 
+  69:../sources/stm32_eval_spi_flash.c **** /** @defgroup STM32_EVAL_SPI_FLASH_Private_Types
+  70:../sources/stm32_eval_spi_flash.c ****   * @{
+  71:../sources/stm32_eval_spi_flash.c ****   */ 
+  72:../sources/stm32_eval_spi_flash.c **** /**
+  73:../sources/stm32_eval_spi_flash.c ****   * @}
+  74:../sources/stm32_eval_spi_flash.c ****   */ 
+  75:../sources/stm32_eval_spi_flash.c **** 
+  76:../sources/stm32_eval_spi_flash.c **** 
+  77:../sources/stm32_eval_spi_flash.c **** /** @defgroup STM32_EVAL_SPI_FLASH_Private_Defines
+  78:../sources/stm32_eval_spi_flash.c ****   * @{
+  79:../sources/stm32_eval_spi_flash.c ****   */  
+  80:../sources/stm32_eval_spi_flash.c **** /**
+  81:../sources/stm32_eval_spi_flash.c ****   * @}
+  82:../sources/stm32_eval_spi_flash.c ****   */ 
+  83:../sources/stm32_eval_spi_flash.c **** 
+  84:../sources/stm32_eval_spi_flash.c **** /** @defgroup STM32_EVAL_SPI_FLASH_Private_Macros
+  85:../sources/stm32_eval_spi_flash.c ****   * @{
+  86:../sources/stm32_eval_spi_flash.c ****   */
+  87:../sources/stm32_eval_spi_flash.c **** /**
+  88:../sources/stm32_eval_spi_flash.c ****   * @}
+  89:../sources/stm32_eval_spi_flash.c ****   */ 
+  90:../sources/stm32_eval_spi_flash.c ****   
+  91:../sources/stm32_eval_spi_flash.c **** 
+  92:../sources/stm32_eval_spi_flash.c **** /** @defgroup STM32_EVAL_SPI_FLASH_Private_Variables
+  93:../sources/stm32_eval_spi_flash.c ****   * @{
+  94:../sources/stm32_eval_spi_flash.c ****   */ 
+  95:../sources/stm32_eval_spi_flash.c **** /**
+  96:../sources/stm32_eval_spi_flash.c ****   * @}
+  97:../sources/stm32_eval_spi_flash.c ****   */ 
+  98:../sources/stm32_eval_spi_flash.c **** 
+  99:../sources/stm32_eval_spi_flash.c **** 
+ 100:../sources/stm32_eval_spi_flash.c **** /** @defgroup STM32_EVAL_SPI_FLASH_Private_Function_Prototypes
+ 101:../sources/stm32_eval_spi_flash.c ****   * @{
+ 102:../sources/stm32_eval_spi_flash.c ****   */ 
+ 103:../sources/stm32_eval_spi_flash.c **** /**
+ 104:../sources/stm32_eval_spi_flash.c ****   * @}
+ 105:../sources/stm32_eval_spi_flash.c ****   */ 
+ 106:../sources/stm32_eval_spi_flash.c **** 
+ 107:../sources/stm32_eval_spi_flash.c **** 
+ 108:../sources/stm32_eval_spi_flash.c **** /** @defgroup STM32_EVAL_SPI_FLASH_Private_Functions
+ 109:../sources/stm32_eval_spi_flash.c ****   * @{
+ 110:../sources/stm32_eval_spi_flash.c ****   */ 
+ 111:../sources/stm32_eval_spi_flash.c **** 
+ 112:../sources/stm32_eval_spi_flash.c **** /**
+ 113:../sources/stm32_eval_spi_flash.c ****   * @brief  DeInitializes the peripherals used by the SPI FLASH driver.
+ 114:../sources/stm32_eval_spi_flash.c ****   * @param  None
+ 115:../sources/stm32_eval_spi_flash.c ****   * @retval None
+ 116:../sources/stm32_eval_spi_flash.c ****   */
+ 117:../sources/stm32_eval_spi_flash.c **** void sFLASH_DeInit(void)
+ 118:../sources/stm32_eval_spi_flash.c **** {
+ 23525              		.loc 1 118 0
+ 23526              		.cfi_startproc
+ 23527              		@ args = 0, pretend = 0, frame = 0
+ 23528              		@ frame_needed = 1, uses_anonymous_args = 0
+ 23529 0000 80B5     		push	{r7, lr}
+ 23530              	.LCFI0:
+ 23531              		.cfi_def_cfa_offset 8
+ 23532 0002 00AF     		add	r7, sp, #0
+ 23533              		.cfi_offset 14, -4
+ 23534              		.cfi_offset 7, -8
+ 23535              	.LCFI1:
+ 23536              		.cfi_def_cfa_register 7
+ 119:../sources/stm32_eval_spi_flash.c ****   sFLASH_LowLevel_DeInit();
+ 23537              		.loc 1 119 0
+ 23538 0004 FFF7FEFF 		bl	sFLASH_LowLevel_DeInit
+ 120:../sources/stm32_eval_spi_flash.c **** }
+ 23539              		.loc 1 120 0
+ 23540 0008 BD46     		mov	sp, r7
+ 23541 000a 80BD     		pop	{r7, pc}
+ 23542              		.cfi_endproc
+ 23543              	.LFE29:
+ 23545              		.align	2
+ 23546              		.global	sFLASH_Init
+ 23547              		.thumb
+ 23548              		.thumb_func
+ 23550              	sFLASH_Init:
+ 23551              	.LFB30:
+ 121:../sources/stm32_eval_spi_flash.c **** 
+ 122:../sources/stm32_eval_spi_flash.c **** /**
+ 123:../sources/stm32_eval_spi_flash.c ****   * @brief  Initializes the peripherals used by the SPI FLASH driver.
+ 124:../sources/stm32_eval_spi_flash.c ****   * @param  None
+ 125:../sources/stm32_eval_spi_flash.c ****   * @retval None
+ 126:../sources/stm32_eval_spi_flash.c ****   */
+ 127:../sources/stm32_eval_spi_flash.c **** void sFLASH_Init(void)
+ 128:../sources/stm32_eval_spi_flash.c **** {
+ 23552              		.loc 1 128 0
+ 23553              		.cfi_startproc
+ 23554              		@ args = 0, pretend = 0, frame = 24
+ 23555              		@ frame_needed = 1, uses_anonymous_args = 0
+ 23556 000c 80B5     		push	{r7, lr}
+ 23557              	.LCFI2:
+ 23558              		.cfi_def_cfa_offset 8
+ 23559 000e 86B0     		sub	sp, sp, #24
+ 23560              	.LCFI3:
+ 23561              		.cfi_def_cfa_offset 32
+ 23562 0010 00AF     		add	r7, sp, #0
+ 23563              		.cfi_offset 14, -4
+ 23564              		.cfi_offset 7, -8
+ 23565              	.LCFI4:
+ 23566              		.cfi_def_cfa_register 7
+ 129:../sources/stm32_eval_spi_flash.c **** 	  SPI_InitTypeDef  SPI_InitStructure;
+ 130:../sources/stm32_eval_spi_flash.c **** 
+ 131:../sources/stm32_eval_spi_flash.c **** 	  sFLASH_LowLevel_Init();
+ 23567              		.loc 1 131 0
+ 23568 0012 FFF7FEFF 		bl	sFLASH_LowLevel_Init
+ 132:../sources/stm32_eval_spi_flash.c **** 
+ 133:../sources/stm32_eval_spi_flash.c **** 	  /*!< Deselect the FLASH: Chip Select high */
+ 134:../sources/stm32_eval_spi_flash.c **** 	  sFLASH_CS_HIGH();
+ 23569              		.loc 1 134 0
+ 23570 0016 4FF44060 		mov	r0, #3072
+ 23571 001a C4F20200 		movt	r0, 16386
+ 23572 001e 4FF00401 		mov	r1, #4
+ 23573 0022 FFF7FEFF 		bl	GPIO_SetBits
+ 135:../sources/stm32_eval_spi_flash.c **** 
+ 136:../sources/stm32_eval_spi_flash.c **** 	  /*!1< SPI configuration */
+ 137:../sources/stm32_eval_spi_flash.c **** 	  SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
+ 23574              		.loc 1 137 0
+ 23575 0026 4FF00003 		mov	r3, #0
+ 23576 002a BB80     		strh	r3, [r7, #4]	@ movhi
+ 138:../sources/stm32_eval_spi_flash.c **** 	  SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
+ 23577              		.loc 1 138 0
+ 23578 002c 4FF48273 		mov	r3, #260
+ 23579 0030 FB80     		strh	r3, [r7, #6]	@ movhi
+ 139:../sources/stm32_eval_spi_flash.c **** 	  SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
+ 23580              		.loc 1 139 0
+ 23581 0032 4FF00003 		mov	r3, #0
+ 23582 0036 3B81     		strh	r3, [r7, #8]	@ movhi
+ 140:../sources/stm32_eval_spi_flash.c **** 	  SPI_InitStructure.SPI_CPOL = SPI_CPOL_High;
+ 23583              		.loc 1 140 0
+ 23584 0038 4FF00203 		mov	r3, #2
+ 23585 003c 7B81     		strh	r3, [r7, #10]	@ movhi
+ 141:../sources/stm32_eval_spi_flash.c **** 	  SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
+ 23586              		.loc 1 141 0
+ 23587 003e 4FF00103 		mov	r3, #1
+ 23588 0042 BB81     		strh	r3, [r7, #12]	@ movhi
+ 142:../sources/stm32_eval_spi_flash.c **** 	  SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
+ 23589              		.loc 1 142 0
+ 23590 0044 4FF40073 		mov	r3, #512
+ 23591 0048 FB81     		strh	r3, [r7, #14]	@ movhi
+ 143:../sources/stm32_eval_spi_flash.c **** 	  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_4;
+ 23592              		.loc 1 143 0
+ 23593 004a 4FF00803 		mov	r3, #8
+ 23594 004e 3B82     		strh	r3, [r7, #16]	@ movhi
+ 144:../sources/stm32_eval_spi_flash.c **** 
+ 145:../sources/stm32_eval_spi_flash.c **** 	  SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
+ 23595              		.loc 1 145 0
+ 23596 0050 4FF00003 		mov	r3, #0
+ 23597 0054 7B82     		strh	r3, [r7, #18]	@ movhi
+ 146:../sources/stm32_eval_spi_flash.c **** 	  SPI_InitStructure.SPI_CRCPolynomial = 7;
+ 23598              		.loc 1 146 0
+ 23599 0056 4FF00703 		mov	r3, #7
+ 23600 005a BB82     		strh	r3, [r7, #20]	@ movhi
+ 147:../sources/stm32_eval_spi_flash.c **** 	  SPI_Init(sFLASH_SPI, &SPI_InitStructure);
+ 23601              		.loc 1 147 0
+ 23602 005c 07F10403 		add	r3, r7, #4
+ 23603 0060 4FF47050 		mov	r0, #15360
+ 23604 0064 C4F20000 		movt	r0, 16384
+ 23605 0068 1946     		mov	r1, r3
+ 23606 006a FFF7FEFF 		bl	SPI_Init
+ 148:../sources/stm32_eval_spi_flash.c **** 
+ 149:../sources/stm32_eval_spi_flash.c **** 	  /*!< Enable the sFLASH_SPI  */
+ 150:../sources/stm32_eval_spi_flash.c **** 	  SPI_Cmd(sFLASH_SPI, ENABLE);
+ 23607              		.loc 1 150 0
+ 23608 006e 4FF47050 		mov	r0, #15360
+ 23609 0072 C4F20000 		movt	r0, 16384
+ 23610 0076 4FF00101 		mov	r1, #1
+ 23611 007a FFF7FEFF 		bl	SPI_Cmd
+ 151:../sources/stm32_eval_spi_flash.c **** }
+ 23612              		.loc 1 151 0
+ 23613 007e 07F11807 		add	r7, r7, #24
+ 23614 0082 BD46     		mov	sp, r7
+ 23615 0084 80BD     		pop	{r7, pc}
+ 23616              		.cfi_endproc
+ 23617              	.LFE30:
+ 23619 0086 00BF     		.align	2
+ 23620              		.global	sFLASH_EraseSector
+ 23621              		.thumb
+ 23622              		.thumb_func
+ 23624              	sFLASH_EraseSector:
+ 23625              	.LFB31:
+ 152:../sources/stm32_eval_spi_flash.c **** 
+ 153:../sources/stm32_eval_spi_flash.c **** /**
+ 154:../sources/stm32_eval_spi_flash.c ****   * @brief  Erases the specified FLASH sector.
+ 155:../sources/stm32_eval_spi_flash.c ****   * @param  SectorAddr: address of the sector to erase.
+ 156:../sources/stm32_eval_spi_flash.c ****   * @retval None
+ 157:../sources/stm32_eval_spi_flash.c ****   */
+ 158:../sources/stm32_eval_spi_flash.c **** void sFLASH_EraseSector(uint32_t SectorAddr)
+ 159:../sources/stm32_eval_spi_flash.c **** {
+ 23626              		.loc 1 159 0
+ 23627              		.cfi_startproc
+ 23628              		@ args = 0, pretend = 0, frame = 8
+ 23629              		@ frame_needed = 1, uses_anonymous_args = 0
+ 23630 0088 80B5     		push	{r7, lr}
+ 23631              	.LCFI5:
+ 23632              		.cfi_def_cfa_offset 8
+ 23633 008a 82B0     		sub	sp, sp, #8
+ 23634              	.LCFI6:
+ 23635              		.cfi_def_cfa_offset 16
+ 23636 008c 00AF     		add	r7, sp, #0
+ 23637              		.cfi_offset 14, -4
+ 23638              		.cfi_offset 7, -8
+ 23639              	.LCFI7:
+ 23640              		.cfi_def_cfa_register 7
+ 23641 008e 7860     		str	r0, [r7, #4]
+ 160:../sources/stm32_eval_spi_flash.c ****   /*!< Send write enable instruction */
+ 161:../sources/stm32_eval_spi_flash.c ****   sFLASH_WriteEnable();
+ 23642              		.loc 1 161 0
+ 23643 0090 FFF7FEFF 		bl	sFLASH_WriteEnable
+ 162:../sources/stm32_eval_spi_flash.c **** 
+ 163:../sources/stm32_eval_spi_flash.c ****   /*!< Sector Erase */
+ 164:../sources/stm32_eval_spi_flash.c ****   /*!< Select the FLASH: Chip Select low */
+ 165:../sources/stm32_eval_spi_flash.c ****   sFLASH_CS_LOW();
+ 23644              		.loc 1 165 0
+ 23645 0094 4FF44060 		mov	r0, #3072
+ 23646 0098 C4F20200 		movt	r0, 16386
+ 23647 009c 4FF00401 		mov	r1, #4
+ 23648 00a0 FFF7FEFF 		bl	GPIO_ResetBits
+ 166:../sources/stm32_eval_spi_flash.c ****   /*!< Send Sector Erase instruction */
+ 167:../sources/stm32_eval_spi_flash.c ****   sFLASH_SendByte(sFLASH_CMD_SE);
+ 23649              		.loc 1 167 0
+ 23650 00a4 4FF0D800 		mov	r0, #216
+ 23651 00a8 FFF7FEFF 		bl	sFLASH_SendByte
+ 168:../sources/stm32_eval_spi_flash.c ****   /*!< Send SectorAddr high nibble address byte */
+ 169:../sources/stm32_eval_spi_flash.c ****   sFLASH_SendByte((SectorAddr & 0xFF0000) >> 16);
+ 23652              		.loc 1 169 0
+ 23653 00ac 7B68     		ldr	r3, [r7, #4]
+ 23654 00ae 03F47F03 		and	r3, r3, #16711680
+ 23655 00b2 4FEA1343 		lsr	r3, r3, #16
+ 23656 00b6 DBB2     		uxtb	r3, r3
+ 23657 00b8 1846     		mov	r0, r3
+ 23658 00ba FFF7FEFF 		bl	sFLASH_SendByte
+ 170:../sources/stm32_eval_spi_flash.c ****   /*!< Send SectorAddr medium nibble address byte */
+ 171:../sources/stm32_eval_spi_flash.c ****   sFLASH_SendByte((SectorAddr & 0xFF00) >> 8);
+ 23659              		.loc 1 171 0
+ 23660 00be 7B68     		ldr	r3, [r7, #4]
+ 23661 00c0 03F47F43 		and	r3, r3, #65280
+ 23662 00c4 4FEA1323 		lsr	r3, r3, #8
+ 23663 00c8 DBB2     		uxtb	r3, r3
+ 23664 00ca 1846     		mov	r0, r3
+ 23665 00cc FFF7FEFF 		bl	sFLASH_SendByte
+ 172:../sources/stm32_eval_spi_flash.c ****   /*!< Send SectorAddr low nibble address byte */
+ 173:../sources/stm32_eval_spi_flash.c ****   sFLASH_SendByte(SectorAddr & 0xFF);
+ 23666              		.loc 1 173 0
+ 23667 00d0 7B68     		ldr	r3, [r7, #4]
+ 23668 00d2 DBB2     		uxtb	r3, r3
+ 23669 00d4 1846     		mov	r0, r3
+ 23670 00d6 FFF7FEFF 		bl	sFLASH_SendByte
+ 174:../sources/stm32_eval_spi_flash.c ****   /*!< Deselect the FLASH: Chip Select high */
+ 175:../sources/stm32_eval_spi_flash.c ****   sFLASH_CS_HIGH();
+ 23671              		.loc 1 175 0
+ 23672 00da 4FF44060 		mov	r0, #3072
+ 23673 00de C4F20200 		movt	r0, 16386
+ 23674 00e2 4FF00401 		mov	r1, #4
+ 23675 00e6 FFF7FEFF 		bl	GPIO_SetBits
+ 176:../sources/stm32_eval_spi_flash.c **** 
+ 177:../sources/stm32_eval_spi_flash.c ****   /*!< Wait the end of Flash writing */
+ 178:../sources/stm32_eval_spi_flash.c ****   sFLASH_WaitForWriteEnd();
+ 23676              		.loc 1 178 0
+ 23677 00ea FFF7FEFF 		bl	sFLASH_WaitForWriteEnd
+ 179:../sources/stm32_eval_spi_flash.c **** }
+ 23678              		.loc 1 179 0
+ 23679 00ee 07F10807 		add	r7, r7, #8
+ 23680 00f2 BD46     		mov	sp, r7
+ 23681 00f4 80BD     		pop	{r7, pc}
+ 23682              		.cfi_endproc
+ 23683              	.LFE31:
+ 23685 00f6 00BF     		.align	2
+ 23686              		.global	sFLASH_EraseBulk
+ 23687              		.thumb
+ 23688              		.thumb_func
+ 23690              	sFLASH_EraseBulk:
+ 23691              	.LFB32:
+ 180:../sources/stm32_eval_spi_flash.c **** 
+ 181:../sources/stm32_eval_spi_flash.c **** /**
+ 182:../sources/stm32_eval_spi_flash.c ****   * @brief  Erases the entire FLASH.
+ 183:../sources/stm32_eval_spi_flash.c ****   * @param  None
+ 184:../sources/stm32_eval_spi_flash.c ****   * @retval None
+ 185:../sources/stm32_eval_spi_flash.c ****   */
+ 186:../sources/stm32_eval_spi_flash.c **** void sFLASH_EraseBulk(void)
+ 187:../sources/stm32_eval_spi_flash.c **** {
+ 23692              		.loc 1 187 0
+ 23693              		.cfi_startproc
+ 23694              		@ args = 0, pretend = 0, frame = 0
+ 23695              		@ frame_needed = 1, uses_anonymous_args = 0
+ 23696 00f8 80B5     		push	{r7, lr}
+ 23697              	.LCFI8:
+ 23698              		.cfi_def_cfa_offset 8
+ 23699 00fa 00AF     		add	r7, sp, #0
+ 23700              		.cfi_offset 14, -4
+ 23701              		.cfi_offset 7, -8
+ 23702              	.LCFI9:
+ 23703              		.cfi_def_cfa_register 7
+ 188:../sources/stm32_eval_spi_flash.c ****   /*!< Send write enable instruction */
+ 189:../sources/stm32_eval_spi_flash.c ****   sFLASH_WriteEnable();
+ 23704              		.loc 1 189 0
+ 23705 00fc FFF7FEFF 		bl	sFLASH_WriteEnable
+ 190:../sources/stm32_eval_spi_flash.c **** 
+ 191:../sources/stm32_eval_spi_flash.c ****   /*!< Bulk Erase */
+ 192:../sources/stm32_eval_spi_flash.c ****   /*!< Select the FLASH: Chip Select low */
+ 193:../sources/stm32_eval_spi_flash.c ****   sFLASH_CS_LOW();
+ 23706              		.loc 1 193 0
+ 23707 0100 4FF44060 		mov	r0, #3072
+ 23708 0104 C4F20200 		movt	r0, 16386
+ 23709 0108 4FF00401 		mov	r1, #4
+ 23710 010c FFF7FEFF 		bl	GPIO_ResetBits
+ 194:../sources/stm32_eval_spi_flash.c ****   /*!< Send Bulk Erase instruction  */
+ 195:../sources/stm32_eval_spi_flash.c ****   sFLASH_SendByte(sFLASH_CMD_BE);
+ 23711              		.loc 1 195 0
+ 23712 0110 4FF0C700 		mov	r0, #199
+ 23713 0114 FFF7FEFF 		bl	sFLASH_SendByte
+ 196:../sources/stm32_eval_spi_flash.c ****   /*!< Deselect the FLASH: Chip Select high */
+ 197:../sources/stm32_eval_spi_flash.c ****   sFLASH_CS_HIGH();
+ 23714              		.loc 1 197 0
+ 23715 0118 4FF44060 		mov	r0, #3072
+ 23716 011c C4F20200 		movt	r0, 16386
+ 23717 0120 4FF00401 		mov	r1, #4
+ 23718 0124 FFF7FEFF 		bl	GPIO_SetBits
+ 198:../sources/stm32_eval_spi_flash.c **** 
+ 199:../sources/stm32_eval_spi_flash.c ****   /*!< Wait the end of Flash writing */
+ 200:../sources/stm32_eval_spi_flash.c ****   sFLASH_WaitForWriteEnd();
+ 23719              		.loc 1 200 0
+ 23720 0128 FFF7FEFF 		bl	sFLASH_WaitForWriteEnd
+ 201:../sources/stm32_eval_spi_flash.c **** }
+ 23721              		.loc 1 201 0
+ 23722 012c BD46     		mov	sp, r7
+ 23723 012e 80BD     		pop	{r7, pc}
+ 23724              		.cfi_endproc
+ 23725              	.LFE32:
+ 23727              		.align	2
+ 23728              		.global	sFLASH_WritePage
+ 23729              		.thumb
+ 23730              		.thumb_func
+ 23732              	sFLASH_WritePage:
+ 23733              	.LFB33:
+ 202:../sources/stm32_eval_spi_flash.c **** 
+ 203:../sources/stm32_eval_spi_flash.c **** /**
+ 204:../sources/stm32_eval_spi_flash.c ****   * @brief  Writes more than one byte to the FLASH with a single WRITE cycle 
+ 205:../sources/stm32_eval_spi_flash.c ****   *         (Page WRITE sequence).
+ 206:../sources/stm32_eval_spi_flash.c ****   * @note   The number of byte can't exceed the FLASH page size.
+ 207:../sources/stm32_eval_spi_flash.c ****   * @param  pBuffer: pointer to the buffer  containing the data to be written
+ 208:../sources/stm32_eval_spi_flash.c ****   *         to the FLASH.
+ 209:../sources/stm32_eval_spi_flash.c ****   * @param  WriteAddr: FLASH's internal address to write to.
+ 210:../sources/stm32_eval_spi_flash.c ****   * @param  NumByteToWrite: number of bytes to write to the FLASH, must be equal
+ 211:../sources/stm32_eval_spi_flash.c ****   *         or less than "sFLASH_PAGESIZE" value.
+ 212:../sources/stm32_eval_spi_flash.c ****   * @retval None
+ 213:../sources/stm32_eval_spi_flash.c ****   */
+ 214:../sources/stm32_eval_spi_flash.c **** void sFLASH_WritePage(uint8_t* pBuffer, uint32_t WriteAddr, uint16_t NumByteToWrite)
+ 215:../sources/stm32_eval_spi_flash.c **** {
+ 23734              		.loc 1 215 0
+ 23735              		.cfi_startproc
+ 23736              		@ args = 0, pretend = 0, frame = 16
+ 23737              		@ frame_needed = 1, uses_anonymous_args = 0
+ 23738 0130 80B5     		push	{r7, lr}
+ 23739              	.LCFI10:
+ 23740              		.cfi_def_cfa_offset 8
+ 23741 0132 84B0     		sub	sp, sp, #16
+ 23742              	.LCFI11:
+ 23743              		.cfi_def_cfa_offset 24
+ 23744 0134 00AF     		add	r7, sp, #0
+ 23745              		.cfi_offset 14, -4
+ 23746              		.cfi_offset 7, -8
+ 23747              	.LCFI12:
+ 23748              		.cfi_def_cfa_register 7
+ 23749 0136 F860     		str	r0, [r7, #12]
+ 23750 0138 B960     		str	r1, [r7, #8]
+ 23751 013a 1346     		mov	r3, r2
+ 23752 013c FB80     		strh	r3, [r7, #6]	@ movhi
+ 216:../sources/stm32_eval_spi_flash.c ****   /*!< Enable the write access to the FLASH */
+ 217:../sources/stm32_eval_spi_flash.c ****   sFLASH_WriteEnable();
+ 23753              		.loc 1 217 0
+ 23754 013e FFF7FEFF 		bl	sFLASH_WriteEnable
+ 218:../sources/stm32_eval_spi_flash.c **** 
+ 219:../sources/stm32_eval_spi_flash.c ****   /*!< Select the FLASH: Chip Select low */
+ 220:../sources/stm32_eval_spi_flash.c ****   sFLASH_CS_LOW();
+ 23755              		.loc 1 220 0
+ 23756 0142 4FF44060 		mov	r0, #3072
+ 23757 0146 C4F20200 		movt	r0, 16386
+ 23758 014a 4FF00401 		mov	r1, #4
+ 23759 014e FFF7FEFF 		bl	GPIO_ResetBits
+ 221:../sources/stm32_eval_spi_flash.c ****   /*!< Send "Write to Memory " instruction */
+ 222:../sources/stm32_eval_spi_flash.c ****   sFLASH_SendByte(sFLASH_CMD_WRITE);
+ 23760              		.loc 1 222 0
+ 23761 0152 4FF00200 		mov	r0, #2
+ 23762 0156 FFF7FEFF 		bl	sFLASH_SendByte
+ 223:../sources/stm32_eval_spi_flash.c ****   /*!< Send WriteAddr high nibble address byte to write to */
+ 224:../sources/stm32_eval_spi_flash.c ****   sFLASH_SendByte((WriteAddr & 0xFF0000) >> 16);
+ 23763              		.loc 1 224 0
+ 23764 015a BB68     		ldr	r3, [r7, #8]
+ 23765 015c 03F47F03 		and	r3, r3, #16711680
+ 23766 0160 4FEA1343 		lsr	r3, r3, #16
+ 23767 0164 DBB2     		uxtb	r3, r3
+ 23768 0166 1846     		mov	r0, r3
+ 23769 0168 FFF7FEFF 		bl	sFLASH_SendByte
+ 225:../sources/stm32_eval_spi_flash.c ****   /*!< Send WriteAddr medium nibble address byte to write to */
+ 226:../sources/stm32_eval_spi_flash.c ****   sFLASH_SendByte((WriteAddr & 0xFF00) >> 8);
+ 23770              		.loc 1 226 0
+ 23771 016c BB68     		ldr	r3, [r7, #8]
+ 23772 016e 03F47F43 		and	r3, r3, #65280
+ 23773 0172 4FEA1323 		lsr	r3, r3, #8
+ 23774 0176 DBB2     		uxtb	r3, r3
+ 23775 0178 1846     		mov	r0, r3
+ 23776 017a FFF7FEFF 		bl	sFLASH_SendByte
+ 227:../sources/stm32_eval_spi_flash.c ****   /*!< Send WriteAddr low nibble address byte to write to */
+ 228:../sources/stm32_eval_spi_flash.c ****   sFLASH_SendByte(WriteAddr & 0xFF);
+ 23777              		.loc 1 228 0
+ 23778 017e BB68     		ldr	r3, [r7, #8]
+ 23779 0180 DBB2     		uxtb	r3, r3
+ 23780 0182 1846     		mov	r0, r3
+ 23781 0184 FFF7FEFF 		bl	sFLASH_SendByte
+ 229:../sources/stm32_eval_spi_flash.c **** 
+ 230:../sources/stm32_eval_spi_flash.c ****   /*!< while there is data to be written on the FLASH */
+ 231:../sources/stm32_eval_spi_flash.c ****   while (NumByteToWrite--)
+ 23782              		.loc 1 231 0
+ 23783 0188 08E0     		b	.L6
+ 23784              	.L7:
+ 232:../sources/stm32_eval_spi_flash.c ****   {
+ 233:../sources/stm32_eval_spi_flash.c ****     /*!< Send the current byte */
+ 234:../sources/stm32_eval_spi_flash.c ****     sFLASH_SendByte(*pBuffer);
+ 23785              		.loc 1 234 0
+ 23786 018a FB68     		ldr	r3, [r7, #12]
+ 23787 018c 1B78     		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 23788 018e 1846     		mov	r0, r3
+ 23789 0190 FFF7FEFF 		bl	sFLASH_SendByte
+ 235:../sources/stm32_eval_spi_flash.c ****     /*!< Point on the next byte to be written */
+ 236:../sources/stm32_eval_spi_flash.c ****     pBuffer++;
+ 23790              		.loc 1 236 0
+ 23791 0194 FB68     		ldr	r3, [r7, #12]
+ 23792 0196 03F10103 		add	r3, r3, #1
+ 23793 019a FB60     		str	r3, [r7, #12]
+ 23794              	.L6:
+ 231:../sources/stm32_eval_spi_flash.c ****   while (NumByteToWrite--)
+ 23795              		.loc 1 231 0 discriminator 1
+ 23796 019c FB88     		ldrh	r3, [r7, #6]
+ 23797 019e 002B     		cmp	r3, #0
+ 23798 01a0 0CBF     		ite	eq
+ 23799 01a2 0023     		moveq	r3, #0
+ 23800 01a4 0123     		movne	r3, #1
+ 23801 01a6 DBB2     		uxtb	r3, r3
+ 23802 01a8 FA88     		ldrh	r2, [r7, #6]	@ movhi
+ 23803 01aa 02F1FF32 		add	r2, r2, #-1
+ 23804 01ae FA80     		strh	r2, [r7, #6]	@ movhi
+ 23805 01b0 002B     		cmp	r3, #0
+ 23806 01b2 EAD1     		bne	.L7
+ 237:../sources/stm32_eval_spi_flash.c ****   }
+ 238:../sources/stm32_eval_spi_flash.c **** 
+ 239:../sources/stm32_eval_spi_flash.c ****   /*!< Deselect the FLASH: Chip Select high */
+ 240:../sources/stm32_eval_spi_flash.c ****   sFLASH_CS_HIGH();
+ 23807              		.loc 1 240 0
+ 23808 01b4 4FF44060 		mov	r0, #3072
+ 23809 01b8 C4F20200 		movt	r0, 16386
+ 23810 01bc 4FF00401 		mov	r1, #4
+ 23811 01c0 FFF7FEFF 		bl	GPIO_SetBits
+ 241:../sources/stm32_eval_spi_flash.c **** 
+ 242:../sources/stm32_eval_spi_flash.c ****   /*!< Wait the end of Flash writing */
+ 243:../sources/stm32_eval_spi_flash.c ****   sFLASH_WaitForWriteEnd();
+ 23812              		.loc 1 243 0
+ 23813 01c4 FFF7FEFF 		bl	sFLASH_WaitForWriteEnd
+ 244:../sources/stm32_eval_spi_flash.c **** }
+ 23814              		.loc 1 244 0
+ 23815 01c8 07F11007 		add	r7, r7, #16
+ 23816 01cc BD46     		mov	sp, r7
+ 23817 01ce 80BD     		pop	{r7, pc}
+ 23818              		.cfi_endproc
+ 23819              	.LFE33:
+ 23821              		.align	2
+ 23822              		.global	sFLASH_WriteBuffer
+ 23823              		.thumb
+ 23824              		.thumb_func
+ 23826              	sFLASH_WriteBuffer:
+ 23827              	.LFB34:
+ 245:../sources/stm32_eval_spi_flash.c **** 
+ 246:../sources/stm32_eval_spi_flash.c **** /**
+ 247:../sources/stm32_eval_spi_flash.c ****   * @brief  Writes block of data to the FLASH. In this function, the number of
+ 248:../sources/stm32_eval_spi_flash.c ****   *         WRITE cycles are reduced, using Page WRITE sequence.
+ 249:../sources/stm32_eval_spi_flash.c ****   * @param  pBuffer: pointer to the buffer  containing the data to be written
+ 250:../sources/stm32_eval_spi_flash.c ****   *         to the FLASH.
+ 251:../sources/stm32_eval_spi_flash.c ****   * @param  WriteAddr: FLASH's internal address to write to.
+ 252:../sources/stm32_eval_spi_flash.c ****   * @param  NumByteToWrite: number of bytes to write to the FLASH.
+ 253:../sources/stm32_eval_spi_flash.c ****   * @retval None
+ 254:../sources/stm32_eval_spi_flash.c ****   */
+ 255:../sources/stm32_eval_spi_flash.c **** void sFLASH_WriteBuffer(uint8_t* pBuffer, uint32_t WriteAddr, uint16_t NumByteToWrite)
+ 256:../sources/stm32_eval_spi_flash.c **** {
+ 23828              		.loc 1 256 0
+ 23829              		.cfi_startproc
+ 23830              		@ args = 0, pretend = 0, frame = 24
+ 23831              		@ frame_needed = 1, uses_anonymous_args = 0
+ 23832 01d0 80B5     		push	{r7, lr}
+ 23833              	.LCFI13:
+ 23834              		.cfi_def_cfa_offset 8
+ 23835 01d2 86B0     		sub	sp, sp, #24
+ 23836              	.LCFI14:
+ 23837              		.cfi_def_cfa_offset 32
+ 23838 01d4 00AF     		add	r7, sp, #0
+ 23839              		.cfi_offset 14, -4
+ 23840              		.cfi_offset 7, -8
+ 23841              	.LCFI15:
+ 23842              		.cfi_def_cfa_register 7
+ 23843 01d6 F860     		str	r0, [r7, #12]
+ 23844 01d8 B960     		str	r1, [r7, #8]
+ 23845 01da 1346     		mov	r3, r2
+ 23846 01dc FB80     		strh	r3, [r7, #6]	@ movhi
+ 257:../sources/stm32_eval_spi_flash.c ****   uint8_t NumOfPage = 0, NumOfSingle = 0, Addr = 0, count = 0, temp = 0;
+ 23847              		.loc 1 257 0
+ 23848 01de 4FF00003 		mov	r3, #0
+ 23849 01e2 FB75     		strb	r3, [r7, #23]
+ 23850 01e4 4FF00003 		mov	r3, #0
+ 23851 01e8 BB75     		strb	r3, [r7, #22]
+ 23852 01ea 4FF00003 		mov	r3, #0
+ 23853 01ee 7B75     		strb	r3, [r7, #21]
+ 23854 01f0 4FF00003 		mov	r3, #0
+ 23855 01f4 3B75     		strb	r3, [r7, #20]
+ 23856 01f6 4FF00003 		mov	r3, #0
+ 23857 01fa FB74     		strb	r3, [r7, #19]
+ 258:../sources/stm32_eval_spi_flash.c **** 
+ 259:../sources/stm32_eval_spi_flash.c ****   Addr = WriteAddr % sFLASH_SPI_PAGESIZE;
+ 23858              		.loc 1 259 0
+ 23859 01fc BB68     		ldr	r3, [r7, #8]
+ 23860 01fe 7B75     		strb	r3, [r7, #21]
+ 260:../sources/stm32_eval_spi_flash.c ****   count = sFLASH_SPI_PAGESIZE - Addr;
+ 23861              		.loc 1 260 0
+ 23862 0200 7B7D     		ldrb	r3, [r7, #21]
+ 23863 0202 C3F10003 		rsb	r3, r3, #0
+ 23864 0206 3B75     		strb	r3, [r7, #20]
+ 261:../sources/stm32_eval_spi_flash.c ****   NumOfPage =  NumByteToWrite / sFLASH_SPI_PAGESIZE;
+ 23865              		.loc 1 261 0
+ 23866 0208 FB88     		ldrh	r3, [r7, #6]
+ 23867 020a 4FEA1323 		lsr	r3, r3, #8
+ 23868 020e 9BB2     		uxth	r3, r3
+ 23869 0210 FB75     		strb	r3, [r7, #23]
+ 262:../sources/stm32_eval_spi_flash.c ****   NumOfSingle = NumByteToWrite % sFLASH_SPI_PAGESIZE;
+ 23870              		.loc 1 262 0
+ 23871 0212 FB88     		ldrh	r3, [r7, #6]	@ movhi
+ 23872 0214 BB75     		strb	r3, [r7, #22]
+ 263:../sources/stm32_eval_spi_flash.c **** 
+ 264:../sources/stm32_eval_spi_flash.c ****   if (Addr == 0) /*!< WriteAddr is sFLASH_PAGESIZE aligned  */
+ 23873              		.loc 1 264 0
+ 23874 0216 7B7D     		ldrb	r3, [r7, #21]	@ zero_extendqisi2
+ 23875 0218 002B     		cmp	r3, #0
+ 23876 021a 2DD1     		bne	.L9
+ 265:../sources/stm32_eval_spi_flash.c ****   {
+ 266:../sources/stm32_eval_spi_flash.c ****     if (NumOfPage == 0) /*!< NumByteToWrite < sFLASH_PAGESIZE */
+ 23877              		.loc 1 266 0
+ 23878 021c FB7D     		ldrb	r3, [r7, #23]	@ zero_extendqisi2
+ 23879 021e 002B     		cmp	r3, #0
+ 23880 0220 15D1     		bne	.L18
+ 267:../sources/stm32_eval_spi_flash.c ****     {
+ 268:../sources/stm32_eval_spi_flash.c ****       sFLASH_WritePage(pBuffer, WriteAddr, NumByteToWrite);
+ 23881              		.loc 1 268 0
+ 23882 0222 FB88     		ldrh	r3, [r7, #6]
+ 23883 0224 F868     		ldr	r0, [r7, #12]
+ 23884 0226 B968     		ldr	r1, [r7, #8]
+ 23885 0228 1A46     		mov	r2, r3
+ 23886 022a FFF7FEFF 		bl	sFLASH_WritePage
+ 23887 022e 8EE0     		b	.L8
+ 23888              	.L13:
+ 269:../sources/stm32_eval_spi_flash.c ****     }
+ 270:../sources/stm32_eval_spi_flash.c ****     else /*!< NumByteToWrite > sFLASH_PAGESIZE */
+ 271:../sources/stm32_eval_spi_flash.c ****     {
+ 272:../sources/stm32_eval_spi_flash.c ****       while (NumOfPage--)
+ 273:../sources/stm32_eval_spi_flash.c ****       {
+ 274:../sources/stm32_eval_spi_flash.c ****         sFLASH_WritePage(pBuffer, WriteAddr, sFLASH_SPI_PAGESIZE);
+ 23889              		.loc 1 274 0
+ 23890 0230 F868     		ldr	r0, [r7, #12]
+ 23891 0232 B968     		ldr	r1, [r7, #8]
+ 23892 0234 4FF48072 		mov	r2, #256
+ 23893 0238 FFF7FEFF 		bl	sFLASH_WritePage
+ 275:../sources/stm32_eval_spi_flash.c ****         WriteAddr +=  sFLASH_SPI_PAGESIZE;
+ 23894              		.loc 1 275 0
+ 23895 023c BB68     		ldr	r3, [r7, #8]
+ 23896 023e 03F58073 		add	r3, r3, #256
+ 23897 0242 BB60     		str	r3, [r7, #8]
+ 276:../sources/stm32_eval_spi_flash.c ****         pBuffer += sFLASH_SPI_PAGESIZE;
+ 23898              		.loc 1 276 0
+ 23899 0244 FB68     		ldr	r3, [r7, #12]
+ 23900 0246 03F58073 		add	r3, r3, #256
+ 23901 024a FB60     		str	r3, [r7, #12]
+ 23902 024c 00E0     		b	.L12
+ 23903              	.L18:
+ 272:../sources/stm32_eval_spi_flash.c ****       while (NumOfPage--)
+ 23904              		.loc 1 272 0
+ 23905 024e 00BF     		nop
+ 23906              	.L12:
+ 272:../sources/stm32_eval_spi_flash.c ****       while (NumOfPage--)
+ 23907              		.loc 1 272 0 is_stmt 0 discriminator 1
+ 23908 0250 FB7D     		ldrb	r3, [r7, #23]	@ zero_extendqisi2
+ 23909 0252 002B     		cmp	r3, #0
+ 23910 0254 0CBF     		ite	eq
+ 23911 0256 0023     		moveq	r3, #0
+ 23912 0258 0123     		movne	r3, #1
+ 23913 025a DBB2     		uxtb	r3, r3
+ 23914 025c FA7D     		ldrb	r2, [r7, #23]
+ 23915 025e 02F1FF32 		add	r2, r2, #-1
+ 23916 0262 FA75     		strb	r2, [r7, #23]
+ 23917 0264 002B     		cmp	r3, #0
+ 23918 0266 E3D1     		bne	.L13
+ 277:../sources/stm32_eval_spi_flash.c ****       }
+ 278:../sources/stm32_eval_spi_flash.c **** 
+ 279:../sources/stm32_eval_spi_flash.c ****       sFLASH_WritePage(pBuffer, WriteAddr, NumOfSingle);
+ 23919              		.loc 1 279 0 is_stmt 1
+ 23920 0268 BB7D     		ldrb	r3, [r7, #22]	@ zero_extendqisi2
+ 23921 026a 9BB2     		uxth	r3, r3
+ 23922 026c F868     		ldr	r0, [r7, #12]
+ 23923 026e B968     		ldr	r1, [r7, #8]
+ 23924 0270 1A46     		mov	r2, r3
+ 23925 0272 FFF7FEFF 		bl	sFLASH_WritePage
+ 23926 0276 6AE0     		b	.L8
+ 23927              	.L9:
+ 280:../sources/stm32_eval_spi_flash.c ****     }
+ 281:../sources/stm32_eval_spi_flash.c ****   }
+ 282:../sources/stm32_eval_spi_flash.c ****   else /*!< WriteAddr is not sFLASH_PAGESIZE aligned  */
+ 283:../sources/stm32_eval_spi_flash.c ****   {
+ 284:../sources/stm32_eval_spi_flash.c ****     if (NumOfPage == 0) /*!< NumByteToWrite < sFLASH_PAGESIZE */
+ 23928              		.loc 1 284 0
+ 23929 0278 FB7D     		ldrb	r3, [r7, #23]	@ zero_extendqisi2
+ 23930 027a 002B     		cmp	r3, #0
+ 23931 027c 26D1     		bne	.L14
+ 285:../sources/stm32_eval_spi_flash.c ****     {
+ 286:../sources/stm32_eval_spi_flash.c ****       if (NumOfSingle > count) /*!< (NumByteToWrite + WriteAddr) > sFLASH_PAGESIZE */
+ 23932              		.loc 1 286 0
+ 23933 027e BA7D     		ldrb	r2, [r7, #22]	@ zero_extendqisi2
+ 23934 0280 3B7D     		ldrb	r3, [r7, #20]	@ zero_extendqisi2
+ 23935 0282 9A42     		cmp	r2, r3
+ 23936 0284 1BD9     		bls	.L15
+ 287:../sources/stm32_eval_spi_flash.c ****       {
+ 288:../sources/stm32_eval_spi_flash.c ****         temp = NumOfSingle - count;
+ 23937              		.loc 1 288 0
+ 23938 0286 BA7D     		ldrb	r2, [r7, #22]
+ 23939 0288 3B7D     		ldrb	r3, [r7, #20]
+ 23940 028a C3EB0203 		rsb	r3, r3, r2
+ 23941 028e FB74     		strb	r3, [r7, #19]
+ 289:../sources/stm32_eval_spi_flash.c **** 
+ 290:../sources/stm32_eval_spi_flash.c ****         sFLASH_WritePage(pBuffer, WriteAddr, count);
+ 23942              		.loc 1 290 0
+ 23943 0290 3B7D     		ldrb	r3, [r7, #20]	@ zero_extendqisi2
+ 23944 0292 9BB2     		uxth	r3, r3
+ 23945 0294 F868     		ldr	r0, [r7, #12]
+ 23946 0296 B968     		ldr	r1, [r7, #8]
+ 23947 0298 1A46     		mov	r2, r3
+ 23948 029a FFF7FEFF 		bl	sFLASH_WritePage
+ 291:../sources/stm32_eval_spi_flash.c ****         WriteAddr +=  count;
+ 23949              		.loc 1 291 0
+ 23950 029e 3B7D     		ldrb	r3, [r7, #20]	@ zero_extendqisi2
+ 23951 02a0 BA68     		ldr	r2, [r7, #8]
+ 23952 02a2 1344     		add	r3, r2, r3
+ 23953 02a4 BB60     		str	r3, [r7, #8]
+ 292:../sources/stm32_eval_spi_flash.c ****         pBuffer += count;
+ 23954              		.loc 1 292 0
+ 23955 02a6 3B7D     		ldrb	r3, [r7, #20]	@ zero_extendqisi2
+ 23956 02a8 FA68     		ldr	r2, [r7, #12]
+ 23957 02aa 1344     		add	r3, r2, r3
+ 23958 02ac FB60     		str	r3, [r7, #12]
+ 293:../sources/stm32_eval_spi_flash.c **** 
+ 294:../sources/stm32_eval_spi_flash.c ****         sFLASH_WritePage(pBuffer, WriteAddr, temp);
+ 23959              		.loc 1 294 0
+ 23960 02ae FB7C     		ldrb	r3, [r7, #19]	@ zero_extendqisi2
+ 23961 02b0 9BB2     		uxth	r3, r3
+ 23962 02b2 F868     		ldr	r0, [r7, #12]
+ 23963 02b4 B968     		ldr	r1, [r7, #8]
+ 23964 02b6 1A46     		mov	r2, r3
+ 23965 02b8 FFF7FEFF 		bl	sFLASH_WritePage
+ 23966 02bc 47E0     		b	.L8
+ 23967              	.L15:
+ 295:../sources/stm32_eval_spi_flash.c ****       }
+ 296:../sources/stm32_eval_spi_flash.c ****       else
+ 297:../sources/stm32_eval_spi_flash.c ****       {
+ 298:../sources/stm32_eval_spi_flash.c ****         sFLASH_WritePage(pBuffer, WriteAddr, NumByteToWrite);
+ 23968              		.loc 1 298 0
+ 23969 02be FB88     		ldrh	r3, [r7, #6]
+ 23970 02c0 F868     		ldr	r0, [r7, #12]
+ 23971 02c2 B968     		ldr	r1, [r7, #8]
+ 23972 02c4 1A46     		mov	r2, r3
+ 23973 02c6 FFF7FEFF 		bl	sFLASH_WritePage
+ 23974 02ca 40E0     		b	.L8
+ 23975              	.L14:
+ 299:../sources/stm32_eval_spi_flash.c ****       }
+ 300:../sources/stm32_eval_spi_flash.c ****     }
+ 301:../sources/stm32_eval_spi_flash.c ****     else /*!< NumByteToWrite > sFLASH_PAGESIZE */
+ 302:../sources/stm32_eval_spi_flash.c ****     {
+ 303:../sources/stm32_eval_spi_flash.c ****       NumByteToWrite -= count;
+ 23976              		.loc 1 303 0
+ 23977 02cc 3B7D     		ldrb	r3, [r7, #20]	@ zero_extendqisi2
+ 23978 02ce 9BB2     		uxth	r3, r3
+ 23979 02d0 FA88     		ldrh	r2, [r7, #6]	@ movhi
+ 23980 02d2 C3EB0203 		rsb	r3, r3, r2
+ 23981 02d6 FB80     		strh	r3, [r7, #6]	@ movhi
+ 304:../sources/stm32_eval_spi_flash.c ****       NumOfPage =  NumByteToWrite / sFLASH_SPI_PAGESIZE;
+ 23982              		.loc 1 304 0
+ 23983 02d8 FB88     		ldrh	r3, [r7, #6]
+ 23984 02da 4FEA1323 		lsr	r3, r3, #8
+ 23985 02de 9BB2     		uxth	r3, r3
+ 23986 02e0 FB75     		strb	r3, [r7, #23]
+ 305:../sources/stm32_eval_spi_flash.c ****       NumOfSingle = NumByteToWrite % sFLASH_SPI_PAGESIZE;
+ 23987              		.loc 1 305 0
+ 23988 02e2 FB88     		ldrh	r3, [r7, #6]	@ movhi
+ 23989 02e4 BB75     		strb	r3, [r7, #22]
+ 306:../sources/stm32_eval_spi_flash.c **** 
+ 307:../sources/stm32_eval_spi_flash.c ****       sFLASH_WritePage(pBuffer, WriteAddr, count);
+ 23990              		.loc 1 307 0
+ 23991 02e6 3B7D     		ldrb	r3, [r7, #20]	@ zero_extendqisi2
+ 23992 02e8 9BB2     		uxth	r3, r3
+ 23993 02ea F868     		ldr	r0, [r7, #12]
+ 23994 02ec B968     		ldr	r1, [r7, #8]
+ 23995 02ee 1A46     		mov	r2, r3
+ 23996 02f0 FFF7FEFF 		bl	sFLASH_WritePage
+ 308:../sources/stm32_eval_spi_flash.c ****       WriteAddr +=  count;
+ 23997              		.loc 1 308 0
+ 23998 02f4 3B7D     		ldrb	r3, [r7, #20]	@ zero_extendqisi2
+ 23999 02f6 BA68     		ldr	r2, [r7, #8]
+ 24000 02f8 1344     		add	r3, r2, r3
+ 24001 02fa BB60     		str	r3, [r7, #8]
+ 309:../sources/stm32_eval_spi_flash.c ****       pBuffer += count;
+ 24002              		.loc 1 309 0
+ 24003 02fc 3B7D     		ldrb	r3, [r7, #20]	@ zero_extendqisi2
+ 24004 02fe FA68     		ldr	r2, [r7, #12]
+ 24005 0300 1344     		add	r3, r2, r3
+ 24006 0302 FB60     		str	r3, [r7, #12]
+ 310:../sources/stm32_eval_spi_flash.c **** 
+ 311:../sources/stm32_eval_spi_flash.c ****       while (NumOfPage--)
+ 24007              		.loc 1 311 0
+ 24008 0304 0DE0     		b	.L16
+ 24009              	.L17:
+ 312:../sources/stm32_eval_spi_flash.c ****       {
+ 313:../sources/stm32_eval_spi_flash.c ****         sFLASH_WritePage(pBuffer, WriteAddr, sFLASH_SPI_PAGESIZE);
+ 24010              		.loc 1 313 0
+ 24011 0306 F868     		ldr	r0, [r7, #12]
+ 24012 0308 B968     		ldr	r1, [r7, #8]
+ 24013 030a 4FF48072 		mov	r2, #256
+ 24014 030e FFF7FEFF 		bl	sFLASH_WritePage
+ 314:../sources/stm32_eval_spi_flash.c ****         WriteAddr +=  sFLASH_SPI_PAGESIZE;
+ 24015              		.loc 1 314 0
+ 24016 0312 BB68     		ldr	r3, [r7, #8]
+ 24017 0314 03F58073 		add	r3, r3, #256
+ 24018 0318 BB60     		str	r3, [r7, #8]
+ 315:../sources/stm32_eval_spi_flash.c ****         pBuffer += sFLASH_SPI_PAGESIZE;
+ 24019              		.loc 1 315 0
+ 24020 031a FB68     		ldr	r3, [r7, #12]
+ 24021 031c 03F58073 		add	r3, r3, #256
+ 24022 0320 FB60     		str	r3, [r7, #12]
+ 24023              	.L16:
+ 311:../sources/stm32_eval_spi_flash.c ****       while (NumOfPage--)
+ 24024              		.loc 1 311 0 discriminator 1
+ 24025 0322 FB7D     		ldrb	r3, [r7, #23]	@ zero_extendqisi2
+ 24026 0324 002B     		cmp	r3, #0
+ 24027 0326 0CBF     		ite	eq
+ 24028 0328 0023     		moveq	r3, #0
+ 24029 032a 0123     		movne	r3, #1
+ 24030 032c DBB2     		uxtb	r3, r3
+ 24031 032e FA7D     		ldrb	r2, [r7, #23]
+ 24032 0330 02F1FF32 		add	r2, r2, #-1
+ 24033 0334 FA75     		strb	r2, [r7, #23]
+ 24034 0336 002B     		cmp	r3, #0
+ 24035 0338 E5D1     		bne	.L17
+ 316:../sources/stm32_eval_spi_flash.c ****       }
+ 317:../sources/stm32_eval_spi_flash.c **** 
+ 318:../sources/stm32_eval_spi_flash.c ****       if (NumOfSingle != 0)
+ 24036              		.loc 1 318 0
+ 24037 033a BB7D     		ldrb	r3, [r7, #22]	@ zero_extendqisi2
+ 24038 033c 002B     		cmp	r3, #0
+ 24039 033e 06D0     		beq	.L8
+ 319:../sources/stm32_eval_spi_flash.c ****       {
+ 320:../sources/stm32_eval_spi_flash.c ****         sFLASH_WritePage(pBuffer, WriteAddr, NumOfSingle);
+ 24040              		.loc 1 320 0
+ 24041 0340 BB7D     		ldrb	r3, [r7, #22]	@ zero_extendqisi2
+ 24042 0342 9BB2     		uxth	r3, r3
+ 24043 0344 F868     		ldr	r0, [r7, #12]
+ 24044 0346 B968     		ldr	r1, [r7, #8]
+ 24045 0348 1A46     		mov	r2, r3
+ 24046 034a FFF7FEFF 		bl	sFLASH_WritePage
+ 24047              	.L8:
+ 321:../sources/stm32_eval_spi_flash.c ****       }
+ 322:../sources/stm32_eval_spi_flash.c ****     }
+ 323:../sources/stm32_eval_spi_flash.c ****   }
+ 324:../sources/stm32_eval_spi_flash.c **** }
+ 24048              		.loc 1 324 0
+ 24049 034e 07F11807 		add	r7, r7, #24
+ 24050 0352 BD46     		mov	sp, r7
+ 24051 0354 80BD     		pop	{r7, pc}
+ 24052              		.cfi_endproc
+ 24053              	.LFE34:
+ 24055 0356 00BF     		.align	2
+ 24056              		.global	sFLASH_ReadBuffer
+ 24057              		.thumb
+ 24058              		.thumb_func
+ 24060              	sFLASH_ReadBuffer:
+ 24061              	.LFB35:
+ 325:../sources/stm32_eval_spi_flash.c **** 
+ 326:../sources/stm32_eval_spi_flash.c **** /**
+ 327:../sources/stm32_eval_spi_flash.c ****   * @brief  Reads a block of data from the FLASH.
+ 328:../sources/stm32_eval_spi_flash.c ****   * @param  pBuffer: pointer to the buffer that receives the data read from the FLASH.
+ 329:../sources/stm32_eval_spi_flash.c ****   * @param  ReadAddr: FLASH's internal address to read from.
+ 330:../sources/stm32_eval_spi_flash.c ****   * @param  NumByteToRead: number of bytes to read from the FLASH.
+ 331:../sources/stm32_eval_spi_flash.c ****   * @retval None
+ 332:../sources/stm32_eval_spi_flash.c ****   */
+ 333:../sources/stm32_eval_spi_flash.c **** void sFLASH_ReadBuffer(uint8_t* pBuffer, uint32_t ReadAddr, uint16_t NumByteToRead)
+ 334:../sources/stm32_eval_spi_flash.c **** {
+ 24062              		.loc 1 334 0
+ 24063              		.cfi_startproc
+ 24064              		@ args = 0, pretend = 0, frame = 16
+ 24065              		@ frame_needed = 1, uses_anonymous_args = 0
+ 24066 0358 80B5     		push	{r7, lr}
+ 24067              	.LCFI16:
+ 24068              		.cfi_def_cfa_offset 8
+ 24069 035a 84B0     		sub	sp, sp, #16
+ 24070              	.LCFI17:
+ 24071              		.cfi_def_cfa_offset 24
+ 24072 035c 00AF     		add	r7, sp, #0
+ 24073              		.cfi_offset 14, -4
+ 24074              		.cfi_offset 7, -8
+ 24075              	.LCFI18:
+ 24076              		.cfi_def_cfa_register 7
+ 24077 035e F860     		str	r0, [r7, #12]
+ 24078 0360 B960     		str	r1, [r7, #8]
+ 24079 0362 1346     		mov	r3, r2
+ 24080 0364 FB80     		strh	r3, [r7, #6]	@ movhi
+ 335:../sources/stm32_eval_spi_flash.c ****   /*!< Select the FLASH: Chip Select low */
+ 336:../sources/stm32_eval_spi_flash.c ****   sFLASH_CS_LOW();
+ 24081              		.loc 1 336 0
+ 24082 0366 4FF44060 		mov	r0, #3072
+ 24083 036a C4F20200 		movt	r0, 16386
+ 24084 036e 4FF00401 		mov	r1, #4
+ 24085 0372 FFF7FEFF 		bl	GPIO_ResetBits
+ 337:../sources/stm32_eval_spi_flash.c **** 
+ 338:../sources/stm32_eval_spi_flash.c ****   /*!< Send "Read from Memory " instruction */
+ 339:../sources/stm32_eval_spi_flash.c ****   sFLASH_SendByte(sFLASH_CMD_READ);
+ 24086              		.loc 1 339 0
+ 24087 0376 4FF00300 		mov	r0, #3
+ 24088 037a FFF7FEFF 		bl	sFLASH_SendByte
+ 340:../sources/stm32_eval_spi_flash.c **** 
+ 341:../sources/stm32_eval_spi_flash.c ****   /*!< Send ReadAddr high nibble address byte to read from */
+ 342:../sources/stm32_eval_spi_flash.c ****   sFLASH_SendByte((ReadAddr & 0xFF0000) >> 16);
+ 24089              		.loc 1 342 0
+ 24090 037e BB68     		ldr	r3, [r7, #8]
+ 24091 0380 03F47F03 		and	r3, r3, #16711680
+ 24092 0384 4FEA1343 		lsr	r3, r3, #16
+ 24093 0388 DBB2     		uxtb	r3, r3
+ 24094 038a 1846     		mov	r0, r3
+ 24095 038c FFF7FEFF 		bl	sFLASH_SendByte
+ 343:../sources/stm32_eval_spi_flash.c ****   /*!< Send ReadAddr medium nibble address byte to read from */
+ 344:../sources/stm32_eval_spi_flash.c ****   sFLASH_SendByte((ReadAddr& 0xFF00) >> 8);
+ 24096              		.loc 1 344 0
+ 24097 0390 BB68     		ldr	r3, [r7, #8]
+ 24098 0392 03F47F43 		and	r3, r3, #65280
+ 24099 0396 4FEA1323 		lsr	r3, r3, #8
+ 24100 039a DBB2     		uxtb	r3, r3
+ 24101 039c 1846     		mov	r0, r3
+ 24102 039e FFF7FEFF 		bl	sFLASH_SendByte
+ 345:../sources/stm32_eval_spi_flash.c ****   /*!< Send ReadAddr low nibble address byte to read from */
+ 346:../sources/stm32_eval_spi_flash.c ****   sFLASH_SendByte(ReadAddr & 0xFF);
+ 24103              		.loc 1 346 0
+ 24104 03a2 BB68     		ldr	r3, [r7, #8]
+ 24105 03a4 DBB2     		uxtb	r3, r3
+ 24106 03a6 1846     		mov	r0, r3
+ 24107 03a8 FFF7FEFF 		bl	sFLASH_SendByte
+ 347:../sources/stm32_eval_spi_flash.c **** 
+ 348:../sources/stm32_eval_spi_flash.c ****   while (NumByteToRead--) /*!< while there is data to be read */
+ 24108              		.loc 1 348 0
+ 24109 03ac 0BE0     		b	.L20
+ 24110              	.L21:
+ 349:../sources/stm32_eval_spi_flash.c ****   {
+ 350:../sources/stm32_eval_spi_flash.c ****     /*!< Read a byte from the FLASH */
+ 351:../sources/stm32_eval_spi_flash.c ****     *pBuffer = sFLASH_SendByte(sFLASH_DUMMY_BYTE);
+ 24111              		.loc 1 351 0
+ 24112 03ae 4FF0A500 		mov	r0, #165
+ 24113 03b2 FFF7FEFF 		bl	sFLASH_SendByte
+ 24114 03b6 0346     		mov	r3, r0
+ 24115 03b8 1A46     		mov	r2, r3
+ 24116 03ba FB68     		ldr	r3, [r7, #12]
+ 24117 03bc 1A70     		strb	r2, [r3, #0]
+ 352:../sources/stm32_eval_spi_flash.c ****     /*!< Point to the next location where the byte read will be saved */
+ 353:../sources/stm32_eval_spi_flash.c ****     pBuffer++;
+ 24118              		.loc 1 353 0
+ 24119 03be FB68     		ldr	r3, [r7, #12]
+ 24120 03c0 03F10103 		add	r3, r3, #1
+ 24121 03c4 FB60     		str	r3, [r7, #12]
+ 24122              	.L20:
+ 348:../sources/stm32_eval_spi_flash.c ****   while (NumByteToRead--) /*!< while there is data to be read */
+ 24123              		.loc 1 348 0 discriminator 1
+ 24124 03c6 FB88     		ldrh	r3, [r7, #6]
+ 24125 03c8 002B     		cmp	r3, #0
+ 24126 03ca 0CBF     		ite	eq
+ 24127 03cc 0023     		moveq	r3, #0
+ 24128 03ce 0123     		movne	r3, #1
+ 24129 03d0 DBB2     		uxtb	r3, r3
+ 24130 03d2 FA88     		ldrh	r2, [r7, #6]	@ movhi
+ 24131 03d4 02F1FF32 		add	r2, r2, #-1
+ 24132 03d8 FA80     		strh	r2, [r7, #6]	@ movhi
+ 24133 03da 002B     		cmp	r3, #0
+ 24134 03dc E7D1     		bne	.L21
+ 354:../sources/stm32_eval_spi_flash.c ****   }
+ 355:../sources/stm32_eval_spi_flash.c **** 
+ 356:../sources/stm32_eval_spi_flash.c ****   /*!< Deselect the FLASH: Chip Select high */
+ 357:../sources/stm32_eval_spi_flash.c ****   sFLASH_CS_HIGH();
+ 24135              		.loc 1 357 0
+ 24136 03de 4FF44060 		mov	r0, #3072
+ 24137 03e2 C4F20200 		movt	r0, 16386
+ 24138 03e6 4FF00401 		mov	r1, #4
+ 24139 03ea FFF7FEFF 		bl	GPIO_SetBits
+ 358:../sources/stm32_eval_spi_flash.c **** }
+ 24140              		.loc 1 358 0
+ 24141 03ee 07F11007 		add	r7, r7, #16
+ 24142 03f2 BD46     		mov	sp, r7
+ 24143 03f4 80BD     		pop	{r7, pc}
+ 24144              		.cfi_endproc
+ 24145              	.LFE35:
+ 24147 03f6 00BF     		.align	2
+ 24148              		.global	sFLASH_ReadID
+ 24149              		.thumb
+ 24150              		.thumb_func
+ 24152              	sFLASH_ReadID:
+ 24153              	.LFB36:
+ 359:../sources/stm32_eval_spi_flash.c **** 
+ 360:../sources/stm32_eval_spi_flash.c **** /**
+ 361:../sources/stm32_eval_spi_flash.c ****   * @brief  Reads FLASH identification.
+ 362:../sources/stm32_eval_spi_flash.c ****   * @param  None
+ 363:../sources/stm32_eval_spi_flash.c ****   * @retval FLASH identification
+ 364:../sources/stm32_eval_spi_flash.c ****   */
+ 365:../sources/stm32_eval_spi_flash.c **** uint32_t sFLASH_ReadID(void)
+ 366:../sources/stm32_eval_spi_flash.c **** {
+ 24154              		.loc 1 366 0
+ 24155              		.cfi_startproc
+ 24156              		@ args = 0, pretend = 0, frame = 16
+ 24157              		@ frame_needed = 1, uses_anonymous_args = 0
+ 24158 03f8 80B5     		push	{r7, lr}
+ 24159              	.LCFI19:
+ 24160              		.cfi_def_cfa_offset 8
+ 24161 03fa 84B0     		sub	sp, sp, #16
+ 24162              	.LCFI20:
+ 24163              		.cfi_def_cfa_offset 24
+ 24164 03fc 00AF     		add	r7, sp, #0
+ 24165              		.cfi_offset 14, -4
+ 24166              		.cfi_offset 7, -8
+ 24167              	.LCFI21:
+ 24168              		.cfi_def_cfa_register 7
+ 367:../sources/stm32_eval_spi_flash.c ****   uint32_t Temp = 0, Temp0 = 0, Temp1 = 0, Temp2 = 0;
+ 24169              		.loc 1 367 0
+ 24170 03fe 4FF00003 		mov	r3, #0
+ 24171 0402 FB60     		str	r3, [r7, #12]
+ 24172 0404 4FF00003 		mov	r3, #0
+ 24173 0408 BB60     		str	r3, [r7, #8]
+ 24174 040a 4FF00003 		mov	r3, #0
+ 24175 040e 7B60     		str	r3, [r7, #4]
+ 24176 0410 4FF00003 		mov	r3, #0
+ 24177 0414 3B60     		str	r3, [r7, #0]
+ 368:../sources/stm32_eval_spi_flash.c **** 
+ 369:../sources/stm32_eval_spi_flash.c ****   /*!< Select the FLASH: Chip Select low */
+ 370:../sources/stm32_eval_spi_flash.c ****   sFLASH_CS_LOW();
+ 24178              		.loc 1 370 0
+ 24179 0416 4FF44060 		mov	r0, #3072
+ 24180 041a C4F20200 		movt	r0, 16386
+ 24181 041e 4FF00401 		mov	r1, #4
+ 24182 0422 FFF7FEFF 		bl	GPIO_ResetBits
+ 371:../sources/stm32_eval_spi_flash.c **** 
+ 372:../sources/stm32_eval_spi_flash.c ****   /*!< Send "RDID " instruction */
+ 373:../sources/stm32_eval_spi_flash.c ****   sFLASH_SendByte(0x9F);
+ 24183              		.loc 1 373 0
+ 24184 0426 4FF09F00 		mov	r0, #159
+ 24185 042a FFF7FEFF 		bl	sFLASH_SendByte
+ 374:../sources/stm32_eval_spi_flash.c **** 
+ 375:../sources/stm32_eval_spi_flash.c ****   /*!< Read a byte from the FLASH */
+ 376:../sources/stm32_eval_spi_flash.c ****   Temp0 = sFLASH_SendByte(sFLASH_DUMMY_BYTE);
+ 24186              		.loc 1 376 0
+ 24187 042e 4FF0A500 		mov	r0, #165
+ 24188 0432 FFF7FEFF 		bl	sFLASH_SendByte
+ 24189 0436 0346     		mov	r3, r0
+ 24190 0438 BB60     		str	r3, [r7, #8]
+ 377:../sources/stm32_eval_spi_flash.c **** 
+ 378:../sources/stm32_eval_spi_flash.c ****   /*!< Read a byte from the FLASH */
+ 379:../sources/stm32_eval_spi_flash.c ****   Temp1 = sFLASH_SendByte(sFLASH_DUMMY_BYTE);
+ 24191              		.loc 1 379 0
+ 24192 043a 4FF0A500 		mov	r0, #165
+ 24193 043e FFF7FEFF 		bl	sFLASH_SendByte
+ 24194 0442 0346     		mov	r3, r0
+ 24195 0444 7B60     		str	r3, [r7, #4]
+ 380:../sources/stm32_eval_spi_flash.c **** 
+ 381:../sources/stm32_eval_spi_flash.c ****   /*!< Read a byte from the FLASH */
+ 382:../sources/stm32_eval_spi_flash.c ****   Temp2 = sFLASH_SendByte(sFLASH_DUMMY_BYTE);
+ 24196              		.loc 1 382 0
+ 24197 0446 4FF0A500 		mov	r0, #165
+ 24198 044a FFF7FEFF 		bl	sFLASH_SendByte
+ 24199 044e 0346     		mov	r3, r0
+ 24200 0450 3B60     		str	r3, [r7, #0]
+ 383:../sources/stm32_eval_spi_flash.c **** 
+ 384:../sources/stm32_eval_spi_flash.c ****   /*!< Deselect the FLASH: Chip Select high */
+ 385:../sources/stm32_eval_spi_flash.c ****   sFLASH_CS_HIGH();
+ 24201              		.loc 1 385 0
+ 24202 0452 4FF44060 		mov	r0, #3072
+ 24203 0456 C4F20200 		movt	r0, 16386
+ 24204 045a 4FF00401 		mov	r1, #4
+ 24205 045e FFF7FEFF 		bl	GPIO_SetBits
+ 386:../sources/stm32_eval_spi_flash.c **** 
+ 387:../sources/stm32_eval_spi_flash.c ****   Temp = (Temp0 << 16) | (Temp1 << 8) | Temp2;
+ 24206              		.loc 1 387 0
+ 24207 0462 BB68     		ldr	r3, [r7, #8]
+ 24208 0464 4FEA0342 		lsl	r2, r3, #16
+ 24209 0468 7B68     		ldr	r3, [r7, #4]
+ 24210 046a 4FEA0323 		lsl	r3, r3, #8
+ 24211 046e 42EA0302 		orr	r2, r2, r3
+ 24212 0472 3B68     		ldr	r3, [r7, #0]
+ 24213 0474 42EA0303 		orr	r3, r2, r3
+ 24214 0478 FB60     		str	r3, [r7, #12]
+ 388:../sources/stm32_eval_spi_flash.c **** 
+ 389:../sources/stm32_eval_spi_flash.c ****   return Temp;
+ 24215              		.loc 1 389 0
+ 24216 047a FB68     		ldr	r3, [r7, #12]
+ 390:../sources/stm32_eval_spi_flash.c **** }
+ 24217              		.loc 1 390 0
+ 24218 047c 1846     		mov	r0, r3
+ 24219 047e 07F11007 		add	r7, r7, #16
+ 24220 0482 BD46     		mov	sp, r7
+ 24221 0484 80BD     		pop	{r7, pc}
+ 24222              		.cfi_endproc
+ 24223              	.LFE36:
+ 24225 0486 00BF     		.align	2
+ 24226              		.global	sFLASH_StartReadSequence
+ 24227              		.thumb
+ 24228              		.thumb_func
+ 24230              	sFLASH_StartReadSequence:
+ 24231              	.LFB37:
+ 391:../sources/stm32_eval_spi_flash.c **** 
+ 392:../sources/stm32_eval_spi_flash.c **** /**
+ 393:../sources/stm32_eval_spi_flash.c ****   * @brief  Initiates a read data byte (READ) sequence from the Flash.
+ 394:../sources/stm32_eval_spi_flash.c ****   *   This is done by driving the /CS line low to select the device, then the READ
+ 395:../sources/stm32_eval_spi_flash.c ****   *   instruction is transmitted followed by 3 bytes address. This function exit
+ 396:../sources/stm32_eval_spi_flash.c ****   *   and keep the /CS line low, so the Flash still being selected. With this
+ 397:../sources/stm32_eval_spi_flash.c ****   *   technique the whole content of the Flash is read with a single READ instruction.
+ 398:../sources/stm32_eval_spi_flash.c ****   * @param  ReadAddr: FLASH's internal address to read from.
+ 399:../sources/stm32_eval_spi_flash.c ****   * @retval None
+ 400:../sources/stm32_eval_spi_flash.c ****   */
+ 401:../sources/stm32_eval_spi_flash.c **** void sFLASH_StartReadSequence(uint32_t ReadAddr)
+ 402:../sources/stm32_eval_spi_flash.c **** {
+ 24232              		.loc 1 402 0
+ 24233              		.cfi_startproc
+ 24234              		@ args = 0, pretend = 0, frame = 8
+ 24235              		@ frame_needed = 1, uses_anonymous_args = 0
+ 24236 0488 80B5     		push	{r7, lr}
+ 24237              	.LCFI22:
+ 24238              		.cfi_def_cfa_offset 8
+ 24239 048a 82B0     		sub	sp, sp, #8
+ 24240              	.LCFI23:
+ 24241              		.cfi_def_cfa_offset 16
+ 24242 048c 00AF     		add	r7, sp, #0
+ 24243              		.cfi_offset 14, -4
+ 24244              		.cfi_offset 7, -8
+ 24245              	.LCFI24:
+ 24246              		.cfi_def_cfa_register 7
+ 24247 048e 7860     		str	r0, [r7, #4]
+ 403:../sources/stm32_eval_spi_flash.c ****   /*!< Select the FLASH: Chip Select low */
+ 404:../sources/stm32_eval_spi_flash.c ****   sFLASH_CS_LOW();
+ 24248              		.loc 1 404 0
+ 24249 0490 4FF44060 		mov	r0, #3072
+ 24250 0494 C4F20200 		movt	r0, 16386
+ 24251 0498 4FF00401 		mov	r1, #4
+ 24252 049c FFF7FEFF 		bl	GPIO_ResetBits
+ 405:../sources/stm32_eval_spi_flash.c **** 
+ 406:../sources/stm32_eval_spi_flash.c ****   /*!< Send "Read from Memory " instruction */
+ 407:../sources/stm32_eval_spi_flash.c ****   sFLASH_SendByte(sFLASH_CMD_READ);
+ 24253              		.loc 1 407 0
+ 24254 04a0 4FF00300 		mov	r0, #3
+ 24255 04a4 FFF7FEFF 		bl	sFLASH_SendByte
+ 408:../sources/stm32_eval_spi_flash.c **** 
+ 409:../sources/stm32_eval_spi_flash.c ****   /*!< Send the 24-bit address of the address to read from -------------------*/
+ 410:../sources/stm32_eval_spi_flash.c ****   /*!< Send ReadAddr high nibble address byte */
+ 411:../sources/stm32_eval_spi_flash.c ****   sFLASH_SendByte((ReadAddr & 0xFF0000) >> 16);
+ 24256              		.loc 1 411 0
+ 24257 04a8 7B68     		ldr	r3, [r7, #4]
+ 24258 04aa 03F47F03 		and	r3, r3, #16711680
+ 24259 04ae 4FEA1343 		lsr	r3, r3, #16
+ 24260 04b2 DBB2     		uxtb	r3, r3
+ 24261 04b4 1846     		mov	r0, r3
+ 24262 04b6 FFF7FEFF 		bl	sFLASH_SendByte
+ 412:../sources/stm32_eval_spi_flash.c ****   /*!< Send ReadAddr medium nibble address byte */
+ 413:../sources/stm32_eval_spi_flash.c ****   sFLASH_SendByte((ReadAddr& 0xFF00) >> 8);
+ 24263              		.loc 1 413 0
+ 24264 04ba 7B68     		ldr	r3, [r7, #4]
+ 24265 04bc 03F47F43 		and	r3, r3, #65280
+ 24266 04c0 4FEA1323 		lsr	r3, r3, #8
+ 24267 04c4 DBB2     		uxtb	r3, r3
+ 24268 04c6 1846     		mov	r0, r3
+ 24269 04c8 FFF7FEFF 		bl	sFLASH_SendByte
+ 414:../sources/stm32_eval_spi_flash.c ****   /*!< Send ReadAddr low nibble address byte */
+ 415:../sources/stm32_eval_spi_flash.c ****   sFLASH_SendByte(ReadAddr & 0xFF);
+ 24270              		.loc 1 415 0
+ 24271 04cc 7B68     		ldr	r3, [r7, #4]
+ 24272 04ce DBB2     		uxtb	r3, r3
+ 24273 04d0 1846     		mov	r0, r3
+ 24274 04d2 FFF7FEFF 		bl	sFLASH_SendByte
+ 416:../sources/stm32_eval_spi_flash.c **** }
+ 24275              		.loc 1 416 0
+ 24276 04d6 07F10807 		add	r7, r7, #8
+ 24277 04da BD46     		mov	sp, r7
+ 24278 04dc 80BD     		pop	{r7, pc}
+ 24279              		.cfi_endproc
+ 24280              	.LFE37:
+ 24282 04de 00BF     		.align	2
+ 24283              		.global	sFLASH_ReadByte
+ 24284              		.thumb
+ 24285              		.thumb_func
+ 24287              	sFLASH_ReadByte:
+ 24288              	.LFB38:
+ 417:../sources/stm32_eval_spi_flash.c **** 
+ 418:../sources/stm32_eval_spi_flash.c **** /**
+ 419:../sources/stm32_eval_spi_flash.c ****   * @brief  Reads a byte from the SPI Flash.
+ 420:../sources/stm32_eval_spi_flash.c ****   * @note   This function must be used only if the Start_Read_Sequence function
+ 421:../sources/stm32_eval_spi_flash.c ****   *         has been previously called.
+ 422:../sources/stm32_eval_spi_flash.c ****   * @param  None
+ 423:../sources/stm32_eval_spi_flash.c ****   * @retval Byte Read from the SPI Flash.
+ 424:../sources/stm32_eval_spi_flash.c ****   */
+ 425:../sources/stm32_eval_spi_flash.c **** uint8_t sFLASH_ReadByte(void)
+ 426:../sources/stm32_eval_spi_flash.c **** {
+ 24289              		.loc 1 426 0
+ 24290              		.cfi_startproc
+ 24291              		@ args = 0, pretend = 0, frame = 0
+ 24292              		@ frame_needed = 1, uses_anonymous_args = 0
+ 24293 04e0 80B5     		push	{r7, lr}
+ 24294              	.LCFI25:
+ 24295              		.cfi_def_cfa_offset 8
+ 24296 04e2 00AF     		add	r7, sp, #0
+ 24297              		.cfi_offset 14, -4
+ 24298              		.cfi_offset 7, -8
+ 24299              	.LCFI26:
+ 24300              		.cfi_def_cfa_register 7
+ 427:../sources/stm32_eval_spi_flash.c ****   return (sFLASH_SendByte(sFLASH_DUMMY_BYTE));
+ 24301              		.loc 1 427 0
+ 24302 04e4 4FF0A500 		mov	r0, #165
+ 24303 04e8 FFF7FEFF 		bl	sFLASH_SendByte
+ 24304 04ec 0346     		mov	r3, r0
+ 428:../sources/stm32_eval_spi_flash.c **** }
+ 24305              		.loc 1 428 0
+ 24306 04ee 1846     		mov	r0, r3
+ 24307 04f0 BD46     		mov	sp, r7
+ 24308 04f2 80BD     		pop	{r7, pc}
+ 24309              		.cfi_endproc
+ 24310              	.LFE38:
+ 24312              		.align	2
+ 24313              		.global	sFLASH_SendByte
+ 24314              		.thumb
+ 24315              		.thumb_func
+ 24317              	sFLASH_SendByte:
+ 24318              	.LFB39:
+ 429:../sources/stm32_eval_spi_flash.c **** 
+ 430:../sources/stm32_eval_spi_flash.c **** /**
+ 431:../sources/stm32_eval_spi_flash.c ****   * @brief  Sends a byte through the SPI interface and return the byte received
+ 432:../sources/stm32_eval_spi_flash.c ****   *         from the SPI bus.
+ 433:../sources/stm32_eval_spi_flash.c ****   * @param  byte: byte to send.
+ 434:../sources/stm32_eval_spi_flash.c ****   * @retval The value of the received byte.
+ 435:../sources/stm32_eval_spi_flash.c ****   */
+ 436:../sources/stm32_eval_spi_flash.c **** uint8_t sFLASH_SendByte(uint8_t byte)
+ 437:../sources/stm32_eval_spi_flash.c **** {
+ 24319              		.loc 1 437 0
+ 24320              		.cfi_startproc
+ 24321              		@ args = 0, pretend = 0, frame = 8
+ 24322              		@ frame_needed = 1, uses_anonymous_args = 0
+ 24323 04f4 80B5     		push	{r7, lr}
+ 24324              	.LCFI27:
+ 24325              		.cfi_def_cfa_offset 8
+ 24326 04f6 82B0     		sub	sp, sp, #8
+ 24327              	.LCFI28:
+ 24328              		.cfi_def_cfa_offset 16
+ 24329 04f8 00AF     		add	r7, sp, #0
+ 24330              		.cfi_offset 14, -4
+ 24331              		.cfi_offset 7, -8
+ 24332              	.LCFI29:
+ 24333              		.cfi_def_cfa_register 7
+ 24334 04fa 0346     		mov	r3, r0
+ 24335 04fc FB71     		strb	r3, [r7, #7]
+ 438:../sources/stm32_eval_spi_flash.c ****   /*!< Loop while DR register in not emplty */
+ 439:../sources/stm32_eval_spi_flash.c ****   while (SPI_I2S_GetFlagStatus(sFLASH_SPI, SPI_I2S_FLAG_TXE) == RESET);
+ 24336              		.loc 1 439 0
+ 24337 04fe 00BF     		nop
+ 24338              	.L26:
+ 24339              		.loc 1 439 0 is_stmt 0 discriminator 1
+ 24340 0500 4FF47050 		mov	r0, #15360
+ 24341 0504 C4F20000 		movt	r0, 16384
+ 24342 0508 4FF00201 		mov	r1, #2
+ 24343 050c FFF7FEFF 		bl	SPI_I2S_GetFlagStatus
+ 24344 0510 0346     		mov	r3, r0
+ 24345 0512 002B     		cmp	r3, #0
+ 24346 0514 F4D0     		beq	.L26
+ 440:../sources/stm32_eval_spi_flash.c **** 
+ 441:../sources/stm32_eval_spi_flash.c ****   /*!< Send byte through the SPI1 peripheral */
+ 442:../sources/stm32_eval_spi_flash.c ****   SPI_I2S_SendData(sFLASH_SPI, byte);
+ 24347              		.loc 1 442 0 is_stmt 1
+ 24348 0516 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 24349 0518 9BB2     		uxth	r3, r3
+ 24350 051a 4FF47050 		mov	r0, #15360
+ 24351 051e C4F20000 		movt	r0, 16384
+ 24352 0522 1946     		mov	r1, r3
+ 24353 0524 FFF7FEFF 		bl	SPI_I2S_SendData
+ 443:../sources/stm32_eval_spi_flash.c **** 
+ 444:../sources/stm32_eval_spi_flash.c ****   /*!< Wait to receive a byte */
+ 445:../sources/stm32_eval_spi_flash.c ****   while (SPI_I2S_GetFlagStatus(sFLASH_SPI, SPI_I2S_FLAG_RXNE) == RESET);
+ 24354              		.loc 1 445 0
+ 24355 0528 00BF     		nop
+ 24356              	.L27:
+ 24357              		.loc 1 445 0 is_stmt 0 discriminator 1
+ 24358 052a 4FF47050 		mov	r0, #15360
+ 24359 052e C4F20000 		movt	r0, 16384
+ 24360 0532 4FF00101 		mov	r1, #1
+ 24361 0536 FFF7FEFF 		bl	SPI_I2S_GetFlagStatus
+ 24362 053a 0346     		mov	r3, r0
+ 24363 053c 002B     		cmp	r3, #0
+ 24364 053e F4D0     		beq	.L27
+ 446:../sources/stm32_eval_spi_flash.c **** 
+ 447:../sources/stm32_eval_spi_flash.c ****   /*!< Return the byte read from the SPI bus */
+ 448:../sources/stm32_eval_spi_flash.c ****   return SPI_I2S_ReceiveData(sFLASH_SPI);
+ 24365              		.loc 1 448 0 is_stmt 1
+ 24366 0540 4FF47050 		mov	r0, #15360
+ 24367 0544 C4F20000 		movt	r0, 16384
+ 24368 0548 FFF7FEFF 		bl	SPI_I2S_ReceiveData
+ 24369 054c 0346     		mov	r3, r0
+ 24370 054e DBB2     		uxtb	r3, r3
+ 449:../sources/stm32_eval_spi_flash.c **** }
+ 24371              		.loc 1 449 0
+ 24372 0550 1846     		mov	r0, r3
+ 24373 0552 07F10807 		add	r7, r7, #8
+ 24374 0556 BD46     		mov	sp, r7
+ 24375 0558 80BD     		pop	{r7, pc}
+ 24376              		.cfi_endproc
+ 24377              	.LFE39:
+ 24379 055a 00BF     		.align	2
+ 24380              		.global	sFLASH_SendHalfWord
+ 24381              		.thumb
+ 24382              		.thumb_func
+ 24384              	sFLASH_SendHalfWord:
+ 24385              	.LFB40:
+ 450:../sources/stm32_eval_spi_flash.c **** 
+ 451:../sources/stm32_eval_spi_flash.c **** /**
+ 452:../sources/stm32_eval_spi_flash.c ****   * @brief  Sends a Half Word through the SPI interface and return the Half Word
+ 453:../sources/stm32_eval_spi_flash.c ****   *         received from the SPI bus.
+ 454:../sources/stm32_eval_spi_flash.c ****   * @param  HalfWord: Half Word to send.
+ 455:../sources/stm32_eval_spi_flash.c ****   * @retval The value of the received Half Word.
+ 456:../sources/stm32_eval_spi_flash.c ****   */
+ 457:../sources/stm32_eval_spi_flash.c **** uint16_t sFLASH_SendHalfWord(uint16_t HalfWord)
+ 458:../sources/stm32_eval_spi_flash.c **** {
+ 24386              		.loc 1 458 0
+ 24387              		.cfi_startproc
+ 24388              		@ args = 0, pretend = 0, frame = 8
+ 24389              		@ frame_needed = 1, uses_anonymous_args = 0
+ 24390 055c 80B5     		push	{r7, lr}
+ 24391              	.LCFI30:
+ 24392              		.cfi_def_cfa_offset 8
+ 24393 055e 82B0     		sub	sp, sp, #8
+ 24394              	.LCFI31:
+ 24395              		.cfi_def_cfa_offset 16
+ 24396 0560 00AF     		add	r7, sp, #0
+ 24397              		.cfi_offset 14, -4
+ 24398              		.cfi_offset 7, -8
+ 24399              	.LCFI32:
+ 24400              		.cfi_def_cfa_register 7
+ 24401 0562 0346     		mov	r3, r0
+ 24402 0564 FB80     		strh	r3, [r7, #6]	@ movhi
+ 459:../sources/stm32_eval_spi_flash.c ****   /*!< Loop while DR register in not emplty */
+ 460:../sources/stm32_eval_spi_flash.c ****   while (SPI_I2S_GetFlagStatus(sFLASH_SPI, SPI_I2S_FLAG_TXE) == RESET);
+ 24403              		.loc 1 460 0
+ 24404 0566 00BF     		nop
+ 24405              	.L29:
+ 24406              		.loc 1 460 0 is_stmt 0 discriminator 1
+ 24407 0568 4FF47050 		mov	r0, #15360
+ 24408 056c C4F20000 		movt	r0, 16384
+ 24409 0570 4FF00201 		mov	r1, #2
+ 24410 0574 FFF7FEFF 		bl	SPI_I2S_GetFlagStatus
+ 24411 0578 0346     		mov	r3, r0
+ 24412 057a 002B     		cmp	r3, #0
+ 24413 057c F4D0     		beq	.L29
+ 461:../sources/stm32_eval_spi_flash.c **** 
+ 462:../sources/stm32_eval_spi_flash.c ****   /*!< Send Half Word through the sFLASH peripheral */
+ 463:../sources/stm32_eval_spi_flash.c ****   SPI_I2S_SendData(sFLASH_SPI, HalfWord);
+ 24414              		.loc 1 463 0 is_stmt 1
+ 24415 057e FB88     		ldrh	r3, [r7, #6]
+ 24416 0580 4FF47050 		mov	r0, #15360
+ 24417 0584 C4F20000 		movt	r0, 16384
+ 24418 0588 1946     		mov	r1, r3
+ 24419 058a FFF7FEFF 		bl	SPI_I2S_SendData
+ 464:../sources/stm32_eval_spi_flash.c **** 
+ 465:../sources/stm32_eval_spi_flash.c ****   /*!< Wait to receive a Half Word */
+ 466:../sources/stm32_eval_spi_flash.c ****   while (SPI_I2S_GetFlagStatus(sFLASH_SPI, SPI_I2S_FLAG_RXNE) == RESET);
+ 24420              		.loc 1 466 0
+ 24421 058e 00BF     		nop
+ 24422              	.L30:
+ 24423              		.loc 1 466 0 is_stmt 0 discriminator 1
+ 24424 0590 4FF47050 		mov	r0, #15360
+ 24425 0594 C4F20000 		movt	r0, 16384
+ 24426 0598 4FF00101 		mov	r1, #1
+ 24427 059c FFF7FEFF 		bl	SPI_I2S_GetFlagStatus
+ 24428 05a0 0346     		mov	r3, r0
+ 24429 05a2 002B     		cmp	r3, #0
+ 24430 05a4 F4D0     		beq	.L30
+ 467:../sources/stm32_eval_spi_flash.c **** 
+ 468:../sources/stm32_eval_spi_flash.c ****   /*!< Return the Half Word read from the SPI bus */
+ 469:../sources/stm32_eval_spi_flash.c ****   return SPI_I2S_ReceiveData(sFLASH_SPI);
+ 24431              		.loc 1 469 0 is_stmt 1
+ 24432 05a6 4FF47050 		mov	r0, #15360
+ 24433 05aa C4F20000 		movt	r0, 16384
+ 24434 05ae FFF7FEFF 		bl	SPI_I2S_ReceiveData
+ 24435 05b2 0346     		mov	r3, r0
+ 470:../sources/stm32_eval_spi_flash.c **** }
+ 24436              		.loc 1 470 0
+ 24437 05b4 1846     		mov	r0, r3
+ 24438 05b6 07F10807 		add	r7, r7, #8
+ 24439 05ba BD46     		mov	sp, r7
+ 24440 05bc 80BD     		pop	{r7, pc}
+ 24441              		.cfi_endproc
+ 24442              	.LFE40:
+ 24444 05be 00BF     		.align	2
+ 24445              		.global	sFLASH_WriteEnable
+ 24446              		.thumb
+ 24447              		.thumb_func
+ 24449              	sFLASH_WriteEnable:
+ 24450              	.LFB41:
+ 471:../sources/stm32_eval_spi_flash.c **** 
+ 472:../sources/stm32_eval_spi_flash.c **** /**
+ 473:../sources/stm32_eval_spi_flash.c ****   * @brief  Enables the write access to the FLASH.
+ 474:../sources/stm32_eval_spi_flash.c ****   * @param  None
+ 475:../sources/stm32_eval_spi_flash.c ****   * @retval None
+ 476:../sources/stm32_eval_spi_flash.c ****   */
+ 477:../sources/stm32_eval_spi_flash.c **** void sFLASH_WriteEnable(void)
+ 478:../sources/stm32_eval_spi_flash.c **** {
+ 24451              		.loc 1 478 0
+ 24452              		.cfi_startproc
+ 24453              		@ args = 0, pretend = 0, frame = 0
+ 24454              		@ frame_needed = 1, uses_anonymous_args = 0
+ 24455 05c0 80B5     		push	{r7, lr}
+ 24456              	.LCFI33:
+ 24457              		.cfi_def_cfa_offset 8
+ 24458 05c2 00AF     		add	r7, sp, #0
+ 24459              		.cfi_offset 14, -4
+ 24460              		.cfi_offset 7, -8
+ 24461              	.LCFI34:
+ 24462              		.cfi_def_cfa_register 7
+ 479:../sources/stm32_eval_spi_flash.c ****   /*!< Select the FLASH: Chip Select low */
+ 480:../sources/stm32_eval_spi_flash.c ****   sFLASH_CS_LOW();
+ 24463              		.loc 1 480 0
+ 24464 05c4 4FF44060 		mov	r0, #3072
+ 24465 05c8 C4F20200 		movt	r0, 16386
+ 24466 05cc 4FF00401 		mov	r1, #4
+ 24467 05d0 FFF7FEFF 		bl	GPIO_ResetBits
+ 481:../sources/stm32_eval_spi_flash.c **** 
+ 482:../sources/stm32_eval_spi_flash.c ****   /*!< Send "Write Enable" instruction */
+ 483:../sources/stm32_eval_spi_flash.c ****   sFLASH_SendByte(sFLASH_CMD_WREN);
+ 24468              		.loc 1 483 0
+ 24469 05d4 4FF00600 		mov	r0, #6
+ 24470 05d8 FFF7FEFF 		bl	sFLASH_SendByte
+ 484:../sources/stm32_eval_spi_flash.c **** 
+ 485:../sources/stm32_eval_spi_flash.c ****   /*!< Deselect the FLASH: Chip Select high */
+ 486:../sources/stm32_eval_spi_flash.c ****   sFLASH_CS_HIGH();
+ 24471              		.loc 1 486 0
+ 24472 05dc 4FF44060 		mov	r0, #3072
+ 24473 05e0 C4F20200 		movt	r0, 16386
+ 24474 05e4 4FF00401 		mov	r1, #4
+ 24475 05e8 FFF7FEFF 		bl	GPIO_SetBits
+ 487:../sources/stm32_eval_spi_flash.c **** }
+ 24476              		.loc 1 487 0
+ 24477 05ec BD46     		mov	sp, r7
+ 24478 05ee 80BD     		pop	{r7, pc}
+ 24479              		.cfi_endproc
+ 24480              	.LFE41:
+ 24482              		.align	2
+ 24483              		.global	sFLASH_WaitForWriteEnd
+ 24484              		.thumb
+ 24485              		.thumb_func
+ 24487              	sFLASH_WaitForWriteEnd:
+ 24488              	.LFB42:
+ 488:../sources/stm32_eval_spi_flash.c **** 
+ 489:../sources/stm32_eval_spi_flash.c **** /**
+ 490:../sources/stm32_eval_spi_flash.c ****   * @brief  Polls the status of the Write In Progress (WIP) flag in the FLASH's
+ 491:../sources/stm32_eval_spi_flash.c ****   *         status register and loop until write opertaion has completed.
+ 492:../sources/stm32_eval_spi_flash.c ****   * @param  None
+ 493:../sources/stm32_eval_spi_flash.c ****   * @retval None
+ 494:../sources/stm32_eval_spi_flash.c ****   */
+ 495:../sources/stm32_eval_spi_flash.c **** void sFLASH_WaitForWriteEnd(void)
+ 496:../sources/stm32_eval_spi_flash.c **** {
+ 24489              		.loc 1 496 0
+ 24490              		.cfi_startproc
+ 24491              		@ args = 0, pretend = 0, frame = 8
+ 24492              		@ frame_needed = 1, uses_anonymous_args = 0
+ 24493 05f0 80B5     		push	{r7, lr}
+ 24494              	.LCFI35:
+ 24495              		.cfi_def_cfa_offset 8
+ 24496 05f2 82B0     		sub	sp, sp, #8
+ 24497              	.LCFI36:
+ 24498              		.cfi_def_cfa_offset 16
+ 24499 05f4 00AF     		add	r7, sp, #0
+ 24500              		.cfi_offset 14, -4
+ 24501              		.cfi_offset 7, -8
+ 24502              	.LCFI37:
+ 24503              		.cfi_def_cfa_register 7
+ 497:../sources/stm32_eval_spi_flash.c ****   uint8_t flashstatus = 0;
+ 24504              		.loc 1 497 0
+ 24505 05f6 4FF00003 		mov	r3, #0
+ 24506 05fa FB71     		strb	r3, [r7, #7]
+ 498:../sources/stm32_eval_spi_flash.c **** 
+ 499:../sources/stm32_eval_spi_flash.c ****   /*!< Select the FLASH: Chip Select low */
+ 500:../sources/stm32_eval_spi_flash.c ****   sFLASH_CS_LOW();
+ 24507              		.loc 1 500 0
+ 24508 05fc 4FF44060 		mov	r0, #3072
+ 24509 0600 C4F20200 		movt	r0, 16386
+ 24510 0604 4FF00401 		mov	r1, #4
+ 24511 0608 FFF7FEFF 		bl	GPIO_ResetBits
+ 501:../sources/stm32_eval_spi_flash.c **** 
+ 502:../sources/stm32_eval_spi_flash.c ****   /*!< Send "Read Status Register" instruction */
+ 503:../sources/stm32_eval_spi_flash.c ****   sFLASH_SendByte(sFLASH_CMD_RDSR);
+ 24512              		.loc 1 503 0
+ 24513 060c 4FF00500 		mov	r0, #5
+ 24514 0610 FFF7FEFF 		bl	sFLASH_SendByte
+ 24515              	.L33:
+ 504:../sources/stm32_eval_spi_flash.c **** 
+ 505:../sources/stm32_eval_spi_flash.c ****   /*!< Loop as long as the memory is busy with a write cycle */
+ 506:../sources/stm32_eval_spi_flash.c ****   do
+ 507:../sources/stm32_eval_spi_flash.c ****   {
+ 508:../sources/stm32_eval_spi_flash.c ****     /*!< Send a dummy byte to generate the clock needed by the FLASH
+ 509:../sources/stm32_eval_spi_flash.c ****     and put the value of the status register in FLASH_Status variable */
+ 510:../sources/stm32_eval_spi_flash.c ****     flashstatus = sFLASH_SendByte(sFLASH_DUMMY_BYTE);
+ 24516              		.loc 1 510 0 discriminator 1
+ 24517 0614 4FF0A500 		mov	r0, #165
+ 24518 0618 FFF7FEFF 		bl	sFLASH_SendByte
+ 24519 061c 0346     		mov	r3, r0
+ 24520 061e FB71     		strb	r3, [r7, #7]
+ 511:../sources/stm32_eval_spi_flash.c **** 
+ 512:../sources/stm32_eval_spi_flash.c ****   }
+ 513:../sources/stm32_eval_spi_flash.c ****   while ((flashstatus & sFLASH_WIP_FLAG) == SET); /* Write in progress */
+ 24521              		.loc 1 513 0 discriminator 1
+ 24522 0620 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 24523 0622 03F00103 		and	r3, r3, #1
+ 24524 0626 DBB2     		uxtb	r3, r3
+ 24525 0628 002B     		cmp	r3, #0
+ 24526 062a F3D1     		bne	.L33
+ 514:../sources/stm32_eval_spi_flash.c **** 
+ 515:../sources/stm32_eval_spi_flash.c ****   /*!< Deselect the FLASH: Chip Select high */
+ 516:../sources/stm32_eval_spi_flash.c ****   sFLASH_CS_HIGH();
+ 24527              		.loc 1 516 0
+ 24528 062c 4FF44060 		mov	r0, #3072
+ 24529 0630 C4F20200 		movt	r0, 16386
+ 24530 0634 4FF00401 		mov	r1, #4
+ 24531 0638 FFF7FEFF 		bl	GPIO_SetBits
+ 517:../sources/stm32_eval_spi_flash.c **** }
+ 24532              		.loc 1 517 0
+ 24533 063c 07F10807 		add	r7, r7, #8
+ 24534 0640 BD46     		mov	sp, r7
+ 24535 0642 80BD     		pop	{r7, pc}
+ 24536              		.cfi_endproc
+ 24537              	.LFE42:
+ 24539              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32_eval_spi_flash.c
+                            *COM*:00000004 ADCConvertedValue
+C:\Users\red4sch\AppData\Local\Temp\ccDiplEw.s:23518  .text:00000000 $t
+C:\Users\red4sch\AppData\Local\Temp\ccDiplEw.s:23523  .text:00000000 sFLASH_DeInit
+C:\Users\red4sch\AppData\Local\Temp\ccDiplEw.s:23550  .text:0000000c sFLASH_Init
+C:\Users\red4sch\AppData\Local\Temp\ccDiplEw.s:23624  .text:00000088 sFLASH_EraseSector
+C:\Users\red4sch\AppData\Local\Temp\ccDiplEw.s:24449  .text:000005c0 sFLASH_WriteEnable
+C:\Users\red4sch\AppData\Local\Temp\ccDiplEw.s:24317  .text:000004f4 sFLASH_SendByte
+C:\Users\red4sch\AppData\Local\Temp\ccDiplEw.s:24487  .text:000005f0 sFLASH_WaitForWriteEnd
+C:\Users\red4sch\AppData\Local\Temp\ccDiplEw.s:23690  .text:000000f8 sFLASH_EraseBulk
+C:\Users\red4sch\AppData\Local\Temp\ccDiplEw.s:23732  .text:00000130 sFLASH_WritePage
+C:\Users\red4sch\AppData\Local\Temp\ccDiplEw.s:23826  .text:000001d0 sFLASH_WriteBuffer
+C:\Users\red4sch\AppData\Local\Temp\ccDiplEw.s:24060  .text:00000358 sFLASH_ReadBuffer
+C:\Users\red4sch\AppData\Local\Temp\ccDiplEw.s:24152  .text:000003f8 sFLASH_ReadID
+C:\Users\red4sch\AppData\Local\Temp\ccDiplEw.s:24230  .text:00000488 sFLASH_StartReadSequence
+C:\Users\red4sch\AppData\Local\Temp\ccDiplEw.s:24287  .text:000004e0 sFLASH_ReadByte
+C:\Users\red4sch\AppData\Local\Temp\ccDiplEw.s:24384  .text:0000055c sFLASH_SendHalfWord
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+sFLASH_LowLevel_DeInit
+sFLASH_LowLevel_Init
+GPIO_SetBits
+SPI_Init
+SPI_Cmd
+GPIO_ResetBits
+SPI_I2S_GetFlagStatus
+SPI_I2S_SendData
+SPI_I2S_ReceiveData

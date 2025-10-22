@@ -1,0 +1,1464 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 18, 4
+  12              		.thumb
+  13              		.file	"TE_STM32F207.c"
+  23              	.Ltext0:
+  24              		.file 1 "../sources/TE_STM32F207.c"
+ 23480              		.align	2
+ 23483              	GPIO_PORT:
+ 23484 0000 00040240 		.word	1073873920
+ 23485              		.global	GPIO_PIN
+ 23486              		.section	.rodata
+ 23487              		.align	2
+ 23490              	GPIO_PIN:
+ 23491 0000 0002     		.short	512
+ 23492              		.global	GPIO_CLK
+ 23493 0002 0000     		.align	2
+ 23496              	GPIO_CLK:
+ 23497 0004 02000000 		.word	2
+ 23498              		.global	COM_USART
+ 23499              		.data
+ 23500              		.align	2
+ 23503              	COM_USART:
+ 23504 0004 00480040 		.word	1073760256
+ 23505              		.global	COM_TX_PORT
+ 23506              		.align	2
+ 23509              	COM_TX_PORT:
+ 23510 0008 000C0240 		.word	1073875968
+ 23511              		.global	COM_RX_PORT
+ 23512              		.align	2
+ 23515              	COM_RX_PORT:
+ 23516 000c 000C0240 		.word	1073875968
+ 23517              		.global	COM_USART_CLK
+ 23518              		.section	.rodata
+ 23519              		.align	2
+ 23522              	COM_USART_CLK:
+ 23523 0008 00000400 		.word	262144
+ 23524              		.global	COM_TX_PORT_CLK
+ 23525              		.align	2
+ 23528              	COM_TX_PORT_CLK:
+ 23529 000c 08000000 		.word	8
+ 23530              		.global	COM_RX_PORT_CLK
+ 23531              		.align	2
+ 23534              	COM_RX_PORT_CLK:
+ 23535 0010 08000000 		.word	8
+ 23536              		.global	COM_TX_PIN
+ 23537              		.align	2
+ 23540              	COM_TX_PIN:
+ 23541 0014 0001     		.short	256
+ 23542              		.global	COM_RX_PIN
+ 23543 0016 0000     		.align	2
+ 23546              	COM_RX_PIN:
+ 23547 0018 0002     		.short	512
+ 23548              		.global	COM_TX_PIN_SOURCE
+ 23549 001a 0000     		.align	2
+ 23552              	COM_TX_PIN_SOURCE:
+ 23553 001c 08       		.byte	8
+ 23554              		.global	COM_RX_PIN_SOURCE
+ 23555 001d 000000   		.align	2
+ 23558              	COM_RX_PIN_SOURCE:
+ 23559 0020 09       		.byte	9
+ 23560              		.global	COM_TX_AF
+ 23561 0021 000000   		.align	2
+ 23564              	COM_TX_AF:
+ 23565 0024 07       		.byte	7
+ 23566              		.global	COM_RX_AF
+ 23567 0025 000000   		.align	2
+ 23570              	COM_RX_AF:
+ 23571 0028 07       		.byte	7
+ 23572              		.comm	sEEDMA_InitStructure,60,4
+ 23573              		.comm	NVIC_InitStructure,4,4
+ 23574              		.global	Escalator8bit
+ 23575 0029 000000   		.align	2
+ 23578              	Escalator8bit:
+ 23579 002c 00       		.byte	0
+ 23580 002d 33       		.byte	51
+ 23581 002e 66       		.byte	102
+ 23582 002f 99       		.byte	-103
+ 23583 0030 CC       		.byte	-52
+ 23584 0031 FF       		.byte	-1
+ 23585 0032 0000     		.text
+ 23586              		.align	2
+ 23587              		.global	DAC_Ch1_EscalatorConfig
+ 23588              		.thumb
+ 23589              		.thumb_func
+ 23591              	DAC_Ch1_EscalatorConfig:
+ 23592              	.LFB29:
+   1:../sources/TE_STM32F207.c ****  
+   2:../sources/TE_STM32F207.c ****   
+   3:../sources/TE_STM32F207.c **** /* Includes ------------------------------------------------------------------*/
+   4:../sources/TE_STM32F207.c **** 
+   5:../sources/TE_STM32F207.c **** #include "stm32f2xx_sdio.h"
+   6:../sources/TE_STM32F207.c **** #include "stm32f2xx_dma.h"
+   7:../sources/TE_STM32F207.c **** #include "stm32f2xx_i2c.h"
+   8:../sources/TE_STM32F207.c **** #include "stm32f2xx_conf.h"
+   9:../sources/TE_STM32F207.c **** #include "TE_STM32F207.h"
+  10:../sources/TE_STM32F207.c **** 
+  11:../sources/TE_STM32F207.c **** 
+  12:../sources/TE_STM32F207.c **** GPIO_TypeDef* GPIO_PORT[LEDn] = {LED1_GPIO_PORT};
+  13:../sources/TE_STM32F207.c **** const uint16_t GPIO_PIN[LEDn] = {LED1_PIN};
+  14:../sources/TE_STM32F207.c **** const uint32_t GPIO_CLK[LEDn] = {LED1_GPIO_CLK};
+  15:../sources/TE_STM32F207.c **** 
+  16:../sources/TE_STM32F207.c **** USART_TypeDef* COM_USART[COMn] = {EVAL_COM1}; 
+  17:../sources/TE_STM32F207.c **** 
+  18:../sources/TE_STM32F207.c **** GPIO_TypeDef* COM_TX_PORT[COMn] = {EVAL_COM1_TX_GPIO_PORT};
+  19:../sources/TE_STM32F207.c ****  
+  20:../sources/TE_STM32F207.c **** GPIO_TypeDef* COM_RX_PORT[COMn] = {EVAL_COM1_RX_GPIO_PORT};
+  21:../sources/TE_STM32F207.c **** 
+  22:../sources/TE_STM32F207.c **** const uint32_t COM_USART_CLK[COMn] = {EVAL_COM1_CLK};
+  23:../sources/TE_STM32F207.c **** 
+  24:../sources/TE_STM32F207.c **** const uint32_t COM_TX_PORT_CLK[COMn] = {EVAL_COM1_TX_GPIO_CLK};
+  25:../sources/TE_STM32F207.c ****  
+  26:../sources/TE_STM32F207.c **** const uint32_t COM_RX_PORT_CLK[COMn] = {EVAL_COM1_RX_GPIO_CLK};
+  27:../sources/TE_STM32F207.c **** 
+  28:../sources/TE_STM32F207.c **** const uint16_t COM_TX_PIN[COMn] = {EVAL_COM1_TX_PIN};
+  29:../sources/TE_STM32F207.c **** 
+  30:../sources/TE_STM32F207.c **** const uint16_t COM_RX_PIN[COMn] = {EVAL_COM1_RX_PIN};
+  31:../sources/TE_STM32F207.c ****  
+  32:../sources/TE_STM32F207.c **** const uint8_t COM_TX_PIN_SOURCE[COMn] = {EVAL_COM1_TX_SOURCE};
+  33:../sources/TE_STM32F207.c **** 
+  34:../sources/TE_STM32F207.c **** const uint8_t COM_RX_PIN_SOURCE[COMn] = {EVAL_COM1_RX_SOURCE};
+  35:../sources/TE_STM32F207.c ****  
+  36:../sources/TE_STM32F207.c **** const uint8_t COM_TX_AF[COMn] = {EVAL_COM1_TX_AF};
+  37:../sources/TE_STM32F207.c ****  
+  38:../sources/TE_STM32F207.c **** const uint8_t COM_RX_AF[COMn] = {EVAL_COM1_RX_AF};
+  39:../sources/TE_STM32F207.c **** 
+  40:../sources/TE_STM32F207.c **** DMA_InitTypeDef    sEEDMA_InitStructure; 
+  41:../sources/TE_STM32F207.c **** NVIC_InitTypeDef   NVIC_InitStructure;
+  42:../sources/TE_STM32F207.c **** uint32_t 	ADCConvertedValue;
+  43:../sources/TE_STM32F207.c **** 
+  44:../sources/TE_STM32F207.c **** const uint8_t Escalator8bit[6] = {0x0, 0x33, 0x66, 0x99, 0xCC, 0xFF};
+  45:../sources/TE_STM32F207.c **** 
+  46:../sources/TE_STM32F207.c **** 
+  47:../sources/TE_STM32F207.c **** void DAC_Ch1_EscalatorConfig(void) {
+ 23593              		.loc 1 47 0
+ 23594              		.cfi_startproc
+ 23595              		@ args = 0, pretend = 0, frame = 24
+ 23596              		@ frame_needed = 1, uses_anonymous_args = 0
+ 23597 0000 80B5     		push	{r7, lr}
+ 23598              	.LCFI0:
+ 23599              		.cfi_def_cfa_offset 8
+ 23600 0002 86B0     		sub	sp, sp, #24
+ 23601              	.LCFI1:
+ 23602              		.cfi_def_cfa_offset 32
+ 23603 0004 00AF     		add	r7, sp, #0
+ 23604              		.cfi_offset 14, -4
+ 23605              		.cfi_offset 7, -8
+ 23606              	.LCFI2:
+ 23607              		.cfi_def_cfa_register 7
+  48:../sources/TE_STM32F207.c **** 
+  49:../sources/TE_STM32F207.c **** 
+  50:../sources/TE_STM32F207.c **** 	/* Preconfiguration before using DAC----------------------------------------*/
+  51:../sources/TE_STM32F207.c **** 	GPIO_InitTypeDef GPIO_InitStructure;
+  52:../sources/TE_STM32F207.c **** 
+  53:../sources/TE_STM32F207.c **** 	DAC_InitTypeDef  DAC_InitStructure;
+  54:../sources/TE_STM32F207.c **** 
+  55:../sources/TE_STM32F207.c **** 
+  56:../sources/TE_STM32F207.c **** 	/* DMA1 clock and GPIOA clock enable (to be used with DAC) */
+  57:../sources/TE_STM32F207.c **** 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1 | RCC_AHB1Periph_GPIOA, ENABLE);
+ 23608              		.loc 1 57 0
+ 23609 0006 4FF00100 		mov	r0, #1
+ 23610 000a C0F22000 		movt	r0, 32
+ 23611 000e 4FF00101 		mov	r1, #1
+ 23612 0012 FFF7FEFF 		bl	RCC_AHB1PeriphClockCmd
+  58:../sources/TE_STM32F207.c **** 
+  59:../sources/TE_STM32F207.c **** 	/* DAC Periph clock enable */
+  60:../sources/TE_STM32F207.c **** 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, ENABLE);
+ 23613              		.loc 1 60 0
+ 23614 0016 4FF00050 		mov	r0, #536870912
+ 23615 001a 4FF00101 		mov	r1, #1
+ 23616 001e FFF7FEFF 		bl	RCC_APB1PeriphClockCmd
+  61:../sources/TE_STM32F207.c **** 
+  62:../sources/TE_STM32F207.c **** 	/* DAC channel 1 & 2 (DAC_OUT1 = PA.4)(DAC_OUT2 = PA.5) configuration */
+  63:../sources/TE_STM32F207.c **** 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4; // | GPIO_Pin_5;
+ 23617              		.loc 1 63 0
+ 23618 0022 4FF01003 		mov	r3, #16
+ 23619 0026 3B61     		str	r3, [r7, #16]
+  64:../sources/TE_STM32F207.c **** 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+ 23620              		.loc 1 64 0
+ 23621 0028 4FF00303 		mov	r3, #3
+ 23622 002c 3B75     		strb	r3, [r7, #20]
+  65:../sources/TE_STM32F207.c **** 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+ 23623              		.loc 1 65 0
+ 23624 002e 4FF00003 		mov	r3, #0
+ 23625 0032 FB75     		strb	r3, [r7, #23]
+  66:../sources/TE_STM32F207.c **** 	GPIO_Init(GPIOA, &GPIO_InitStructure);
+ 23626              		.loc 1 66 0
+ 23627 0034 07F11003 		add	r3, r7, #16
+ 23628 0038 4FF00000 		mov	r0, #0
+ 23629 003c C4F20200 		movt	r0, 16386
+ 23630 0040 1946     		mov	r1, r3
+ 23631 0042 FFF7FEFF 		bl	GPIO_Init
+  67:../sources/TE_STM32F207.c **** 
+  68:../sources/TE_STM32F207.c **** 	 /* DAC channel2 Configuration */
+  69:../sources/TE_STM32F207.c **** 	  DAC_InitStructure.DAC_Trigger = DAC_Trigger_T6_TRGO;
+ 23632              		.loc 1 69 0
+ 23633 0046 4FF00403 		mov	r3, #4
+ 23634 004a 3B60     		str	r3, [r7, #0]
+  70:../sources/TE_STM32F207.c **** 	  DAC_InitStructure.DAC_WaveGeneration = DAC_WaveGeneration_Noise;//;DAC_WaveGeneration_Triangle;/
+ 23635              		.loc 1 70 0
+ 23636 004c 4FF04003 		mov	r3, #64
+ 23637 0050 7B60     		str	r3, [r7, #4]
+  71:../sources/TE_STM32F207.c **** 	  DAC_InitStructure.DAC_LFSRUnmask_TriangleAmplitude = DAC_TriangleAmplitude_4095;
+ 23638              		.loc 1 71 0
+ 23639 0052 4FF43063 		mov	r3, #2816
+ 23640 0056 BB60     		str	r3, [r7, #8]
+  72:../sources/TE_STM32F207.c **** 	  DAC_InitStructure.DAC_OutputBuffer = DAC_OutputBuffer_Enable;
+ 23641              		.loc 1 72 0
+ 23642 0058 4FF00003 		mov	r3, #0
+ 23643 005c FB60     		str	r3, [r7, #12]
+  73:../sources/TE_STM32F207.c **** 	  DAC_Init(DAC_Channel_1, &DAC_InitStructure);
+ 23644              		.loc 1 73 0
+ 23645 005e 3B46     		mov	r3, r7
+ 23646 0060 4FF00000 		mov	r0, #0
+ 23647 0064 1946     		mov	r1, r3
+ 23648 0066 FFF7FEFF 		bl	DAC_Init
+  74:../sources/TE_STM32F207.c **** 
+  75:../sources/TE_STM32F207.c **** 	  /* Enable DAC Channel2 */
+  76:../sources/TE_STM32F207.c **** 	  DAC_Cmd(DAC_Channel_1, ENABLE);
+ 23649              		.loc 1 76 0
+ 23650 006a 4FF00000 		mov	r0, #0
+ 23651 006e 4FF00101 		mov	r1, #1
+ 23652 0072 FFF7FEFF 		bl	DAC_Cmd
+  77:../sources/TE_STM32F207.c **** 
+  78:../sources/TE_STM32F207.c **** 	  /* Set DAC channel2 DHR12RD register */
+  79:../sources/TE_STM32F207.c **** 	  DAC_SetChannel1Data(DAC_Align_12b_R, 0x2000);
+ 23653              		.loc 1 79 0
+ 23654 0076 4FF00000 		mov	r0, #0
+ 23655 007a 4FF40051 		mov	r1, #8192
+ 23656 007e FFF7FEFF 		bl	DAC_SetChannel1Data
+  80:../sources/TE_STM32F207.c **** 
+  81:../sources/TE_STM32F207.c **** 
+  82:../sources/TE_STM32F207.c **** }
+ 23657              		.loc 1 82 0
+ 23658 0082 07F11807 		add	r7, r7, #24
+ 23659 0086 BD46     		mov	sp, r7
+ 23660 0088 80BD     		pop	{r7, pc}
+ 23661              		.cfi_endproc
+ 23662              	.LFE29:
+ 23664 008a 00BF     		.align	2
+ 23665              		.global	TIM6_Config
+ 23666              		.thumb
+ 23667              		.thumb_func
+ 23669              	TIM6_Config:
+ 23670              	.LFB30:
+  83:../sources/TE_STM32F207.c **** 
+  84:../sources/TE_STM32F207.c **** 
+  85:../sources/TE_STM32F207.c **** void TIM6_Config(void)
+  86:../sources/TE_STM32F207.c **** {
+ 23671              		.loc 1 86 0
+ 23672              		.cfi_startproc
+ 23673              		@ args = 0, pretend = 0, frame = 16
+ 23674              		@ frame_needed = 1, uses_anonymous_args = 0
+ 23675 008c 80B5     		push	{r7, lr}
+ 23676              	.LCFI3:
+ 23677              		.cfi_def_cfa_offset 8
+ 23678 008e 84B0     		sub	sp, sp, #16
+ 23679              	.LCFI4:
+ 23680              		.cfi_def_cfa_offset 24
+ 23681 0090 00AF     		add	r7, sp, #0
+ 23682              		.cfi_offset 14, -4
+ 23683              		.cfi_offset 7, -8
+ 23684              	.LCFI5:
+ 23685              		.cfi_def_cfa_register 7
+  87:../sources/TE_STM32F207.c ****   TIM_TimeBaseInitTypeDef    TIM_TimeBaseStructure;
+  88:../sources/TE_STM32F207.c ****   /* TIM6 Periph clock enable */
+  89:../sources/TE_STM32F207.c ****   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM6, ENABLE);
+ 23686              		.loc 1 89 0
+ 23687 0092 4FF01000 		mov	r0, #16
+ 23688 0096 4FF00101 		mov	r1, #1
+ 23689 009a FFF7FEFF 		bl	RCC_APB1PeriphClockCmd
+  90:../sources/TE_STM32F207.c **** 
+  91:../sources/TE_STM32F207.c ****   /* Time base configuration */
+  92:../sources/TE_STM32F207.c ****   TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
+ 23690              		.loc 1 92 0
+ 23691 009e 07F10403 		add	r3, r7, #4
+ 23692 00a2 1846     		mov	r0, r3
+ 23693 00a4 FFF7FEFF 		bl	TIM_TimeBaseStructInit
+  93:../sources/TE_STM32F207.c ****   TIM_TimeBaseStructure.TIM_Period = 0x0F;
+ 23694              		.loc 1 93 0
+ 23695 00a8 4FF00F03 		mov	r3, #15
+ 23696 00ac BB60     		str	r3, [r7, #8]
+  94:../sources/TE_STM32F207.c ****   TIM_TimeBaseStructure.TIM_Prescaler = 0;
+ 23697              		.loc 1 94 0
+ 23698 00ae 4FF00003 		mov	r3, #0
+ 23699 00b2 BB80     		strh	r3, [r7, #4]	@ movhi
+  95:../sources/TE_STM32F207.c ****   TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+ 23700              		.loc 1 95 0
+ 23701 00b4 4FF00003 		mov	r3, #0
+ 23702 00b8 BB81     		strh	r3, [r7, #12]	@ movhi
+  96:../sources/TE_STM32F207.c ****   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+ 23703              		.loc 1 96 0
+ 23704 00ba 4FF00003 		mov	r3, #0
+ 23705 00be FB80     		strh	r3, [r7, #6]	@ movhi
+  97:../sources/TE_STM32F207.c ****   TIM_TimeBaseInit(TIM6, &TIM_TimeBaseStructure);
+ 23706              		.loc 1 97 0
+ 23707 00c0 07F10403 		add	r3, r7, #4
+ 23708 00c4 4FF48050 		mov	r0, #4096
+ 23709 00c8 C4F20000 		movt	r0, 16384
+ 23710 00cc 1946     		mov	r1, r3
+ 23711 00ce FFF7FEFF 		bl	TIM_TimeBaseInit
+  98:../sources/TE_STM32F207.c **** 
+  99:../sources/TE_STM32F207.c ****   /* TIM6 TRGO selection */
+ 100:../sources/TE_STM32F207.c ****   TIM_SelectOutputTrigger(TIM6, TIM_TRGOSource_Update);
+ 23712              		.loc 1 100 0
+ 23713 00d2 4FF48050 		mov	r0, #4096
+ 23714 00d6 C4F20000 		movt	r0, 16384
+ 23715 00da 4FF02001 		mov	r1, #32
+ 23716 00de FFF7FEFF 		bl	TIM_SelectOutputTrigger
+ 101:../sources/TE_STM32F207.c **** 
+ 102:../sources/TE_STM32F207.c ****   /* TIM6 enable counter */
+ 103:../sources/TE_STM32F207.c ****   TIM_Cmd(TIM6, ENABLE);
+ 23717              		.loc 1 103 0
+ 23718 00e2 4FF48050 		mov	r0, #4096
+ 23719 00e6 C4F20000 		movt	r0, 16384
+ 23720 00ea 4FF00101 		mov	r1, #1
+ 23721 00ee FFF7FEFF 		bl	TIM_Cmd
+ 104:../sources/TE_STM32F207.c **** }
+ 23722              		.loc 1 104 0
+ 23723 00f2 07F11007 		add	r7, r7, #16
+ 23724 00f6 BD46     		mov	sp, r7
+ 23725 00f8 80BD     		pop	{r7, pc}
+ 23726              		.cfi_endproc
+ 23727              	.LFE30:
+ 23729 00fa 00BF     		.align	2
+ 23730              		.global	ADC1_ChTempSensor_Init
+ 23731              		.thumb
+ 23732              		.thumb_func
+ 23734              	ADC1_ChTempSensor_Init:
+ 23735              	.LFB31:
+ 105:../sources/TE_STM32F207.c **** 
+ 106:../sources/TE_STM32F207.c **** 
+ 107:../sources/TE_STM32F207.c **** void ADC1_ChTempSensor_Init(void) {
+ 23736              		.loc 1 107 0
+ 23737              		.cfi_startproc
+ 23738              		@ args = 0, pretend = 0, frame = 104
+ 23739              		@ frame_needed = 1, uses_anonymous_args = 0
+ 23740 00fc 80B5     		push	{r7, lr}
+ 23741              	.LCFI6:
+ 23742              		.cfi_def_cfa_offset 8
+ 23743 00fe 9AB0     		sub	sp, sp, #104
+ 23744              	.LCFI7:
+ 23745              		.cfi_def_cfa_offset 112
+ 23746 0100 00AF     		add	r7, sp, #0
+ 23747              		.cfi_offset 14, -4
+ 23748              		.cfi_offset 7, -8
+ 23749              	.LCFI8:
+ 23750              		.cfi_def_cfa_register 7
+ 108:../sources/TE_STM32F207.c **** 
+ 109:../sources/TE_STM32F207.c **** 
+ 110:../sources/TE_STM32F207.c **** 	  ADC_InitTypeDef       ADC_InitStructure;
+ 111:../sources/TE_STM32F207.c **** 	  ADC_CommonInitTypeDef ADC_CommonInitStructure;
+ 112:../sources/TE_STM32F207.c **** 	  DMA_InitTypeDef       DMA_InitStructure;
+ 113:../sources/TE_STM32F207.c **** 
+ 114:../sources/TE_STM32F207.c **** 	  void ADC_DeInit(void);
+ 115:../sources/TE_STM32F207.c **** 
+ 116:../sources/TE_STM32F207.c **** 	  /* Enable peripheral clocks *************************************************/
+ 117:../sources/TE_STM32F207.c **** 	  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE);
+ 23751              		.loc 1 117 0
+ 23752 0102 4FF48000 		mov	r0, #4194304
+ 23753 0106 4FF00101 		mov	r1, #1
+ 23754 010a FFF7FEFF 		bl	RCC_AHB1PeriphClockCmd
+ 118:../sources/TE_STM32F207.c **** 	  RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+ 23755              		.loc 1 118 0
+ 23756 010e 4FF48070 		mov	r0, #256
+ 23757 0112 4FF00101 		mov	r1, #1
+ 23758 0116 FFF7FEFF 		bl	RCC_APB2PeriphClockCmd
+ 119:../sources/TE_STM32F207.c **** 
+ 120:../sources/TE_STM32F207.c **** 	  /* DMA2_Stream0 channel0 configuration **************************************/
+ 121:../sources/TE_STM32F207.c **** 	  DMA_DeInit(DMA2_Stream0);
+ 23759              		.loc 1 121 0
+ 23760 011a 46F21040 		movw	r0, #25616
+ 23761 011e C4F20200 		movt	r0, 16386
+ 23762 0122 FFF7FEFF 		bl	DMA_DeInit
+ 122:../sources/TE_STM32F207.c **** 	  DMA_InitStructure.DMA_Channel = DMA_Channel_0;
+ 23763              		.loc 1 122 0
+ 23764 0126 4FF00003 		mov	r3, #0
+ 23765 012a 7B60     		str	r3, [r7, #4]
+ 123:../sources/TE_STM32F207.c **** 	  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)ADC1_DR_ADDRESS;
+ 23766              		.loc 1 123 0
+ 23767 012c 42F24C03 		movw	r3, #8268
+ 23768 0130 C4F20103 		movt	r3, 16385
+ 23769 0134 BB60     		str	r3, [r7, #8]
+ 124:../sources/TE_STM32F207.c **** 	  DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&ADCConvertedValue;
+ 23770              		.loc 1 124 0
+ 23771 0136 40F20003 		movw	r3, #:lower16:ADCConvertedValue
+ 23772 013a C0F20003 		movt	r3, #:upper16:ADCConvertedValue
+ 23773 013e FB60     		str	r3, [r7, #12]
+ 125:../sources/TE_STM32F207.c **** 	  DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
+ 23774              		.loc 1 125 0
+ 23775 0140 4FF00003 		mov	r3, #0
+ 23776 0144 3B61     		str	r3, [r7, #16]
+ 126:../sources/TE_STM32F207.c **** 	  DMA_InitStructure.DMA_BufferSize = 1;
+ 23777              		.loc 1 126 0
+ 23778 0146 4FF00103 		mov	r3, #1
+ 23779 014a 7B61     		str	r3, [r7, #20]
+ 127:../sources/TE_STM32F207.c **** 	  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+ 23780              		.loc 1 127 0
+ 23781 014c 4FF00003 		mov	r3, #0
+ 23782 0150 BB61     		str	r3, [r7, #24]
+ 128:../sources/TE_STM32F207.c **** 	  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Disable;
+ 23783              		.loc 1 128 0
+ 23784 0152 4FF00003 		mov	r3, #0
+ 23785 0156 FB61     		str	r3, [r7, #28]
+ 129:../sources/TE_STM32F207.c **** 	  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
+ 23786              		.loc 1 129 0
+ 23787 0158 4FF40063 		mov	r3, #2048
+ 23788 015c 3B62     		str	r3, [r7, #32]
+ 130:../sources/TE_STM32F207.c **** 	  DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
+ 23789              		.loc 1 130 0
+ 23790 015e 4FF40053 		mov	r3, #8192
+ 23791 0162 7B62     		str	r3, [r7, #36]
+ 131:../sources/TE_STM32F207.c **** 	  DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
+ 23792              		.loc 1 131 0
+ 23793 0164 4FF48073 		mov	r3, #256
+ 23794 0168 BB62     		str	r3, [r7, #40]
+ 132:../sources/TE_STM32F207.c **** 	  DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+ 23795              		.loc 1 132 0
+ 23796 016a 4FF40033 		mov	r3, #131072
+ 23797 016e FB62     		str	r3, [r7, #44]
+ 133:../sources/TE_STM32F207.c **** 	  DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
+ 23798              		.loc 1 133 0
+ 23799 0170 4FF00003 		mov	r3, #0
+ 23800 0174 3B63     		str	r3, [r7, #48]
+ 134:../sources/TE_STM32F207.c **** 	  DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
+ 23801              		.loc 1 134 0
+ 23802 0176 4FF00103 		mov	r3, #1
+ 23803 017a 7B63     		str	r3, [r7, #52]
+ 135:../sources/TE_STM32F207.c **** 	  DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+ 23804              		.loc 1 135 0
+ 23805 017c 4FF00003 		mov	r3, #0
+ 23806 0180 BB63     		str	r3, [r7, #56]
+ 136:../sources/TE_STM32F207.c **** 	  DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+ 23807              		.loc 1 136 0
+ 23808 0182 4FF00003 		mov	r3, #0
+ 23809 0186 FB63     		str	r3, [r7, #60]
+ 137:../sources/TE_STM32F207.c **** 	  DMA_Init(DMA2_Stream0, &DMA_InitStructure);
+ 23810              		.loc 1 137 0
+ 23811 0188 07F10403 		add	r3, r7, #4
+ 23812 018c 46F21040 		movw	r0, #25616
+ 23813 0190 C4F20200 		movt	r0, 16386
+ 23814 0194 1946     		mov	r1, r3
+ 23815 0196 FFF7FEFF 		bl	DMA_Init
+ 138:../sources/TE_STM32F207.c **** 	  /* DMA2_Stream0 enable */
+ 139:../sources/TE_STM32F207.c **** 	  DMA_Cmd(DMA2_Stream0, ENABLE);
+ 23816              		.loc 1 139 0
+ 23817 019a 46F21040 		movw	r0, #25616
+ 23818 019e C4F20200 		movt	r0, 16386
+ 23819 01a2 4FF00101 		mov	r1, #1
+ 23820 01a6 FFF7FEFF 		bl	DMA_Cmd
+ 140:../sources/TE_STM32F207.c **** 
+ 141:../sources/TE_STM32F207.c **** 	  /* ADC Common Init **********************************************************/
+ 142:../sources/TE_STM32F207.c **** 	  ADC_CommonInitStructure.ADC_Mode = ADC_Mode_Independent;
+ 23821              		.loc 1 142 0
+ 23822 01aa 4FF00003 		mov	r3, #0
+ 23823 01ae 3B64     		str	r3, [r7, #64]
+ 143:../sources/TE_STM32F207.c **** 	  ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div2;
+ 23824              		.loc 1 143 0
+ 23825 01b0 4FF00003 		mov	r3, #0
+ 23826 01b4 7B64     		str	r3, [r7, #68]
+ 144:../sources/TE_STM32F207.c **** 	  ADC_CommonInitStructure.ADC_DMAAccessMode = ADC_DMAAccessMode_Disabled;
+ 23827              		.loc 1 144 0
+ 23828 01b6 4FF00003 		mov	r3, #0
+ 23829 01ba BB64     		str	r3, [r7, #72]
+ 145:../sources/TE_STM32F207.c **** 	  ADC_CommonInitStructure.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles;
+ 23830              		.loc 1 145 0
+ 23831 01bc 4FF00003 		mov	r3, #0
+ 23832 01c0 FB64     		str	r3, [r7, #76]
+ 146:../sources/TE_STM32F207.c **** 	  ADC_CommonInit(&ADC_CommonInitStructure);
+ 23833              		.loc 1 146 0
+ 23834 01c2 07F14003 		add	r3, r7, #64
+ 23835 01c6 1846     		mov	r0, r3
+ 23836 01c8 FFF7FEFF 		bl	ADC_CommonInit
+ 147:../sources/TE_STM32F207.c **** 
+ 148:../sources/TE_STM32F207.c **** 	  /* ADC1 Init ****************************************************************/
+ 149:../sources/TE_STM32F207.c **** 	  ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;
+ 23837              		.loc 1 149 0
+ 23838 01cc 4FF00003 		mov	r3, #0
+ 23839 01d0 3B65     		str	r3, [r7, #80]
+ 150:../sources/TE_STM32F207.c **** 	  ADC_InitStructure.ADC_ScanConvMode = DISABLE;
+ 23840              		.loc 1 150 0
+ 23841 01d2 4FF00003 		mov	r3, #0
+ 23842 01d6 87F85430 		strb	r3, [r7, #84]
+ 151:../sources/TE_STM32F207.c **** 	  ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;
+ 23843              		.loc 1 151 0
+ 23844 01da 4FF00103 		mov	r3, #1
+ 23845 01de 87F85530 		strb	r3, [r7, #85]
+ 152:../sources/TE_STM32F207.c **** 	  ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
+ 23846              		.loc 1 152 0
+ 23847 01e2 4FF00003 		mov	r3, #0
+ 23848 01e6 BB65     		str	r3, [r7, #88]
+ 153:../sources/TE_STM32F207.c **** 	  ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
+ 23849              		.loc 1 153 0
+ 23850 01e8 4FF00003 		mov	r3, #0
+ 23851 01ec 3B66     		str	r3, [r7, #96]
+ 154:../sources/TE_STM32F207.c **** 	  ADC_InitStructure.ADC_NbrOfConversion = 1;
+ 23852              		.loc 1 154 0
+ 23853 01ee 4FF00103 		mov	r3, #1
+ 23854 01f2 87F86430 		strb	r3, [r7, #100]
+ 155:../sources/TE_STM32F207.c **** 	  ADC_Init(ADC1, &ADC_InitStructure);
+ 23855              		.loc 1 155 0
+ 23856 01f6 07F15003 		add	r3, r7, #80
+ 23857 01fa 4FF40050 		mov	r0, #8192
+ 23858 01fe C4F20100 		movt	r0, 16385
+ 23859 0202 1946     		mov	r1, r3
+ 23860 0204 FFF7FEFF 		bl	ADC_Init
+ 156:../sources/TE_STM32F207.c **** 
+ 157:../sources/TE_STM32F207.c **** 	  /* Enable ADC1 DMA */
+ 158:../sources/TE_STM32F207.c **** 	  ADC_DMACmd(ADC1, ENABLE);
+ 23861              		.loc 1 158 0
+ 23862 0208 4FF40050 		mov	r0, #8192
+ 23863 020c C4F20100 		movt	r0, 16385
+ 23864 0210 4FF00101 		mov	r1, #1
+ 23865 0214 FFF7FEFF 		bl	ADC_DMACmd
+ 159:../sources/TE_STM32F207.c **** 
+ 160:../sources/TE_STM32F207.c **** 	  /* ADC1 regular channel18 (VBAT) configuration ******************************/
+ 161:../sources/TE_STM32F207.c **** 	  ADC_RegularChannelConfig(ADC1, ADC_Channel_TempSensor, 1, ADC_SampleTime_15Cycles);
+ 23866              		.loc 1 161 0
+ 23867 0218 4FF40050 		mov	r0, #8192
+ 23868 021c C4F20100 		movt	r0, 16385
+ 23869 0220 4FF01001 		mov	r1, #16
+ 23870 0224 4FF00102 		mov	r2, #1
+ 23871 0228 4FF00103 		mov	r3, #1
+ 23872 022c FFF7FEFF 		bl	ADC_RegularChannelConfig
+ 162:../sources/TE_STM32F207.c **** 
+ 163:../sources/TE_STM32F207.c **** 	  /* Enable VBAT channel */
+ 164:../sources/TE_STM32F207.c **** 	  ADC_TempSensorVrefintCmd(ENABLE);
+ 23873              		.loc 1 164 0
+ 23874 0230 4FF00100 		mov	r0, #1
+ 23875 0234 FFF7FEFF 		bl	ADC_TempSensorVrefintCmd
+ 165:../sources/TE_STM32F207.c **** 
+ 166:../sources/TE_STM32F207.c **** 	  /* Enable DMA request after last transfer (Single-ADC mode) */
+ 167:../sources/TE_STM32F207.c **** 	  ADC_DMARequestAfterLastTransferCmd(ADC1, ENABLE);
+ 23876              		.loc 1 167 0
+ 23877 0238 4FF40050 		mov	r0, #8192
+ 23878 023c C4F20100 		movt	r0, 16385
+ 23879 0240 4FF00101 		mov	r1, #1
+ 23880 0244 FFF7FEFF 		bl	ADC_DMARequestAfterLastTransferCmd
+ 168:../sources/TE_STM32F207.c **** 
+ 169:../sources/TE_STM32F207.c **** 	  /* Enable ADC1 **************************************************************/
+ 170:../sources/TE_STM32F207.c **** 	  ADC_Cmd(ADC1, ENABLE);
+ 23881              		.loc 1 170 0
+ 23882 0248 4FF40050 		mov	r0, #8192
+ 23883 024c C4F20100 		movt	r0, 16385
+ 23884 0250 4FF00101 		mov	r1, #1
+ 23885 0254 FFF7FEFF 		bl	ADC_Cmd
+ 171:../sources/TE_STM32F207.c **** 
+ 172:../sources/TE_STM32F207.c **** 
+ 173:../sources/TE_STM32F207.c **** }
+ 23886              		.loc 1 173 0
+ 23887 0258 07F16807 		add	r7, r7, #104
+ 23888 025c BD46     		mov	sp, r7
+ 23889 025e 80BD     		pop	{r7, pc}
+ 23890              		.cfi_endproc
+ 23891              	.LFE31:
+ 23893              		.align	2
+ 23894              		.global	STM_EVAL_LEDInit
+ 23895              		.thumb
+ 23896              		.thumb_func
+ 23898              	STM_EVAL_LEDInit:
+ 23899              	.LFB32:
+ 174:../sources/TE_STM32F207.c **** 
+ 175:../sources/TE_STM32F207.c **** 
+ 176:../sources/TE_STM32F207.c **** void STM_EVAL_LEDInit(Led_TypeDef Led)
+ 177:../sources/TE_STM32F207.c **** {
+ 23900              		.loc 1 177 0
+ 23901              		.cfi_startproc
+ 23902              		@ args = 0, pretend = 0, frame = 16
+ 23903              		@ frame_needed = 1, uses_anonymous_args = 0
+ 23904 0260 80B5     		push	{r7, lr}
+ 23905              	.LCFI9:
+ 23906              		.cfi_def_cfa_offset 8
+ 23907 0262 84B0     		sub	sp, sp, #16
+ 23908              	.LCFI10:
+ 23909              		.cfi_def_cfa_offset 24
+ 23910 0264 00AF     		add	r7, sp, #0
+ 23911              		.cfi_offset 14, -4
+ 23912              		.cfi_offset 7, -8
+ 23913              	.LCFI11:
+ 23914              		.cfi_def_cfa_register 7
+ 23915 0266 0346     		mov	r3, r0
+ 23916 0268 FB71     		strb	r3, [r7, #7]
+ 178:../sources/TE_STM32F207.c ****   GPIO_InitTypeDef  GPIO_InitStructure;
+ 179:../sources/TE_STM32F207.c ****   
+ 180:../sources/TE_STM32F207.c ****   /* Enable the GPIO_LED Clock */
+ 181:../sources/TE_STM32F207.c ****   RCC_AHB1PeriphClockCmd(GPIO_CLK[Led], ENABLE);
+ 23917              		.loc 1 181 0
+ 23918 026a FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 23919 026c 40F20003 		movw	r3, #:lower16:GPIO_CLK
+ 23920 0270 C0F20003 		movt	r3, #:upper16:GPIO_CLK
+ 23921 0274 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 23922 0278 1846     		mov	r0, r3
+ 23923 027a 4FF00101 		mov	r1, #1
+ 23924 027e FFF7FEFF 		bl	RCC_AHB1PeriphClockCmd
+ 182:../sources/TE_STM32F207.c **** 
+ 183:../sources/TE_STM32F207.c **** 
+ 184:../sources/TE_STM32F207.c ****   /* Configure the GPIO_LED pin */
+ 185:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_Pin = GPIO_PIN[Led];
+ 23925              		.loc 1 185 0
+ 23926 0282 FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 23927 0284 40F20003 		movw	r3, #:lower16:GPIO_PIN
+ 23928 0288 C0F20003 		movt	r3, #:upper16:GPIO_PIN
+ 23929 028c 33F81230 		ldrh	r3, [r3, r2, lsl #1]
+ 23930 0290 BB60     		str	r3, [r7, #8]
+ 186:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+ 23931              		.loc 1 186 0
+ 23932 0292 4FF00103 		mov	r3, #1
+ 23933 0296 3B73     		strb	r3, [r7, #12]
+ 187:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+ 23934              		.loc 1 187 0
+ 23935 0298 4FF00003 		mov	r3, #0
+ 23936 029c BB73     		strb	r3, [r7, #14]
+ 188:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+ 23937              		.loc 1 188 0
+ 23938 029e 4FF00103 		mov	r3, #1
+ 23939 02a2 FB73     		strb	r3, [r7, #15]
+ 189:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 23940              		.loc 1 189 0
+ 23941 02a4 4FF00203 		mov	r3, #2
+ 23942 02a8 7B73     		strb	r3, [r7, #13]
+ 190:../sources/TE_STM32F207.c ****   GPIO_Init(GPIO_PORT[Led], &GPIO_InitStructure);
+ 23943              		.loc 1 190 0
+ 23944 02aa FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 23945 02ac 40F20003 		movw	r3, #:lower16:GPIO_PORT
+ 23946 02b0 C0F20003 		movt	r3, #:upper16:GPIO_PORT
+ 23947 02b4 53F82220 		ldr	r2, [r3, r2, lsl #2]
+ 23948 02b8 07F10803 		add	r3, r7, #8
+ 23949 02bc 1046     		mov	r0, r2
+ 23950 02be 1946     		mov	r1, r3
+ 23951 02c0 FFF7FEFF 		bl	GPIO_Init
+ 191:../sources/TE_STM32F207.c **** }
+ 23952              		.loc 1 191 0
+ 23953 02c4 07F11007 		add	r7, r7, #16
+ 23954 02c8 BD46     		mov	sp, r7
+ 23955 02ca 80BD     		pop	{r7, pc}
+ 23956              		.cfi_endproc
+ 23957              	.LFE32:
+ 23959              		.align	2
+ 23960              		.global	STM_EVAL_LEDOn
+ 23961              		.thumb
+ 23962              		.thumb_func
+ 23964              	STM_EVAL_LEDOn:
+ 23965              	.LFB33:
+ 192:../sources/TE_STM32F207.c **** 
+ 193:../sources/TE_STM32F207.c **** /**
+ 194:../sources/TE_STM32F207.c ****   * @brief  Turns selected LED On.
+ 195:../sources/TE_STM32F207.c ****   * @param  Led: Specifies the Led to be set on. 
+ 196:../sources/TE_STM32F207.c ****   *   This parameter can be one of following parameters:
+ 197:../sources/TE_STM32F207.c ****   *     @arg LED1
+ 198:../sources/TE_STM32F207.c ****   *     @arg LED2
+ 199:../sources/TE_STM32F207.c ****   *     @arg LED3
+ 200:../sources/TE_STM32F207.c ****   *     @arg LED4  
+ 201:../sources/TE_STM32F207.c ****   * @retval None
+ 202:../sources/TE_STM32F207.c ****   */
+ 203:../sources/TE_STM32F207.c **** void STM_EVAL_LEDOn(Led_TypeDef Led)
+ 204:../sources/TE_STM32F207.c **** {
+ 23966              		.loc 1 204 0
+ 23967              		.cfi_startproc
+ 23968              		@ args = 0, pretend = 0, frame = 8
+ 23969              		@ frame_needed = 1, uses_anonymous_args = 0
+ 23970              		@ link register save eliminated.
+ 23971 02cc 80B4     		push	{r7}
+ 23972              	.LCFI12:
+ 23973              		.cfi_def_cfa_offset 4
+ 23974 02ce 83B0     		sub	sp, sp, #12
+ 23975              	.LCFI13:
+ 23976              		.cfi_def_cfa_offset 16
+ 23977 02d0 00AF     		add	r7, sp, #0
+ 23978              		.cfi_offset 7, -4
+ 23979              	.LCFI14:
+ 23980              		.cfi_def_cfa_register 7
+ 23981 02d2 0346     		mov	r3, r0
+ 23982 02d4 FB71     		strb	r3, [r7, #7]
+ 205:../sources/TE_STM32F207.c ****   GPIO_PORT[Led]->BSRRL = GPIO_PIN[Led];
+ 23983              		.loc 1 205 0
+ 23984 02d6 FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 23985 02d8 40F20003 		movw	r3, #:lower16:GPIO_PORT
+ 23986 02dc C0F20003 		movt	r3, #:upper16:GPIO_PORT
+ 23987 02e0 53F82220 		ldr	r2, [r3, r2, lsl #2]
+ 23988 02e4 F979     		ldrb	r1, [r7, #7]	@ zero_extendqisi2
+ 23989 02e6 40F20003 		movw	r3, #:lower16:GPIO_PIN
+ 23990 02ea C0F20003 		movt	r3, #:upper16:GPIO_PIN
+ 23991 02ee 33F81130 		ldrh	r3, [r3, r1, lsl #1]
+ 23992 02f2 1383     		strh	r3, [r2, #24]	@ movhi
+ 206:../sources/TE_STM32F207.c **** }
+ 23993              		.loc 1 206 0
+ 23994 02f4 07F10C07 		add	r7, r7, #12
+ 23995 02f8 BD46     		mov	sp, r7
+ 23996 02fa 80BC     		pop	{r7}
+ 23997 02fc 7047     		bx	lr
+ 23998              		.cfi_endproc
+ 23999              	.LFE33:
+ 24001 02fe 00BF     		.align	2
+ 24002              		.global	STM_EVAL_LEDOff
+ 24003              		.thumb
+ 24004              		.thumb_func
+ 24006              	STM_EVAL_LEDOff:
+ 24007              	.LFB34:
+ 207:../sources/TE_STM32F207.c **** 
+ 208:../sources/TE_STM32F207.c **** /**
+ 209:../sources/TE_STM32F207.c ****   * @brief  Turns selected LED Off.
+ 210:../sources/TE_STM32F207.c ****   * @param  Led: Specifies the Led to be set off. 
+ 211:../sources/TE_STM32F207.c ****   *   This parameter can be one of following parameters:
+ 212:../sources/TE_STM32F207.c ****   *     @arg LED1
+ 213:../sources/TE_STM32F207.c ****   *     @arg LED2
+ 214:../sources/TE_STM32F207.c ****   *     @arg LED3
+ 215:../sources/TE_STM32F207.c ****   *     @arg LED4 
+ 216:../sources/TE_STM32F207.c ****   * @retval None
+ 217:../sources/TE_STM32F207.c ****   */
+ 218:../sources/TE_STM32F207.c **** void STM_EVAL_LEDOff(Led_TypeDef Led)
+ 219:../sources/TE_STM32F207.c **** {
+ 24008              		.loc 1 219 0
+ 24009              		.cfi_startproc
+ 24010              		@ args = 0, pretend = 0, frame = 8
+ 24011              		@ frame_needed = 1, uses_anonymous_args = 0
+ 24012              		@ link register save eliminated.
+ 24013 0300 80B4     		push	{r7}
+ 24014              	.LCFI15:
+ 24015              		.cfi_def_cfa_offset 4
+ 24016 0302 83B0     		sub	sp, sp, #12
+ 24017              	.LCFI16:
+ 24018              		.cfi_def_cfa_offset 16
+ 24019 0304 00AF     		add	r7, sp, #0
+ 24020              		.cfi_offset 7, -4
+ 24021              	.LCFI17:
+ 24022              		.cfi_def_cfa_register 7
+ 24023 0306 0346     		mov	r3, r0
+ 24024 0308 FB71     		strb	r3, [r7, #7]
+ 220:../sources/TE_STM32F207.c ****   GPIO_PORT[Led]->BSRRH = GPIO_PIN[Led];  
+ 24025              		.loc 1 220 0
+ 24026 030a FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 24027 030c 40F20003 		movw	r3, #:lower16:GPIO_PORT
+ 24028 0310 C0F20003 		movt	r3, #:upper16:GPIO_PORT
+ 24029 0314 53F82220 		ldr	r2, [r3, r2, lsl #2]
+ 24030 0318 F979     		ldrb	r1, [r7, #7]	@ zero_extendqisi2
+ 24031 031a 40F20003 		movw	r3, #:lower16:GPIO_PIN
+ 24032 031e C0F20003 		movt	r3, #:upper16:GPIO_PIN
+ 24033 0322 33F81130 		ldrh	r3, [r3, r1, lsl #1]
+ 24034 0326 5383     		strh	r3, [r2, #26]	@ movhi
+ 221:../sources/TE_STM32F207.c **** }
+ 24035              		.loc 1 221 0
+ 24036 0328 07F10C07 		add	r7, r7, #12
+ 24037 032c BD46     		mov	sp, r7
+ 24038 032e 80BC     		pop	{r7}
+ 24039 0330 7047     		bx	lr
+ 24040              		.cfi_endproc
+ 24041              	.LFE34:
+ 24043 0332 00BF     		.align	2
+ 24044              		.global	STM_EVAL_LEDToggle
+ 24045              		.thumb
+ 24046              		.thumb_func
+ 24048              	STM_EVAL_LEDToggle:
+ 24049              	.LFB35:
+ 222:../sources/TE_STM32F207.c **** 
+ 223:../sources/TE_STM32F207.c **** /**
+ 224:../sources/TE_STM32F207.c ****   * @brief  Toggles the selected LED.
+ 225:../sources/TE_STM32F207.c ****   * @param  Led: Specifies the Led to be toggled. 
+ 226:../sources/TE_STM32F207.c ****   *   This parameter can be one of following parameters:
+ 227:../sources/TE_STM32F207.c ****   *     @arg LED1
+ 228:../sources/TE_STM32F207.c ****   *     @arg LED2
+ 229:../sources/TE_STM32F207.c ****   *     @arg LED3
+ 230:../sources/TE_STM32F207.c ****   *     @arg LED4  
+ 231:../sources/TE_STM32F207.c ****   * @retval None
+ 232:../sources/TE_STM32F207.c ****   */
+ 233:../sources/TE_STM32F207.c **** void STM_EVAL_LEDToggle(Led_TypeDef Led)
+ 234:../sources/TE_STM32F207.c **** {
+ 24050              		.loc 1 234 0
+ 24051              		.cfi_startproc
+ 24052              		@ args = 0, pretend = 0, frame = 8
+ 24053              		@ frame_needed = 1, uses_anonymous_args = 0
+ 24054              		@ link register save eliminated.
+ 24055 0334 80B4     		push	{r7}
+ 24056              	.LCFI18:
+ 24057              		.cfi_def_cfa_offset 4
+ 24058 0336 83B0     		sub	sp, sp, #12
+ 24059              	.LCFI19:
+ 24060              		.cfi_def_cfa_offset 16
+ 24061 0338 00AF     		add	r7, sp, #0
+ 24062              		.cfi_offset 7, -4
+ 24063              	.LCFI20:
+ 24064              		.cfi_def_cfa_register 7
+ 24065 033a 0346     		mov	r3, r0
+ 24066 033c FB71     		strb	r3, [r7, #7]
+ 235:../sources/TE_STM32F207.c ****   GPIO_PORT[Led]->ODR ^= GPIO_PIN[Led];
+ 24067              		.loc 1 235 0
+ 24068 033e FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 24069 0340 40F20003 		movw	r3, #:lower16:GPIO_PORT
+ 24070 0344 C0F20003 		movt	r3, #:upper16:GPIO_PORT
+ 24071 0348 53F82220 		ldr	r2, [r3, r2, lsl #2]
+ 24072 034c F979     		ldrb	r1, [r7, #7]	@ zero_extendqisi2
+ 24073 034e 40F20003 		movw	r3, #:lower16:GPIO_PORT
+ 24074 0352 C0F20003 		movt	r3, #:upper16:GPIO_PORT
+ 24075 0356 53F82130 		ldr	r3, [r3, r1, lsl #2]
+ 24076 035a 5969     		ldr	r1, [r3, #20]
+ 24077 035c F879     		ldrb	r0, [r7, #7]	@ zero_extendqisi2
+ 24078 035e 40F20003 		movw	r3, #:lower16:GPIO_PIN
+ 24079 0362 C0F20003 		movt	r3, #:upper16:GPIO_PIN
+ 24080 0366 33F81030 		ldrh	r3, [r3, r0, lsl #1]
+ 24081 036a 81EA0303 		eor	r3, r1, r3
+ 24082 036e 5361     		str	r3, [r2, #20]
+ 236:../sources/TE_STM32F207.c **** }
+ 24083              		.loc 1 236 0
+ 24084 0370 07F10C07 		add	r7, r7, #12
+ 24085 0374 BD46     		mov	sp, r7
+ 24086 0376 80BC     		pop	{r7}
+ 24087 0378 7047     		bx	lr
+ 24088              		.cfi_endproc
+ 24089              	.LFE35:
+ 24091 037a 00BF     		.align	2
+ 24092              		.global	STM_EVAL_COMInit
+ 24093              		.thumb
+ 24094              		.thumb_func
+ 24096              	STM_EVAL_COMInit:
+ 24097              	.LFB36:
+ 237:../sources/TE_STM32F207.c **** 
+ 238:../sources/TE_STM32F207.c **** 
+ 239:../sources/TE_STM32F207.c **** void STM_EVAL_COMInit(COM_TypeDef COM, USART_InitTypeDef* USART_InitStruct)
+ 240:../sources/TE_STM32F207.c **** {
+ 24098              		.loc 1 240 0
+ 24099              		.cfi_startproc
+ 24100              		@ args = 0, pretend = 0, frame = 16
+ 24101              		@ frame_needed = 1, uses_anonymous_args = 0
+ 24102 037c 80B5     		push	{r7, lr}
+ 24103              	.LCFI21:
+ 24104              		.cfi_def_cfa_offset 8
+ 24105 037e 84B0     		sub	sp, sp, #16
+ 24106              	.LCFI22:
+ 24107              		.cfi_def_cfa_offset 24
+ 24108 0380 00AF     		add	r7, sp, #0
+ 24109              		.cfi_offset 14, -4
+ 24110              		.cfi_offset 7, -8
+ 24111              	.LCFI23:
+ 24112              		.cfi_def_cfa_register 7
+ 24113 0382 0346     		mov	r3, r0
+ 24114 0384 3960     		str	r1, [r7, #0]
+ 24115 0386 FB71     		strb	r3, [r7, #7]
+ 241:../sources/TE_STM32F207.c ****   GPIO_InitTypeDef GPIO_InitStructure;
+ 242:../sources/TE_STM32F207.c **** 
+ 243:../sources/TE_STM32F207.c ****   /* Enable GPIO clock */
+ 244:../sources/TE_STM32F207.c ****   RCC_AHB1PeriphClockCmd(COM_TX_PORT_CLK[COM] | COM_RX_PORT_CLK[COM], ENABLE);
+ 24116              		.loc 1 244 0
+ 24117 0388 FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 24118 038a 40F20003 		movw	r3, #:lower16:COM_TX_PORT_CLK
+ 24119 038e C0F20003 		movt	r3, #:upper16:COM_TX_PORT_CLK
+ 24120 0392 53F82220 		ldr	r2, [r3, r2, lsl #2]
+ 24121 0396 F979     		ldrb	r1, [r7, #7]	@ zero_extendqisi2
+ 24122 0398 40F20003 		movw	r3, #:lower16:COM_RX_PORT_CLK
+ 24123 039c C0F20003 		movt	r3, #:upper16:COM_RX_PORT_CLK
+ 24124 03a0 53F82130 		ldr	r3, [r3, r1, lsl #2]
+ 24125 03a4 42EA0303 		orr	r3, r2, r3
+ 24126 03a8 1846     		mov	r0, r3
+ 24127 03aa 4FF00101 		mov	r1, #1
+ 24128 03ae FFF7FEFF 		bl	RCC_AHB1PeriphClockCmd
+ 245:../sources/TE_STM32F207.c **** 
+ 246:../sources/TE_STM32F207.c ****   if (COM == COM1)
+ 24129              		.loc 1 246 0
+ 24130 03b2 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 24131 03b4 002B     		cmp	r3, #0
+ 24132 03b6 0BD1     		bne	.L9
+ 247:../sources/TE_STM32F207.c ****   {
+ 248:../sources/TE_STM32F207.c ****     /* Enable UART clock */
+ 249:../sources/TE_STM32F207.c ****     RCC_APB1PeriphClockCmd(COM_USART_CLK[COM], ENABLE);
+ 24133              		.loc 1 249 0
+ 24134 03b8 FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 24135 03ba 40F20003 		movw	r3, #:lower16:COM_USART_CLK
+ 24136 03be C0F20003 		movt	r3, #:upper16:COM_USART_CLK
+ 24137 03c2 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 24138 03c6 1846     		mov	r0, r3
+ 24139 03c8 4FF00101 		mov	r1, #1
+ 24140 03cc FFF7FEFF 		bl	RCC_APB1PeriphClockCmd
+ 24141              	.L9:
+ 250:../sources/TE_STM32F207.c ****   }
+ 251:../sources/TE_STM32F207.c **** 
+ 252:../sources/TE_STM32F207.c ****   /* Connect PXx to USARTx_Tx*/
+ 253:../sources/TE_STM32F207.c ****   GPIO_PinAFConfig(COM_TX_PORT[COM], COM_TX_PIN_SOURCE[COM], COM_TX_AF[COM]);
+ 24142              		.loc 1 253 0
+ 24143 03d0 FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 24144 03d2 40F20003 		movw	r3, #:lower16:COM_TX_PORT
+ 24145 03d6 C0F20003 		movt	r3, #:upper16:COM_TX_PORT
+ 24146 03da 53F82210 		ldr	r1, [r3, r2, lsl #2]
+ 24147 03de FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 24148 03e0 40F20003 		movw	r3, #:lower16:COM_TX_PIN_SOURCE
+ 24149 03e4 C0F20003 		movt	r3, #:upper16:COM_TX_PIN_SOURCE
+ 24150 03e8 9B5C     		ldrb	r3, [r3, r2]	@ zero_extendqisi2
+ 24151 03ea 1A46     		mov	r2, r3
+ 24152 03ec F879     		ldrb	r0, [r7, #7]	@ zero_extendqisi2
+ 24153 03ee 40F20003 		movw	r3, #:lower16:COM_TX_AF
+ 24154 03f2 C0F20003 		movt	r3, #:upper16:COM_TX_AF
+ 24155 03f6 1B5C     		ldrb	r3, [r3, r0]	@ zero_extendqisi2
+ 24156 03f8 0846     		mov	r0, r1
+ 24157 03fa 1146     		mov	r1, r2
+ 24158 03fc 1A46     		mov	r2, r3
+ 24159 03fe FFF7FEFF 		bl	GPIO_PinAFConfig
+ 254:../sources/TE_STM32F207.c **** 
+ 255:../sources/TE_STM32F207.c ****   /* Connect PXx to USARTx_Rx*/
+ 256:../sources/TE_STM32F207.c ****   GPIO_PinAFConfig(COM_RX_PORT[COM], COM_RX_PIN_SOURCE[COM], COM_RX_AF[COM]);
+ 24160              		.loc 1 256 0
+ 24161 0402 FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 24162 0404 40F20003 		movw	r3, #:lower16:COM_RX_PORT
+ 24163 0408 C0F20003 		movt	r3, #:upper16:COM_RX_PORT
+ 24164 040c 53F82210 		ldr	r1, [r3, r2, lsl #2]
+ 24165 0410 FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 24166 0412 40F20003 		movw	r3, #:lower16:COM_RX_PIN_SOURCE
+ 24167 0416 C0F20003 		movt	r3, #:upper16:COM_RX_PIN_SOURCE
+ 24168 041a 9B5C     		ldrb	r3, [r3, r2]	@ zero_extendqisi2
+ 24169 041c 1A46     		mov	r2, r3
+ 24170 041e F879     		ldrb	r0, [r7, #7]	@ zero_extendqisi2
+ 24171 0420 40F20003 		movw	r3, #:lower16:COM_RX_AF
+ 24172 0424 C0F20003 		movt	r3, #:upper16:COM_RX_AF
+ 24173 0428 1B5C     		ldrb	r3, [r3, r0]	@ zero_extendqisi2
+ 24174 042a 0846     		mov	r0, r1
+ 24175 042c 1146     		mov	r1, r2
+ 24176 042e 1A46     		mov	r2, r3
+ 24177 0430 FFF7FEFF 		bl	GPIO_PinAFConfig
+ 257:../sources/TE_STM32F207.c **** 
+ 258:../sources/TE_STM32F207.c ****   /* Configure USART Tx as alternate function  */
+ 259:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+ 24178              		.loc 1 259 0
+ 24179 0434 4FF00003 		mov	r3, #0
+ 24180 0438 BB73     		strb	r3, [r7, #14]
+ 260:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+ 24181              		.loc 1 260 0
+ 24182 043a 4FF00103 		mov	r3, #1
+ 24183 043e FB73     		strb	r3, [r7, #15]
+ 261:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+ 24184              		.loc 1 261 0
+ 24185 0440 4FF00203 		mov	r3, #2
+ 24186 0444 3B73     		strb	r3, [r7, #12]
+ 262:../sources/TE_STM32F207.c **** 
+ 263:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_Pin = COM_TX_PIN[COM];
+ 24187              		.loc 1 263 0
+ 24188 0446 FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 24189 0448 40F20003 		movw	r3, #:lower16:COM_TX_PIN
+ 24190 044c C0F20003 		movt	r3, #:upper16:COM_TX_PIN
+ 24191 0450 33F81230 		ldrh	r3, [r3, r2, lsl #1]
+ 24192 0454 BB60     		str	r3, [r7, #8]
+ 264:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 24193              		.loc 1 264 0
+ 24194 0456 4FF00203 		mov	r3, #2
+ 24195 045a 7B73     		strb	r3, [r7, #13]
+ 265:../sources/TE_STM32F207.c ****   GPIO_Init(COM_TX_PORT[COM], &GPIO_InitStructure);
+ 24196              		.loc 1 265 0
+ 24197 045c FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 24198 045e 40F20003 		movw	r3, #:lower16:COM_TX_PORT
+ 24199 0462 C0F20003 		movt	r3, #:upper16:COM_TX_PORT
+ 24200 0466 53F82220 		ldr	r2, [r3, r2, lsl #2]
+ 24201 046a 07F10803 		add	r3, r7, #8
+ 24202 046e 1046     		mov	r0, r2
+ 24203 0470 1946     		mov	r1, r3
+ 24204 0472 FFF7FEFF 		bl	GPIO_Init
+ 266:../sources/TE_STM32F207.c **** 
+ 267:../sources/TE_STM32F207.c ****   /* Configure USART Rx as alternate function  */
+ 268:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+ 24205              		.loc 1 268 0
+ 24206 0476 4FF00203 		mov	r3, #2
+ 24207 047a 3B73     		strb	r3, [r7, #12]
+ 269:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_Pin = COM_RX_PIN[COM];
+ 24208              		.loc 1 269 0
+ 24209 047c FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 24210 047e 40F20003 		movw	r3, #:lower16:COM_RX_PIN
+ 24211 0482 C0F20003 		movt	r3, #:upper16:COM_RX_PIN
+ 24212 0486 33F81230 		ldrh	r3, [r3, r2, lsl #1]
+ 24213 048a BB60     		str	r3, [r7, #8]
+ 270:../sources/TE_STM32F207.c ****   GPIO_Init(COM_RX_PORT[COM], &GPIO_InitStructure);
+ 24214              		.loc 1 270 0
+ 24215 048c FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 24216 048e 40F20003 		movw	r3, #:lower16:COM_RX_PORT
+ 24217 0492 C0F20003 		movt	r3, #:upper16:COM_RX_PORT
+ 24218 0496 53F82220 		ldr	r2, [r3, r2, lsl #2]
+ 24219 049a 07F10803 		add	r3, r7, #8
+ 24220 049e 1046     		mov	r0, r2
+ 24221 04a0 1946     		mov	r1, r3
+ 24222 04a2 FFF7FEFF 		bl	GPIO_Init
+ 271:../sources/TE_STM32F207.c **** 
+ 272:../sources/TE_STM32F207.c ****   /* USART configuration */
+ 273:../sources/TE_STM32F207.c ****   USART_Init(COM_USART[COM], USART_InitStruct);
+ 24223              		.loc 1 273 0
+ 24224 04a6 FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 24225 04a8 40F20003 		movw	r3, #:lower16:COM_USART
+ 24226 04ac C0F20003 		movt	r3, #:upper16:COM_USART
+ 24227 04b0 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 24228 04b4 1846     		mov	r0, r3
+ 24229 04b6 3968     		ldr	r1, [r7, #0]
+ 24230 04b8 FFF7FEFF 		bl	USART_Init
+ 274:../sources/TE_STM32F207.c ****     
+ 275:../sources/TE_STM32F207.c ****   /* Enable USART */
+ 276:../sources/TE_STM32F207.c ****   USART_Cmd(COM_USART[COM], ENABLE);
+ 24231              		.loc 1 276 0
+ 24232 04bc FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 24233 04be 40F20003 		movw	r3, #:lower16:COM_USART
+ 24234 04c2 C0F20003 		movt	r3, #:upper16:COM_USART
+ 24235 04c6 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 24236 04ca 1846     		mov	r0, r3
+ 24237 04cc 4FF00101 		mov	r1, #1
+ 24238 04d0 FFF7FEFF 		bl	USART_Cmd
+ 277:../sources/TE_STM32F207.c **** }
+ 24239              		.loc 1 277 0
+ 24240 04d4 07F11007 		add	r7, r7, #16
+ 24241 04d8 BD46     		mov	sp, r7
+ 24242 04da 80BD     		pop	{r7, pc}
+ 24243              		.cfi_endproc
+ 24244              	.LFE36:
+ 24246              		.align	2
+ 24247              		.global	sFLASH_Init
+ 24248              		.thumb
+ 24249              		.thumb_func
+ 24251              	sFLASH_Init:
+ 24252              	.LFB37:
+ 278:../sources/TE_STM32F207.c **** 
+ 279:../sources/TE_STM32F207.c **** /**
+ 280:../sources/TE_STM32F207.c ****   * @brief  Initializes the peripherals used by the SPI FLASH driver.
+ 281:../sources/TE_STM32F207.c ****   * @param  None
+ 282:../sources/TE_STM32F207.c ****   * @retval None
+ 283:../sources/TE_STM32F207.c ****   */
+ 284:../sources/TE_STM32F207.c **** void sFLASH_Init(void)
+ 285:../sources/TE_STM32F207.c **** {
+ 24253              		.loc 1 285 0
+ 24254              		.cfi_startproc
+ 24255              		@ args = 0, pretend = 0, frame = 24
+ 24256              		@ frame_needed = 1, uses_anonymous_args = 0
+ 24257 04dc 80B5     		push	{r7, lr}
+ 24258              	.LCFI24:
+ 24259              		.cfi_def_cfa_offset 8
+ 24260 04de 86B0     		sub	sp, sp, #24
+ 24261              	.LCFI25:
+ 24262              		.cfi_def_cfa_offset 32
+ 24263 04e0 00AF     		add	r7, sp, #0
+ 24264              		.cfi_offset 14, -4
+ 24265              		.cfi_offset 7, -8
+ 24266              	.LCFI26:
+ 24267              		.cfi_def_cfa_register 7
+ 286:../sources/TE_STM32F207.c **** 	  SPI_InitTypeDef  SPI_InitStructure;
+ 287:../sources/TE_STM32F207.c **** 
+ 288:../sources/TE_STM32F207.c **** 	  sFLASH_LowLevel_Init();
+ 24268              		.loc 1 288 0
+ 24269 04e2 FFF7FEFF 		bl	sFLASH_LowLevel_Init
+ 289:../sources/TE_STM32F207.c **** 
+ 290:../sources/TE_STM32F207.c **** 	  /*!< Deselect the FLASH: Chip Select high */
+ 291:../sources/TE_STM32F207.c **** 	  sFLASH_CS_HIGH();
+ 24270              		.loc 1 291 0
+ 24271 04e6 4FF44060 		mov	r0, #3072
+ 24272 04ea C4F20200 		movt	r0, 16386
+ 24273 04ee 4FF00401 		mov	r1, #4
+ 24274 04f2 FFF7FEFF 		bl	GPIO_SetBits
+ 292:../sources/TE_STM32F207.c **** 
+ 293:../sources/TE_STM32F207.c **** 	  /*!1< SPI configuration */
+ 294:../sources/TE_STM32F207.c **** 	  SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
+ 24275              		.loc 1 294 0
+ 24276 04f6 4FF00003 		mov	r3, #0
+ 24277 04fa BB80     		strh	r3, [r7, #4]	@ movhi
+ 295:../sources/TE_STM32F207.c **** 	  SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
+ 24278              		.loc 1 295 0
+ 24279 04fc 4FF48273 		mov	r3, #260
+ 24280 0500 FB80     		strh	r3, [r7, #6]	@ movhi
+ 296:../sources/TE_STM32F207.c **** 	  SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
+ 24281              		.loc 1 296 0
+ 24282 0502 4FF00003 		mov	r3, #0
+ 24283 0506 3B81     		strh	r3, [r7, #8]	@ movhi
+ 297:../sources/TE_STM32F207.c **** 	  SPI_InitStructure.SPI_CPOL = SPI_CPOL_High;
+ 24284              		.loc 1 297 0
+ 24285 0508 4FF00203 		mov	r3, #2
+ 24286 050c 7B81     		strh	r3, [r7, #10]	@ movhi
+ 298:../sources/TE_STM32F207.c **** 	  SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
+ 24287              		.loc 1 298 0
+ 24288 050e 4FF00103 		mov	r3, #1
+ 24289 0512 BB81     		strh	r3, [r7, #12]	@ movhi
+ 299:../sources/TE_STM32F207.c **** 	  SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
+ 24290              		.loc 1 299 0
+ 24291 0514 4FF40073 		mov	r3, #512
+ 24292 0518 FB81     		strh	r3, [r7, #14]	@ movhi
+ 300:../sources/TE_STM32F207.c **** 	  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_4;
+ 24293              		.loc 1 300 0
+ 24294 051a 4FF00803 		mov	r3, #8
+ 24295 051e 3B82     		strh	r3, [r7, #16]	@ movhi
+ 301:../sources/TE_STM32F207.c **** 
+ 302:../sources/TE_STM32F207.c **** 	  SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
+ 24296              		.loc 1 302 0
+ 24297 0520 4FF00003 		mov	r3, #0
+ 24298 0524 7B82     		strh	r3, [r7, #18]	@ movhi
+ 303:../sources/TE_STM32F207.c **** 	  SPI_InitStructure.SPI_CRCPolynomial = 7;
+ 24299              		.loc 1 303 0
+ 24300 0526 4FF00703 		mov	r3, #7
+ 24301 052a BB82     		strh	r3, [r7, #20]	@ movhi
+ 304:../sources/TE_STM32F207.c **** 	  SPI_Init(sFLASH_SPI, &SPI_InitStructure);
+ 24302              		.loc 1 304 0
+ 24303 052c 07F10403 		add	r3, r7, #4
+ 24304 0530 4FF47050 		mov	r0, #15360
+ 24305 0534 C4F20000 		movt	r0, 16384
+ 24306 0538 1946     		mov	r1, r3
+ 24307 053a FFF7FEFF 		bl	SPI_Init
+ 305:../sources/TE_STM32F207.c **** 
+ 306:../sources/TE_STM32F207.c **** 	  /*!< Enable the sFLASH_SPI  */
+ 307:../sources/TE_STM32F207.c **** 	  SPI_Cmd(sFLASH_SPI, ENABLE);
+ 24308              		.loc 1 307 0
+ 24309 053e 4FF47050 		mov	r0, #15360
+ 24310 0542 C4F20000 		movt	r0, 16384
+ 24311 0546 4FF00101 		mov	r1, #1
+ 24312 054a FFF7FEFF 		bl	SPI_Cmd
+ 308:../sources/TE_STM32F207.c **** }
+ 24313              		.loc 1 308 0
+ 24314 054e 07F11807 		add	r7, r7, #24
+ 24315 0552 BD46     		mov	sp, r7
+ 24316 0554 80BD     		pop	{r7, pc}
+ 24317              		.cfi_endproc
+ 24318              	.LFE37:
+ 24320 0556 00BF     		.align	2
+ 24321              		.global	sFLASH_LowLevel_Init
+ 24322              		.thumb
+ 24323              		.thumb_func
+ 24325              	sFLASH_LowLevel_Init:
+ 24326              	.LFB38:
+ 309:../sources/TE_STM32F207.c **** 
+ 310:../sources/TE_STM32F207.c **** /**
+ 311:../sources/TE_STM32F207.c ****   * @brief  Initializes the peripherals used by the SPI FLASH driver.
+ 312:../sources/TE_STM32F207.c ****   * @param  None
+ 313:../sources/TE_STM32F207.c ****   * @retval None
+ 314:../sources/TE_STM32F207.c ****   */
+ 315:../sources/TE_STM32F207.c **** void sFLASH_LowLevel_Init(void)
+ 316:../sources/TE_STM32F207.c **** {
+ 24327              		.loc 1 316 0
+ 24328              		.cfi_startproc
+ 24329              		@ args = 0, pretend = 0, frame = 8
+ 24330              		@ frame_needed = 1, uses_anonymous_args = 0
+ 24331 0558 80B5     		push	{r7, lr}
+ 24332              	.LCFI27:
+ 24333              		.cfi_def_cfa_offset 8
+ 24334 055a 82B0     		sub	sp, sp, #8
+ 24335              	.LCFI28:
+ 24336              		.cfi_def_cfa_offset 16
+ 24337 055c 00AF     		add	r7, sp, #0
+ 24338              		.cfi_offset 14, -4
+ 24339              		.cfi_offset 7, -8
+ 24340              	.LCFI29:
+ 24341              		.cfi_def_cfa_register 7
+ 317:../sources/TE_STM32F207.c ****   GPIO_InitTypeDef GPIO_InitStructure;
+ 318:../sources/TE_STM32F207.c **** 
+ 319:../sources/TE_STM32F207.c ****   /*!< sFLASH_SPI Periph clock enable */
+ 320:../sources/TE_STM32F207.c ****   RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI3, ENABLE);
+ 24342              		.loc 1 320 0
+ 24343 055e 4FF40040 		mov	r0, #32768
+ 24344 0562 4FF00101 		mov	r1, #1
+ 24345 0566 FFF7FEFF 		bl	RCC_APB1PeriphClockCmd
+ 321:../sources/TE_STM32F207.c **** 
+ 322:../sources/TE_STM32F207.c ****   /*!< sFLASH_SPI_CS_GPIO, sFLASH_SPI_MOSI_GPIO, sFLASH_SPI_MISO_GPIO
+ 323:../sources/TE_STM32F207.c ****        and sFLASH_SPI_SCK_GPIO Periph clock enable */
+ 324:../sources/TE_STM32F207.c ****   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+ 24346              		.loc 1 324 0
+ 24347 056a 4FF00400 		mov	r0, #4
+ 24348 056e 4FF00101 		mov	r1, #1
+ 24349 0572 FFF7FEFF 		bl	RCC_AHB1PeriphClockCmd
+ 325:../sources/TE_STM32F207.c ****   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
+ 24350              		.loc 1 325 0
+ 24351 0576 4FF00800 		mov	r0, #8
+ 24352 057a 4FF00101 		mov	r1, #1
+ 24353 057e FFF7FEFF 		bl	RCC_AHB1PeriphClockCmd
+ 326:../sources/TE_STM32F207.c **** 
+ 327:../sources/TE_STM32F207.c ****   GPIO_PinAFConfig(GPIOC,GPIO_PinSource10,GPIO_AF_SPI3);	/* PC.10 */
+ 24354              		.loc 1 327 0
+ 24355 0582 4FF40060 		mov	r0, #2048
+ 24356 0586 C4F20200 		movt	r0, 16386
+ 24357 058a 4FF00A01 		mov	r1, #10
+ 24358 058e 4FF00602 		mov	r2, #6
+ 24359 0592 FFF7FEFF 		bl	GPIO_PinAFConfig
+ 328:../sources/TE_STM32F207.c ****   GPIO_PinAFConfig(GPIOC,GPIO_PinSource11,GPIO_AF_SPI3);	/* PC.11 */
+ 24360              		.loc 1 328 0
+ 24361 0596 4FF40060 		mov	r0, #2048
+ 24362 059a C4F20200 		movt	r0, 16386
+ 24363 059e 4FF00B01 		mov	r1, #11
+ 24364 05a2 4FF00602 		mov	r2, #6
+ 24365 05a6 FFF7FEFF 		bl	GPIO_PinAFConfig
+ 329:../sources/TE_STM32F207.c ****   GPIO_PinAFConfig(GPIOC,GPIO_PinSource12,GPIO_AF_SPI3);	/* PC.12 */
+ 24366              		.loc 1 329 0
+ 24367 05aa 4FF40060 		mov	r0, #2048
+ 24368 05ae C4F20200 		movt	r0, 16386
+ 24369 05b2 4FF00C01 		mov	r1, #12
+ 24370 05b6 4FF00602 		mov	r2, #6
+ 24371 05ba FFF7FEFF 		bl	GPIO_PinAFConfig
+ 330:../sources/TE_STM32F207.c **** 
+ 331:../sources/TE_STM32F207.c **** 
+ 332:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+ 24372              		.loc 1 332 0
+ 24373 05be 4FF00203 		mov	r3, #2
+ 24374 05c2 3B71     		strb	r3, [r7, #4]
+ 333:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 24375              		.loc 1 333 0
+ 24376 05c4 4FF00203 		mov	r3, #2
+ 24377 05c8 7B71     		strb	r3, [r7, #5]
+ 334:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+ 24378              		.loc 1 334 0
+ 24379 05ca 4FF00003 		mov	r3, #0
+ 24380 05ce BB71     		strb	r3, [r7, #6]
+ 335:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_DOWN;
+ 24381              		.loc 1 335 0
+ 24382 05d0 4FF00203 		mov	r3, #2
+ 24383 05d4 FB71     		strb	r3, [r7, #7]
+ 336:../sources/TE_STM32F207.c **** 
+ 337:../sources/TE_STM32F207.c **** 
+ 338:../sources/TE_STM32F207.c ****   /*!< Configure sFLASH_SPI pins: SCK */
+ 339:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;	/* PC.10 */
+ 24384              		.loc 1 339 0
+ 24385 05d6 4FF48063 		mov	r3, #1024
+ 24386 05da 3B60     		str	r3, [r7, #0]
+ 340:../sources/TE_STM32F207.c ****   GPIO_Init(GPIOC, &GPIO_InitStructure);
+ 24387              		.loc 1 340 0
+ 24388 05dc 3B46     		mov	r3, r7
+ 24389 05de 4FF40060 		mov	r0, #2048
+ 24390 05e2 C4F20200 		movt	r0, 16386
+ 24391 05e6 1946     		mov	r1, r3
+ 24392 05e8 FFF7FEFF 		bl	GPIO_Init
+ 341:../sources/TE_STM32F207.c **** 
+ 342:../sources/TE_STM32F207.c ****   /*!< Configure sFLASH_SPI pins: MOSI */
+ 343:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;	/* PC.11 */
+ 24393              		.loc 1 343 0
+ 24394 05ec 4FF40063 		mov	r3, #2048
+ 24395 05f0 3B60     		str	r3, [r7, #0]
+ 344:../sources/TE_STM32F207.c ****   GPIO_Init(GPIOC, &GPIO_InitStructure);
+ 24396              		.loc 1 344 0
+ 24397 05f2 3B46     		mov	r3, r7
+ 24398 05f4 4FF40060 		mov	r0, #2048
+ 24399 05f8 C4F20200 		movt	r0, 16386
+ 24400 05fc 1946     		mov	r1, r3
+ 24401 05fe FFF7FEFF 		bl	GPIO_Init
+ 345:../sources/TE_STM32F207.c **** 
+ 346:../sources/TE_STM32F207.c ****   /*!< Configure sFLASH_SPI pins: MISO */
+ 347:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;	/* PC.12 */
+ 24402              		.loc 1 347 0
+ 24403 0602 4FF48053 		mov	r3, #4096
+ 24404 0606 3B60     		str	r3, [r7, #0]
+ 348:../sources/TE_STM32F207.c ****   GPIO_Init(GPIOC, &GPIO_InitStructure);
+ 24405              		.loc 1 348 0
+ 24406 0608 3B46     		mov	r3, r7
+ 24407 060a 4FF40060 		mov	r0, #2048
+ 24408 060e C4F20200 		movt	r0, 16386
+ 24409 0612 1946     		mov	r1, r3
+ 24410 0614 FFF7FEFF 		bl	GPIO_Init
+ 349:../sources/TE_STM32F207.c **** 
+ 350:../sources/TE_STM32F207.c **** 
+ 351:../sources/TE_STM32F207.c ****   /*!< Configure sFLASH_CS_PIN pin: sFLASH Card CS pin */
+ 352:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
+ 24411              		.loc 1 352 0
+ 24412 0618 4FF00403 		mov	r3, #4
+ 24413 061c 3B60     		str	r3, [r7, #0]
+ 353:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 24414              		.loc 1 353 0
+ 24415 061e 4FF00203 		mov	r3, #2
+ 24416 0622 7B71     		strb	r3, [r7, #5]
+ 354:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+ 24417              		.loc 1 354 0
+ 24418 0624 4FF00103 		mov	r3, #1
+ 24419 0628 3B71     		strb	r3, [r7, #4]
+ 355:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+ 24420              		.loc 1 355 0
+ 24421 062a 4FF00003 		mov	r3, #0
+ 24422 062e BB71     		strb	r3, [r7, #6]
+ 356:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+ 24423              		.loc 1 356 0
+ 24424 0630 4FF00203 		mov	r3, #2
+ 24425 0634 FB71     		strb	r3, [r7, #7]
+ 357:../sources/TE_STM32F207.c ****   GPIO_Init(GPIOD, &GPIO_InitStructure);
+ 24426              		.loc 1 357 0
+ 24427 0636 3B46     		mov	r3, r7
+ 24428 0638 4FF44060 		mov	r0, #3072
+ 24429 063c C4F20200 		movt	r0, 16386
+ 24430 0640 1946     		mov	r1, r3
+ 24431 0642 FFF7FEFF 		bl	GPIO_Init
+ 358:../sources/TE_STM32F207.c **** 
+ 359:../sources/TE_STM32F207.c **** 
+ 360:../sources/TE_STM32F207.c **** }
+ 24432              		.loc 1 360 0
+ 24433 0646 07F10807 		add	r7, r7, #8
+ 24434 064a BD46     		mov	sp, r7
+ 24435 064c 80BD     		pop	{r7, pc}
+ 24436              		.cfi_endproc
+ 24437              	.LFE38:
+ 24439 064e 00BF     		.align	2
+ 24440              		.global	sFLASH_LowLevel_DeInit
+ 24441              		.thumb
+ 24442              		.thumb_func
+ 24444              	sFLASH_LowLevel_DeInit:
+ 24445              	.LFB39:
+ 361:../sources/TE_STM32F207.c **** 
+ 362:../sources/TE_STM32F207.c **** /**
+ 363:../sources/TE_STM32F207.c ****   * @brief  DeInitializes the peripherals used by the SPI FLASH driver.
+ 364:../sources/TE_STM32F207.c ****   * @param  None
+ 365:../sources/TE_STM32F207.c ****   * @retval None
+ 366:../sources/TE_STM32F207.c ****   */
+ 367:../sources/TE_STM32F207.c **** void sFLASH_LowLevel_DeInit(void)
+ 368:../sources/TE_STM32F207.c **** {
+ 24446              		.loc 1 368 0
+ 24447              		.cfi_startproc
+ 24448              		@ args = 0, pretend = 0, frame = 8
+ 24449              		@ frame_needed = 1, uses_anonymous_args = 0
+ 24450 0650 80B5     		push	{r7, lr}
+ 24451              	.LCFI30:
+ 24452              		.cfi_def_cfa_offset 8
+ 24453 0652 82B0     		sub	sp, sp, #8
+ 24454              	.LCFI31:
+ 24455              		.cfi_def_cfa_offset 16
+ 24456 0654 00AF     		add	r7, sp, #0
+ 24457              		.cfi_offset 14, -4
+ 24458              		.cfi_offset 7, -8
+ 24459              	.LCFI32:
+ 24460              		.cfi_def_cfa_register 7
+ 369:../sources/TE_STM32F207.c ****   GPIO_InitTypeDef GPIO_InitStructure;
+ 370:../sources/TE_STM32F207.c **** 
+ 371:../sources/TE_STM32F207.c ****   /*!< Disable the sFLASH_SPI  */
+ 372:../sources/TE_STM32F207.c ****   SPI_Cmd(sFLASH_SPI, DISABLE);
+ 24461              		.loc 1 372 0
+ 24462 0656 4FF47050 		mov	r0, #15360
+ 24463 065a C4F20000 		movt	r0, 16384
+ 24464 065e 4FF00001 		mov	r1, #0
+ 24465 0662 FFF7FEFF 		bl	SPI_Cmd
+ 373:../sources/TE_STM32F207.c **** 
+ 374:../sources/TE_STM32F207.c ****   /*!< DeInitializes the sFLASH_SPI */
+ 375:../sources/TE_STM32F207.c ****   SPI_I2S_DeInit(sFLASH_SPI);
+ 24466              		.loc 1 375 0
+ 24467 0666 4FF47050 		mov	r0, #15360
+ 24468 066a C4F20000 		movt	r0, 16384
+ 24469 066e FFF7FEFF 		bl	SPI_I2S_DeInit
+ 376:../sources/TE_STM32F207.c **** 
+ 377:../sources/TE_STM32F207.c ****   /*!< sFLASH_SPI Periph clock disable */
+ 378:../sources/TE_STM32F207.c ****   RCC_APB2PeriphClockCmd(sFLASH_SPI_CLK, DISABLE);
+ 24470              		.loc 1 378 0
+ 24471 0672 4FF40040 		mov	r0, #32768
+ 24472 0676 4FF00001 		mov	r1, #0
+ 24473 067a FFF7FEFF 		bl	RCC_APB2PeriphClockCmd
+ 379:../sources/TE_STM32F207.c **** 
+ 380:../sources/TE_STM32F207.c ****   /*!< Configure sFLASH_SPI pins: SCK */
+ 381:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_Pin = sFLASH_SPI_SCK_PIN;
+ 24474              		.loc 1 381 0
+ 24475 067e 4FF48063 		mov	r3, #1024
+ 24476 0682 3B60     		str	r3, [r7, #0]
+ 382:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_Mode = GPIO_OType_OD;
+ 24477              		.loc 1 382 0
+ 24478 0684 4FF00103 		mov	r3, #1
+ 24479 0688 3B71     		strb	r3, [r7, #4]
+ 383:../sources/TE_STM32F207.c ****   GPIO_Init(sFLASH_SPI_SCK_GPIO_PORT, &GPIO_InitStructure);
+ 24480              		.loc 1 383 0
+ 24481 068a 3B46     		mov	r3, r7
+ 24482 068c 4FF40060 		mov	r0, #2048
+ 24483 0690 C4F20200 		movt	r0, 16386
+ 24484 0694 1946     		mov	r1, r3
+ 24485 0696 FFF7FEFF 		bl	GPIO_Init
+ 384:../sources/TE_STM32F207.c **** 
+ 385:../sources/TE_STM32F207.c ****   /*!< Configure sFLASH_SPI pins: MISO */
+ 386:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_Pin = sFLASH_SPI_MISO_PIN;
+ 24486              		.loc 1 386 0
+ 24487 069a 4FF40063 		mov	r3, #2048
+ 24488 069e 3B60     		str	r3, [r7, #0]
+ 387:../sources/TE_STM32F207.c ****   GPIO_Init(sFLASH_SPI_MISO_GPIO_PORT, &GPIO_InitStructure);
+ 24489              		.loc 1 387 0
+ 24490 06a0 3B46     		mov	r3, r7
+ 24491 06a2 4FF40060 		mov	r0, #2048
+ 24492 06a6 C4F20200 		movt	r0, 16386
+ 24493 06aa 1946     		mov	r1, r3
+ 24494 06ac FFF7FEFF 		bl	GPIO_Init
+ 388:../sources/TE_STM32F207.c **** 
+ 389:../sources/TE_STM32F207.c ****   /*!< Configure sFLASH_SPI pins: MOSI */
+ 390:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_Pin = sFLASH_SPI_MOSI_PIN;
+ 24495              		.loc 1 390 0
+ 24496 06b0 4FF48053 		mov	r3, #4096
+ 24497 06b4 3B60     		str	r3, [r7, #0]
+ 391:../sources/TE_STM32F207.c ****   GPIO_Init(sFLASH_SPI_MOSI_GPIO_PORT, &GPIO_InitStructure);
+ 24498              		.loc 1 391 0
+ 24499 06b6 3B46     		mov	r3, r7
+ 24500 06b8 4FF40060 		mov	r0, #2048
+ 24501 06bc C4F20200 		movt	r0, 16386
+ 24502 06c0 1946     		mov	r1, r3
+ 24503 06c2 FFF7FEFF 		bl	GPIO_Init
+ 392:../sources/TE_STM32F207.c **** 
+ 393:../sources/TE_STM32F207.c ****   /*!< Configure sFLASH_CS_PIN pin: sFLASH Card CS pin */
+ 394:../sources/TE_STM32F207.c ****   GPIO_InitStructure.GPIO_Pin = sFLASH_CS_PIN;
+ 24504              		.loc 1 394 0
+ 24505 06c6 4FF00403 		mov	r3, #4
+ 24506 06ca 3B60     		str	r3, [r7, #0]
+ 395:../sources/TE_STM32F207.c ****   GPIO_Init(sFLASH_CS_GPIO_PORT, &GPIO_InitStructure);
+ 24507              		.loc 1 395 0
+ 24508 06cc 3B46     		mov	r3, r7
+ 24509 06ce 4FF44060 		mov	r0, #3072
+ 24510 06d2 C4F20200 		movt	r0, 16386
+ 24511 06d6 1946     		mov	r1, r3
+ 24512 06d8 FFF7FEFF 		bl	GPIO_Init
+ 396:../sources/TE_STM32F207.c **** }
+ 24513              		.loc 1 396 0
+ 24514 06dc 07F10807 		add	r7, r7, #8
+ 24515 06e0 BD46     		mov	sp, r7
+ 24516 06e2 80BD     		pop	{r7, pc}
+ 24517              		.cfi_endproc
+ 24518              	.LFE39:
+ 24520              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 TE_STM32F207.c
+                            *COM*:00000004 ADCConvertedValue
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:23483  .data:00000000 GPIO_PORT
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:23480  .data:00000000 $d
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:23490  .rodata:00000000 GPIO_PIN
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:23487  .rodata:00000000 $d
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:23496  .rodata:00000004 GPIO_CLK
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:23503  .data:00000004 COM_USART
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:23509  .data:00000008 COM_TX_PORT
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:23515  .data:0000000c COM_RX_PORT
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:23522  .rodata:00000008 COM_USART_CLK
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:23528  .rodata:0000000c COM_TX_PORT_CLK
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:23534  .rodata:00000010 COM_RX_PORT_CLK
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:23540  .rodata:00000014 COM_TX_PIN
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:23546  .rodata:00000018 COM_RX_PIN
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:23552  .rodata:0000001c COM_TX_PIN_SOURCE
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:23558  .rodata:00000020 COM_RX_PIN_SOURCE
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:23564  .rodata:00000024 COM_TX_AF
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:23570  .rodata:00000028 COM_RX_AF
+                            *COM*:0000003c sEEDMA_InitStructure
+                            *COM*:00000004 NVIC_InitStructure
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:23578  .rodata:0000002c Escalator8bit
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:23586  .text:00000000 $t
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:23591  .text:00000000 DAC_Ch1_EscalatorConfig
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:23669  .text:0000008c TIM6_Config
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:23734  .text:000000fc ADC1_ChTempSensor_Init
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:23898  .text:00000260 STM_EVAL_LEDInit
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:23964  .text:000002cc STM_EVAL_LEDOn
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:24006  .text:00000300 STM_EVAL_LEDOff
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:24048  .text:00000334 STM_EVAL_LEDToggle
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:24096  .text:0000037c STM_EVAL_COMInit
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:24251  .text:000004dc sFLASH_Init
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:24325  .text:00000558 sFLASH_LowLevel_Init
+C:\Users\red4sch\AppData\Local\Temp\ccOmRviP.s:24444  .text:00000650 sFLASH_LowLevel_DeInit
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+RCC_AHB1PeriphClockCmd
+RCC_APB1PeriphClockCmd
+GPIO_Init
+DAC_Init
+DAC_Cmd
+DAC_SetChannel1Data
+TIM_TimeBaseStructInit
+TIM_TimeBaseInit
+TIM_SelectOutputTrigger
+TIM_Cmd
+RCC_APB2PeriphClockCmd
+DMA_DeInit
+DMA_Init
+DMA_Cmd
+ADC_CommonInit
+ADC_Init
+ADC_DMACmd
+ADC_RegularChannelConfig
+ADC_TempSensorVrefintCmd
+ADC_DMARequestAfterLastTransferCmd
+ADC_Cmd
+GPIO_PinAFConfig
+USART_Init
+USART_Cmd
+GPIO_SetBits
+SPI_Init
+SPI_Cmd
+SPI_I2S_DeInit

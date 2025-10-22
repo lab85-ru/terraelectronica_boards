@@ -1,0 +1,210 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 18, 4
+  12              		.thumb
+  13              		.file	"udiv.c"
+  23              	.Ltext0:
+  24              		.file 1 "../system/udiv.c"
+ 1662              		.align	2
+ 1663              		.global	udiv
+ 1664              		.thumb
+ 1665              		.thumb_func
+ 1667              	udiv:
+ 1668              	.LFB0:
+   1:../system/udiv.c **** #include	<stdlib.h>
+   2:../system/udiv.c **** #include	<stdio.h>
+   3:../system/udiv.c **** 
+   4:../system/udiv.c **** #ifdef	MACRO
+   5:../system/udiv.c **** #define	high_bit	0x80000000
+   6:../system/udiv.c **** #endif
+   7:../system/udiv.c **** 
+   8:../system/udiv.c **** #define	left_shift_64(hi,lo) 	hi <<= 1;\
+   9:../system/udiv.c **** 		if(lo	& 0x80000000) hi |= 0x00000001; \
+  10:../system/udiv.c **** 		lo <<= 1;
+  11:../system/udiv.c **** 
+  12:../system/udiv.c **** #ifdef	DEBUG
+  13:../system/udiv.c **** static unsigned int error;
+  14:../system/udiv.c **** #endif
+  15:../system/udiv.c **** 
+  16:../system/udiv.c **** div_t	udiv(unsigned int dividend, unsigned int divisor)
+  17:../system/udiv.c **** // udiv is performing unsigned division 
+  18:../system/udiv.c **** // returns dividend/divisor in a divt_t structure (quot and rem)
+  19:../system/udiv.c **** // It is the same as div, except div accepts signed integers
+  20:../system/udiv.c **** // result = numerator/denominator
+  21:../system/udiv.c **** 
+  22:../system/udiv.c **** /*
+  23:../system/udiv.c **** 	Remainder is a 64 bit register:    {Rem:Quot}.
+  24:../system/udiv.c **** 	The Lower 32 bit is reused as the Quotient
+  25:../system/udiv.c **** 
+  26:../system/udiv.c **** 	Place Dividend in Remainder (the lower 32 bit)
+  27:../system/udiv.c **** 	Shift Remainder left 1 bit
+  28:../system/udiv.c **** 	loop 32 times
+  29:../system/udiv.c **** 		signed substract the divisor from the left half of the remainder
+  30:../system/udiv.c **** 			
+  31:../system/udiv.c **** 		if(result < 0) {
+  32:../system/udiv.c **** 			Shift the remainder register left
+  33:../system/udiv.c **** 			remainder.lsb = 0
+  34:../system/udiv.c **** 		}  else {
+  35:../system/udiv.c **** 			Store the result in the left half of the remainder register
+  36:../system/udiv.c **** 			Shift the remainder register left
+  37:../system/udiv.c **** 			remainder.lsb = 1
+  38:../system/udiv.c **** 		}
+  39:../system/udiv.c **** 	end loop
+  40:../system/udiv.c **** 	Shift left half of remainder right 1 bit
+  41:../system/udiv.c **** 
+  42:../system/udiv.c **** */
+  43:../system/udiv.c **** {
+ 1669              		.loc 1 43 0
+ 1670              		.cfi_startproc
+ 1671              		@ args = 0, pretend = 0, frame = 40
+ 1672              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1673              		@ link register save eliminated.
+ 1674 0000 80B4     		push	{r7}
+ 1675              	.LCFI0:
+ 1676              		.cfi_def_cfa_offset 4
+ 1677 0002 8BB0     		sub	sp, sp, #44
+ 1678              	.LCFI1:
+ 1679              		.cfi_def_cfa_offset 48
+ 1680 0004 00AF     		add	r7, sp, #0
+ 1681              		.cfi_offset 7, -4
+ 1682              	.LCFI2:
+ 1683              		.cfi_def_cfa_register 7
+ 1684 0006 0346     		mov	r3, r0
+ 1685 0008 7960     		str	r1, [r7, #4]
+ 1686 000a 3A60     		str	r2, [r7, #0]
+  44:../system/udiv.c **** 	div_t	result;
+  45:../system/udiv.c **** 	unsigned int	Quot,Rem;
+  46:../system/udiv.c **** 	int		srem,i;
+  47:../system/udiv.c **** 	unsigned int	positive;
+  48:../system/udiv.c **** #ifdef	DEBUG
+  49:../system/udiv.c **** 	result	= div(dividend,divisor);
+  50:../system/udiv.c **** 	if(error) {
+  51:../system/udiv.c **** 		printf("Result = Dividend (%d) /  Divisor (%d)\n", dividend, divisor);
+  52:../system/udiv.c **** 		printf("Expected: Quot = %08d, Rem = %08d\n",result.quot,result.rem);
+  53:../system/udiv.c **** 	}
+  54:../system/udiv.c **** #endif
+  55:../system/udiv.c **** 	Rem = (dividend & 0x80000000)?1:0;
+ 1687              		.loc 1 55 0
+ 1688 000c 7A68     		ldr	r2, [r7, #4]
+ 1689 000e 4FEAD272 		lsr	r2, r2, #31
+ 1690 0012 3A62     		str	r2, [r7, #32]
+  56:../system/udiv.c **** 	Quot	= dividend << 1;
+ 1691              		.loc 1 56 0
+ 1692 0014 7A68     		ldr	r2, [r7, #4]
+ 1693 0016 4FEA4202 		lsl	r2, r2, #1
+ 1694 001a 7A62     		str	r2, [r7, #36]
+  57:../system/udiv.c **** 
+  58:../system/udiv.c **** 	for(i = 32; i > 0; i--) {
+ 1695              		.loc 1 58 0
+ 1696 001c 4FF02002 		mov	r2, #32
+ 1697 0020 FA61     		str	r2, [r7, #28]
+ 1698 0022 27E0     		b	.L2
+ 1699              	.L5:
+  59:../system/udiv.c **** 		srem 	= (int) Rem - (int) divisor;
+ 1700              		.loc 1 59 0
+ 1701 0024 396A     		ldr	r1, [r7, #32]
+ 1702 0026 3A68     		ldr	r2, [r7, #0]
+ 1703 0028 C2EB0102 		rsb	r2, r2, r1
+ 1704 002c BA61     		str	r2, [r7, #24]
+  60:../system/udiv.c **** 		positive= (srem >= 0)?1:0;
+ 1705              		.loc 1 60 0
+ 1706 002e BA69     		ldr	r2, [r7, #24]
+ 1707 0030 6FEA0202 		mvn	r2, r2
+ 1708 0034 4FEAD272 		lsr	r2, r2, #31
+ 1709 0038 7A61     		str	r2, [r7, #20]
+  61:../system/udiv.c **** 		if(positive) Rem  = (unsigned int) srem; 
+ 1710              		.loc 1 61 0
+ 1711 003a 7A69     		ldr	r2, [r7, #20]
+ 1712 003c 002A     		cmp	r2, #0
+ 1713 003e 01D0     		beq	.L3
+ 1714              		.loc 1 61 0 is_stmt 0 discriminator 1
+ 1715 0040 BA69     		ldr	r2, [r7, #24]
+ 1716 0042 3A62     		str	r2, [r7, #32]
+ 1717              	.L3:
+  62:../system/udiv.c **** 
+  63:../system/udiv.c **** 		left_shift_64(Rem,Quot)
+ 1718              		.loc 1 63 0 is_stmt 1
+ 1719 0044 3A6A     		ldr	r2, [r7, #32]
+ 1720 0046 4FEA4202 		lsl	r2, r2, #1
+ 1721 004a 3A62     		str	r2, [r7, #32]
+ 1722 004c 7A6A     		ldr	r2, [r7, #36]
+ 1723 004e 002A     		cmp	r2, #0
+ 1724 0050 03DA     		bge	.L4
+ 1725              		.loc 1 63 0 is_stmt 0 discriminator 1
+ 1726 0052 3A6A     		ldr	r2, [r7, #32]
+ 1727 0054 42F00102 		orr	r2, r2, #1
+ 1728 0058 3A62     		str	r2, [r7, #32]
+ 1729              	.L4:
+ 1730              		.loc 1 63 0 discriminator 2
+ 1731 005a 7A6A     		ldr	r2, [r7, #36]
+ 1732 005c 4FEA4202 		lsl	r2, r2, #1
+ 1733 0060 7A62     		str	r2, [r7, #36]
+  64:../system/udiv.c **** 		// Set rightmost bit to "1" if positive or "0" otherwise;
+  65:../system/udiv.c **** 		Quot	|= positive;
+ 1734              		.loc 1 65 0 is_stmt 1 discriminator 2
+ 1735 0062 796A     		ldr	r1, [r7, #36]
+ 1736 0064 7A69     		ldr	r2, [r7, #20]
+ 1737 0066 41EA0202 		orr	r2, r1, r2
+ 1738 006a 7A62     		str	r2, [r7, #36]
+  58:../system/udiv.c **** 	for(i = 32; i > 0; i--) {
+ 1739              		.loc 1 58 0 discriminator 2
+ 1740 006c FA69     		ldr	r2, [r7, #28]
+ 1741 006e 02F1FF32 		add	r2, r2, #-1
+ 1742 0072 FA61     		str	r2, [r7, #28]
+ 1743              	.L2:
+  58:../system/udiv.c **** 	for(i = 32; i > 0; i--) {
+ 1744              		.loc 1 58 0 is_stmt 0 discriminator 1
+ 1745 0074 FA69     		ldr	r2, [r7, #28]
+ 1746 0076 002A     		cmp	r2, #0
+ 1747 0078 D4DC     		bgt	.L5
+  66:../system/udiv.c **** 	}
+  67:../system/udiv.c **** 	Rem >>= 1;
+ 1748              		.loc 1 67 0 is_stmt 1
+ 1749 007a 3A6A     		ldr	r2, [r7, #32]
+ 1750 007c 4FEA5202 		lsr	r2, r2, #1
+ 1751 0080 3A62     		str	r2, [r7, #32]
+  68:../system/udiv.c **** 	result.rem		= Rem;
+ 1752              		.loc 1 68 0
+ 1753 0082 3A6A     		ldr	r2, [r7, #32]
+ 1754 0084 3A61     		str	r2, [r7, #16]
+  69:../system/udiv.c **** 	result.quot	= Quot;
+ 1755              		.loc 1 69 0
+ 1756 0086 7A6A     		ldr	r2, [r7, #36]
+ 1757 0088 FA60     		str	r2, [r7, #12]
+  70:../system/udiv.c **** #ifdef	DEBUG
+  71:../system/udiv.c **** 	if(error) {
+  72:../system/udiv.c **** 		printf("Result:   Quot = %08d, Rem = %08d\n",result.quot,result.rem);
+  73:../system/udiv.c **** 	}
+  74:../system/udiv.c **** 	error	= 0;
+  75:../system/udiv.c **** #endif
+  76:../system/udiv.c **** 	return	result;
+ 1758              		.loc 1 76 0
+ 1759 008a 1A46     		mov	r2, r3
+ 1760 008c 07F10C01 		add	r1, r7, #12
+ 1761 0090 03C9     		ldmia	r1, {r0, r1}
+ 1762 0092 82E80300 		stmia	r2, {r0, r1}
+  77:../system/udiv.c **** }
+ 1763              		.loc 1 77 0
+ 1764 0096 1846     		mov	r0, r3
+ 1765 0098 07F12C07 		add	r7, r7, #44
+ 1766 009c BD46     		mov	sp, r7
+ 1767 009e 80BC     		pop	{r7}
+ 1768 00a0 7047     		bx	lr
+ 1769              		.cfi_endproc
+ 1770              	.LFE0:
+ 1772              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 udiv.c
+C:\Users\red4sch\AppData\Local\Temp\ccQ7iHuy.s:1662   .text:00000000 $t
+C:\Users\red4sch\AppData\Local\Temp\ccQ7iHuy.s:1667   .text:00000000 udiv
+                     .debug_frame:00000010 $d
+
+NO UNDEFINED SYMBOLS

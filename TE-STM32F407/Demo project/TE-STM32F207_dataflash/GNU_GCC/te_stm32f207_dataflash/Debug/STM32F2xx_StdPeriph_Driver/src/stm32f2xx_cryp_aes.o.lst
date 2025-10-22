@@ -1,0 +1,2162 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 18, 4
+  12              		.thumb
+  13              		.file	"stm32f2xx_cryp_aes.c"
+  23              	.Ltext0:
+  24              		.file 1 "../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c"
+ 23361              		.align	2
+ 23362              		.global	CRYP_AES_ECB
+ 23363              		.thumb
+ 23364              		.thumb_func
+ 23366              	CRYP_AES_ECB:
+ 23367              	.LFB29:
+   1:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** /**
+   2:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   ******************************************************************************
+   3:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @file    stm32f2xx_cryp_aes.c
+   4:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @author  MCD Application Team
+   5:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @version V1.0.0
+   6:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @date    18-April-2011
+   7:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @brief   This file provides high level functions to encrypt and decrypt an 
+   8:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *          input message using AES in ECB/CBC/CTR modes.
+   9:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *          It uses the stm32f2xx_cryp.c/.h drivers to access the STM32F2xx CRYP
+  10:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *          peripheral.
+  11:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *
+  12:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *  @verbatim
+  13:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *
+  14:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *          ===================================================================
+  15:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *                                   How to use this driver
+  16:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *          ===================================================================
+  17:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *          1. Enable The CRYP controller clock using 
+  18:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *            RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_CRYP, ENABLE); function.
+  19:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *
+  20:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *          2. Encrypt and decrypt using AES in ECB Mode using CRYP_AES_ECB()
+  21:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *             function.
+  22:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *
+  23:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *          3. Encrypt and decrypt using AES in CBC Mode using CRYP_AES_CBC()
+  24:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *             function.
+  25:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *
+  26:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *          4. Encrypt and decrypt using AES in CTR Mode using CRYP_AES_CTR()
+  27:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *             function.
+  28:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *
+  29:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *  @endverbatim
+  30:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *
+  31:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   ******************************************************************************
+  32:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @attention
+  33:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *
+  34:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+  35:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+  36:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+  37:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+  38:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+  39:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  40:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *
+  41:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
+  42:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   ******************************************************************************  
+  43:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   */
+  44:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+  45:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** /* Includes ------------------------------------------------------------------*/
+  46:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** #include "stm32f2xx_cryp.h"
+  47:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+  48:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** /** @addtogroup STM32F2xx_StdPeriph_Driver
+  49:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @{
+  50:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   */
+  51:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+  52:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** /** @defgroup CRYP 
+  53:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @brief CRYP driver modules
+  54:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @{
+  55:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   */
+  56:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+  57:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** /* Private typedef -----------------------------------------------------------*/
+  58:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** /* Private define ------------------------------------------------------------*/
+  59:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** #define AESBUSY_TIMEOUT    ((uint32_t) 0x00010000)
+  60:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+  61:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** /* Private macro -------------------------------------------------------------*/
+  62:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** /* Private variables ---------------------------------------------------------*/
+  63:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** /* Private function prototypes -----------------------------------------------*/
+  64:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** /* Private functions ---------------------------------------------------------*/
+  65:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+  66:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** /** @defgroup CRYP_Private_Functions
+  67:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @{
+  68:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   */ 
+  69:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+  70:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** /** @defgroup CRYP_Group6 High Level AES functions
+  71:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****  *  @brief   High Level AES functions 
+  72:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****  *
+  73:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** @verbatim   
+  74:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****  ===============================================================================
+  75:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****                           High Level AES functions
+  76:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****  ===============================================================================
+  77:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+  78:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+  79:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** @endverbatim
+  80:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @{
+  81:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   */
+  82:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+  83:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** /**
+  84:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @brief  Encrypt and decrypt using AES in ECB Mode
+  85:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @param  Mode: encryption or decryption Mode.
+  86:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *          This parameter can be one of the following values:
+  87:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *            @arg MODE_ENCRYPT: Encryption
+  88:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *            @arg MODE_DECRYPT: Decryption
+  89:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @param  Key: Key used for AES algorithm.
+  90:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @param  Keysize: length of the Key, must be a 128, 192 or 256.
+  91:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @param  Input: pointer to the Input buffer.
+  92:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @param  Ilength: length of the Input buffer, must be a multiple of 16.
+  93:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @param  Output: pointer to the returned buffer.
+  94:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @retval An ErrorStatus enumeration value:
+  95:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *          - SUCCESS: Operation done
+  96:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *          - ERROR: Operation failed
+  97:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   */
+  98:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** ErrorStatus CRYP_AES_ECB(uint8_t Mode, uint8_t* Key, uint16_t Keysize,
+  99:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****                          uint8_t* Input, uint32_t Ilength, uint8_t* Output)
+ 100:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** {
+ 23368              		.loc 1 100 0
+ 23369              		.cfi_startproc
+ 23370              		@ args = 8, pretend = 0, frame = 88
+ 23371              		@ frame_needed = 1, uses_anonymous_args = 0
+ 23372 0000 90B5     		push	{r4, r7, lr}
+ 23373              	.LCFI0:
+ 23374              		.cfi_def_cfa_offset 12
+ 23375 0002 97B0     		sub	sp, sp, #92
+ 23376              	.LCFI1:
+ 23377              		.cfi_def_cfa_offset 104
+ 23378 0004 00AF     		add	r7, sp, #0
+ 23379              		.cfi_offset 14, -4
+ 23380              		.cfi_offset 7, -8
+ 23381              		.cfi_offset 4, -12
+ 23382              	.LCFI2:
+ 23383              		.cfi_def_cfa_register 7
+ 23384 0006 B960     		str	r1, [r7, #8]
+ 23385 0008 3B60     		str	r3, [r7, #0]
+ 23386 000a 0346     		mov	r3, r0
+ 23387 000c FB73     		strb	r3, [r7, #15]
+ 23388 000e 1346     		mov	r3, r2	@ movhi
+ 23389 0010 FB80     		strh	r3, [r7, #6]	@ movhi
+ 101:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_InitTypeDef AES_CRYP_InitStructure;
+ 102:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_KeyInitTypeDef AES_CRYP_KeyInitStructure;
+ 103:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   __IO uint32_t counter = 0;
+ 23390              		.loc 1 103 0
+ 23391 0012 4FF00003 		mov	r3, #0
+ 23392 0016 7B61     		str	r3, [r7, #20]
+ 104:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   uint32_t busystatus = 0;
+ 23393              		.loc 1 104 0
+ 23394 0018 4FF00003 		mov	r3, #0
+ 23395 001c 7B64     		str	r3, [r7, #68]
+ 105:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   ErrorStatus status = SUCCESS;
+ 23396              		.loc 1 105 0
+ 23397 001e 4FF00103 		mov	r3, #1
+ 23398 0022 87F85730 		strb	r3, [r7, #87]
+ 106:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   uint32_t keyaddr    = (uint32_t)Key;
+ 23399              		.loc 1 106 0
+ 23400 0026 BB68     		ldr	r3, [r7, #8]
+ 23401 0028 3B64     		str	r3, [r7, #64]
+ 107:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   uint32_t inputaddr  = (uint32_t)Input;
+ 23402              		.loc 1 107 0
+ 23403 002a 3B68     		ldr	r3, [r7, #0]
+ 23404 002c 3B65     		str	r3, [r7, #80]
+ 108:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   uint32_t outputaddr = (uint32_t)Output;
+ 23405              		.loc 1 108 0
+ 23406 002e FB6E     		ldr	r3, [r7, #108]
+ 23407 0030 FB64     		str	r3, [r7, #76]
+ 109:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   uint32_t i = 0;
+ 23408              		.loc 1 109 0
+ 23409 0032 4FF00003 		mov	r3, #0
+ 23410 0036 BB64     		str	r3, [r7, #72]
+ 110:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 111:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   /* Crypto structures initialisation*/
+ 112:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_KeyStructInit(&AES_CRYP_KeyInitStructure);
+ 23411              		.loc 1 112 0
+ 23412 0038 07F11803 		add	r3, r7, #24
+ 23413 003c 1846     		mov	r0, r3
+ 23414 003e FFF7FEFF 		bl	CRYP_KeyStructInit
+ 113:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 114:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   switch(Keysize)
+ 23415              		.loc 1 114 0
+ 23416 0042 FB88     		ldrh	r3, [r7, #6]
+ 23417 0044 C02B     		cmp	r3, #192
+ 23418 0046 31D0     		beq	.L4
+ 23419 0048 B3F5807F 		cmp	r3, #256
+ 23420 004c 70D0     		beq	.L5
+ 23421 004e 802B     		cmp	r3, #128
+ 23422 0050 40F0C680 		bne	.L19
+ 23423              	.L3:
+ 115:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   {
+ 116:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     case 128:
+ 117:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_InitStructure.CRYP_KeySize = CRYP_KeySize_128b;
+ 23424              		.loc 1 117 0
+ 23425 0054 4FF00003 		mov	r3, #0
+ 23426 0058 FB87     		strh	r3, [r7, #62]	@ movhi
+ 118:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key2Left = __REV(*(uint32_t*)(keyaddr));
+ 23427              		.loc 1 118 0
+ 23428 005a 3B6C     		ldr	r3, [r7, #64]
+ 23429 005c 1B68     		ldr	r3, [r3, #0]
+ 23430 005e 1846     		mov	r0, r3
+ 23431 0060 FFF7FEFF 		bl	__REV
+ 23432 0064 0346     		mov	r3, r0
+ 23433 0066 BB62     		str	r3, [r7, #40]
+ 119:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 23434              		.loc 1 119 0
+ 23435 0068 3B6C     		ldr	r3, [r7, #64]
+ 23436 006a 03F10403 		add	r3, r3, #4
+ 23437 006e 3B64     		str	r3, [r7, #64]
+ 120:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key2Right= __REV(*(uint32_t*)(keyaddr));
+ 23438              		.loc 1 120 0
+ 23439 0070 3B6C     		ldr	r3, [r7, #64]
+ 23440 0072 1B68     		ldr	r3, [r3, #0]
+ 23441 0074 1846     		mov	r0, r3
+ 23442 0076 FFF7FEFF 		bl	__REV
+ 23443 007a 0346     		mov	r3, r0
+ 23444 007c FB62     		str	r3, [r7, #44]
+ 121:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 23445              		.loc 1 121 0
+ 23446 007e 3B6C     		ldr	r3, [r7, #64]
+ 23447 0080 03F10403 		add	r3, r3, #4
+ 23448 0084 3B64     		str	r3, [r7, #64]
+ 122:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key3Left = __REV(*(uint32_t*)(keyaddr));
+ 23449              		.loc 1 122 0
+ 23450 0086 3B6C     		ldr	r3, [r7, #64]
+ 23451 0088 1B68     		ldr	r3, [r3, #0]
+ 23452 008a 1846     		mov	r0, r3
+ 23453 008c FFF7FEFF 		bl	__REV
+ 23454 0090 0346     		mov	r3, r0
+ 23455 0092 3B63     		str	r3, [r7, #48]
+ 123:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 23456              		.loc 1 123 0
+ 23457 0094 3B6C     		ldr	r3, [r7, #64]
+ 23458 0096 03F10403 		add	r3, r3, #4
+ 23459 009a 3B64     		str	r3, [r7, #64]
+ 124:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key3Right= __REV(*(uint32_t*)(keyaddr));
+ 23460              		.loc 1 124 0
+ 23461 009c 3B6C     		ldr	r3, [r7, #64]
+ 23462 009e 1B68     		ldr	r3, [r3, #0]
+ 23463 00a0 1846     		mov	r0, r3
+ 23464 00a2 FFF7FEFF 		bl	__REV
+ 23465 00a6 0346     		mov	r3, r0
+ 23466 00a8 7B63     		str	r3, [r7, #52]
+ 125:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     break;
+ 23467              		.loc 1 125 0
+ 23468 00aa 9AE0     		b	.L6
+ 23469              	.L4:
+ 126:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     case 192:
+ 127:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_InitStructure.CRYP_KeySize  = CRYP_KeySize_192b;
+ 23470              		.loc 1 127 0
+ 23471 00ac 4FF48073 		mov	r3, #256
+ 23472 00b0 FB87     		strh	r3, [r7, #62]	@ movhi
+ 128:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key1Left = __REV(*(uint32_t*)(keyaddr));
+ 23473              		.loc 1 128 0
+ 23474 00b2 3B6C     		ldr	r3, [r7, #64]
+ 23475 00b4 1B68     		ldr	r3, [r3, #0]
+ 23476 00b6 1846     		mov	r0, r3
+ 23477 00b8 FFF7FEFF 		bl	__REV
+ 23478 00bc 0346     		mov	r3, r0
+ 23479 00be 3B62     		str	r3, [r7, #32]
+ 129:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 23480              		.loc 1 129 0
+ 23481 00c0 3B6C     		ldr	r3, [r7, #64]
+ 23482 00c2 03F10403 		add	r3, r3, #4
+ 23483 00c6 3B64     		str	r3, [r7, #64]
+ 130:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key1Right= __REV(*(uint32_t*)(keyaddr));
+ 23484              		.loc 1 130 0
+ 23485 00c8 3B6C     		ldr	r3, [r7, #64]
+ 23486 00ca 1B68     		ldr	r3, [r3, #0]
+ 23487 00cc 1846     		mov	r0, r3
+ 23488 00ce FFF7FEFF 		bl	__REV
+ 23489 00d2 0346     		mov	r3, r0
+ 23490 00d4 7B62     		str	r3, [r7, #36]
+ 131:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 23491              		.loc 1 131 0
+ 23492 00d6 3B6C     		ldr	r3, [r7, #64]
+ 23493 00d8 03F10403 		add	r3, r3, #4
+ 23494 00dc 3B64     		str	r3, [r7, #64]
+ 132:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key2Left = __REV(*(uint32_t*)(keyaddr));
+ 23495              		.loc 1 132 0
+ 23496 00de 3B6C     		ldr	r3, [r7, #64]
+ 23497 00e0 1B68     		ldr	r3, [r3, #0]
+ 23498 00e2 1846     		mov	r0, r3
+ 23499 00e4 FFF7FEFF 		bl	__REV
+ 23500 00e8 0346     		mov	r3, r0
+ 23501 00ea BB62     		str	r3, [r7, #40]
+ 133:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 23502              		.loc 1 133 0
+ 23503 00ec 3B6C     		ldr	r3, [r7, #64]
+ 23504 00ee 03F10403 		add	r3, r3, #4
+ 23505 00f2 3B64     		str	r3, [r7, #64]
+ 134:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key2Right= __REV(*(uint32_t*)(keyaddr));
+ 23506              		.loc 1 134 0
+ 23507 00f4 3B6C     		ldr	r3, [r7, #64]
+ 23508 00f6 1B68     		ldr	r3, [r3, #0]
+ 23509 00f8 1846     		mov	r0, r3
+ 23510 00fa FFF7FEFF 		bl	__REV
+ 23511 00fe 0346     		mov	r3, r0
+ 23512 0100 FB62     		str	r3, [r7, #44]
+ 135:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 23513              		.loc 1 135 0
+ 23514 0102 3B6C     		ldr	r3, [r7, #64]
+ 23515 0104 03F10403 		add	r3, r3, #4
+ 23516 0108 3B64     		str	r3, [r7, #64]
+ 136:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key3Left = __REV(*(uint32_t*)(keyaddr));
+ 23517              		.loc 1 136 0
+ 23518 010a 3B6C     		ldr	r3, [r7, #64]
+ 23519 010c 1B68     		ldr	r3, [r3, #0]
+ 23520 010e 1846     		mov	r0, r3
+ 23521 0110 FFF7FEFF 		bl	__REV
+ 23522 0114 0346     		mov	r3, r0
+ 23523 0116 3B63     		str	r3, [r7, #48]
+ 137:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 23524              		.loc 1 137 0
+ 23525 0118 3B6C     		ldr	r3, [r7, #64]
+ 23526 011a 03F10403 		add	r3, r3, #4
+ 23527 011e 3B64     		str	r3, [r7, #64]
+ 138:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key3Right= __REV(*(uint32_t*)(keyaddr));
+ 23528              		.loc 1 138 0
+ 23529 0120 3B6C     		ldr	r3, [r7, #64]
+ 23530 0122 1B68     		ldr	r3, [r3, #0]
+ 23531 0124 1846     		mov	r0, r3
+ 23532 0126 FFF7FEFF 		bl	__REV
+ 23533 012a 0346     		mov	r3, r0
+ 23534 012c 7B63     		str	r3, [r7, #52]
+ 139:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     break;
+ 23535              		.loc 1 139 0
+ 23536 012e 58E0     		b	.L6
+ 23537              	.L5:
+ 140:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     case 256:
+ 141:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_InitStructure.CRYP_KeySize  = CRYP_KeySize_256b;
+ 23538              		.loc 1 141 0
+ 23539 0130 4FF40073 		mov	r3, #512
+ 23540 0134 FB87     		strh	r3, [r7, #62]	@ movhi
+ 142:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key0Left = __REV(*(uint32_t*)(keyaddr));
+ 23541              		.loc 1 142 0
+ 23542 0136 3B6C     		ldr	r3, [r7, #64]
+ 23543 0138 1B68     		ldr	r3, [r3, #0]
+ 23544 013a 1846     		mov	r0, r3
+ 23545 013c FFF7FEFF 		bl	__REV
+ 23546 0140 0346     		mov	r3, r0
+ 23547 0142 BB61     		str	r3, [r7, #24]
+ 143:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 23548              		.loc 1 143 0
+ 23549 0144 3B6C     		ldr	r3, [r7, #64]
+ 23550 0146 03F10403 		add	r3, r3, #4
+ 23551 014a 3B64     		str	r3, [r7, #64]
+ 144:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key0Right= __REV(*(uint32_t*)(keyaddr));
+ 23552              		.loc 1 144 0
+ 23553 014c 3B6C     		ldr	r3, [r7, #64]
+ 23554 014e 1B68     		ldr	r3, [r3, #0]
+ 23555 0150 1846     		mov	r0, r3
+ 23556 0152 FFF7FEFF 		bl	__REV
+ 23557 0156 0346     		mov	r3, r0
+ 23558 0158 FB61     		str	r3, [r7, #28]
+ 145:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 23559              		.loc 1 145 0
+ 23560 015a 3B6C     		ldr	r3, [r7, #64]
+ 23561 015c 03F10403 		add	r3, r3, #4
+ 23562 0160 3B64     		str	r3, [r7, #64]
+ 146:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key1Left = __REV(*(uint32_t*)(keyaddr));
+ 23563              		.loc 1 146 0
+ 23564 0162 3B6C     		ldr	r3, [r7, #64]
+ 23565 0164 1B68     		ldr	r3, [r3, #0]
+ 23566 0166 1846     		mov	r0, r3
+ 23567 0168 FFF7FEFF 		bl	__REV
+ 23568 016c 0346     		mov	r3, r0
+ 23569 016e 3B62     		str	r3, [r7, #32]
+ 147:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 23570              		.loc 1 147 0
+ 23571 0170 3B6C     		ldr	r3, [r7, #64]
+ 23572 0172 03F10403 		add	r3, r3, #4
+ 23573 0176 3B64     		str	r3, [r7, #64]
+ 148:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key1Right= __REV(*(uint32_t*)(keyaddr));
+ 23574              		.loc 1 148 0
+ 23575 0178 3B6C     		ldr	r3, [r7, #64]
+ 23576 017a 1B68     		ldr	r3, [r3, #0]
+ 23577 017c 1846     		mov	r0, r3
+ 23578 017e FFF7FEFF 		bl	__REV
+ 23579 0182 0346     		mov	r3, r0
+ 23580 0184 7B62     		str	r3, [r7, #36]
+ 149:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 23581              		.loc 1 149 0
+ 23582 0186 3B6C     		ldr	r3, [r7, #64]
+ 23583 0188 03F10403 		add	r3, r3, #4
+ 23584 018c 3B64     		str	r3, [r7, #64]
+ 150:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key2Left = __REV(*(uint32_t*)(keyaddr));
+ 23585              		.loc 1 150 0
+ 23586 018e 3B6C     		ldr	r3, [r7, #64]
+ 23587 0190 1B68     		ldr	r3, [r3, #0]
+ 23588 0192 1846     		mov	r0, r3
+ 23589 0194 FFF7FEFF 		bl	__REV
+ 23590 0198 0346     		mov	r3, r0
+ 23591 019a BB62     		str	r3, [r7, #40]
+ 151:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 23592              		.loc 1 151 0
+ 23593 019c 3B6C     		ldr	r3, [r7, #64]
+ 23594 019e 03F10403 		add	r3, r3, #4
+ 23595 01a2 3B64     		str	r3, [r7, #64]
+ 152:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key2Right= __REV(*(uint32_t*)(keyaddr));
+ 23596              		.loc 1 152 0
+ 23597 01a4 3B6C     		ldr	r3, [r7, #64]
+ 23598 01a6 1B68     		ldr	r3, [r3, #0]
+ 23599 01a8 1846     		mov	r0, r3
+ 23600 01aa FFF7FEFF 		bl	__REV
+ 23601 01ae 0346     		mov	r3, r0
+ 23602 01b0 FB62     		str	r3, [r7, #44]
+ 153:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 23603              		.loc 1 153 0
+ 23604 01b2 3B6C     		ldr	r3, [r7, #64]
+ 23605 01b4 03F10403 		add	r3, r3, #4
+ 23606 01b8 3B64     		str	r3, [r7, #64]
+ 154:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key3Left = __REV(*(uint32_t*)(keyaddr));
+ 23607              		.loc 1 154 0
+ 23608 01ba 3B6C     		ldr	r3, [r7, #64]
+ 23609 01bc 1B68     		ldr	r3, [r3, #0]
+ 23610 01be 1846     		mov	r0, r3
+ 23611 01c0 FFF7FEFF 		bl	__REV
+ 23612 01c4 0346     		mov	r3, r0
+ 23613 01c6 3B63     		str	r3, [r7, #48]
+ 155:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 23614              		.loc 1 155 0
+ 23615 01c8 3B6C     		ldr	r3, [r7, #64]
+ 23616 01ca 03F10403 		add	r3, r3, #4
+ 23617 01ce 3B64     		str	r3, [r7, #64]
+ 156:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key3Right= __REV(*(uint32_t*)(keyaddr));
+ 23618              		.loc 1 156 0
+ 23619 01d0 3B6C     		ldr	r3, [r7, #64]
+ 23620 01d2 1B68     		ldr	r3, [r3, #0]
+ 23621 01d4 1846     		mov	r0, r3
+ 23622 01d6 FFF7FEFF 		bl	__REV
+ 23623 01da 0346     		mov	r3, r0
+ 23624 01dc 7B63     		str	r3, [r7, #52]
+ 157:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     break;
+ 23625              		.loc 1 157 0
+ 23626 01de 00E0     		b	.L6
+ 23627              	.L19:
+ 158:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     default:
+ 159:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     break;
+ 23628              		.loc 1 159 0
+ 23629 01e0 00BF     		nop
+ 23630              	.L6:
+ 160:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   }
+ 161:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 162:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   /*------------------ AES Decryption ------------------*/
+ 163:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   if(Mode == MODE_DECRYPT) /* AES decryption */
+ 23631              		.loc 1 163 0
+ 23632 01e2 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 23633 01e4 002B     		cmp	r3, #0
+ 23634 01e6 35D1     		bne	.L7
+ 164:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   {
+ 165:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     /* Flush IN/OUT FIFOs */
+ 166:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     CRYP_FIFOFlush();
+ 23635              		.loc 1 166 0
+ 23636 01e8 FFF7FEFF 		bl	CRYP_FIFOFlush
+ 167:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 168:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     /* Crypto Init for Key preparation for decryption process */
+ 169:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_InitStructure.CRYP_AlgoDir = CRYP_AlgoDir_Decrypt;
+ 23637              		.loc 1 169 0
+ 23638 01ec 4FF00403 		mov	r3, #4
+ 23639 01f0 3B87     		strh	r3, [r7, #56]	@ movhi
+ 170:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_InitStructure.CRYP_AlgoMode = CRYP_AlgoMode_AES_Key;
+ 23640              		.loc 1 170 0
+ 23641 01f2 4FF03803 		mov	r3, #56
+ 23642 01f6 7B87     		strh	r3, [r7, #58]	@ movhi
+ 171:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_InitStructure.CRYP_DataType = CRYP_DataType_32b;
+ 23643              		.loc 1 171 0
+ 23644 01f8 4FF00003 		mov	r3, #0
+ 23645 01fc BB87     		strh	r3, [r7, #60]	@ movhi
+ 172:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     CRYP_Init(&AES_CRYP_InitStructure);
+ 23646              		.loc 1 172 0
+ 23647 01fe 07F13803 		add	r3, r7, #56
+ 23648 0202 1846     		mov	r0, r3
+ 23649 0204 FFF7FEFF 		bl	CRYP_Init
+ 173:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 174:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     /* Key Initialisation */
+ 175:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     CRYP_KeyInit(&AES_CRYP_KeyInitStructure);
+ 23650              		.loc 1 175 0
+ 23651 0208 07F11803 		add	r3, r7, #24
+ 23652 020c 1846     		mov	r0, r3
+ 23653 020e FFF7FEFF 		bl	CRYP_KeyInit
+ 176:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 177:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     /* Enable Crypto processor */
+ 178:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     CRYP_Cmd(ENABLE);
+ 23654              		.loc 1 178 0
+ 23655 0212 4FF00100 		mov	r0, #1
+ 23656 0216 FFF7FEFF 		bl	CRYP_Cmd
+ 23657              	.L9:
+ 179:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 180:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     /* wait until the Busy flag is RESET */
+ 181:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     do
+ 182:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     {
+ 183:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       busystatus = CRYP_GetFlagStatus(CRYP_FLAG_BUSY);
+ 23658              		.loc 1 183 0 discriminator 1
+ 23659 021a 4FF01000 		mov	r0, #16
+ 23660 021e FFF7FEFF 		bl	CRYP_GetFlagStatus
+ 23661 0222 0346     		mov	r3, r0
+ 23662 0224 7B64     		str	r3, [r7, #68]
+ 184:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       counter++;
+ 23663              		.loc 1 184 0 discriminator 1
+ 23664 0226 7B69     		ldr	r3, [r7, #20]
+ 23665 0228 03F10103 		add	r3, r3, #1
+ 23666 022c 7B61     		str	r3, [r7, #20]
+ 185:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     }while ((counter != AESBUSY_TIMEOUT) && (busystatus != RESET));
+ 23667              		.loc 1 185 0 discriminator 1
+ 23668 022e 7B69     		ldr	r3, [r7, #20]
+ 23669 0230 B3F5803F 		cmp	r3, #65536
+ 23670 0234 02D0     		beq	.L8
+ 23671 0236 7B6C     		ldr	r3, [r7, #68]
+ 23672 0238 002B     		cmp	r3, #0
+ 23673 023a EED1     		bne	.L9
+ 23674              	.L8:
+ 186:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 187:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     if (busystatus != RESET)
+ 23675              		.loc 1 187 0
+ 23676 023c 7B6C     		ldr	r3, [r7, #68]
+ 23677 023e 002B     		cmp	r3, #0
+ 23678 0240 04D0     		beq	.L10
+ 188:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****    {
+ 189:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****        status = ERROR;
+ 23679              		.loc 1 189 0
+ 23680 0242 4FF00003 		mov	r3, #0
+ 23681 0246 87F85730 		strb	r3, [r7, #87]
+ 23682 024a 0BE0     		b	.L11
+ 23683              	.L10:
+ 190:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     }
+ 191:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     else
+ 192:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     {
+ 193:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       /* Crypto Init for decryption process */  
+ 194:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       AES_CRYP_InitStructure.CRYP_AlgoDir = CRYP_AlgoDir_Decrypt;
+ 23684              		.loc 1 194 0
+ 23685 024c 4FF00403 		mov	r3, #4
+ 23686 0250 3B87     		strh	r3, [r7, #56]	@ movhi
+ 23687 0252 07E0     		b	.L11
+ 23688              	.L7:
+ 195:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     }
+ 196:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   }
+ 197:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   /*------------------ AES Encryption ------------------*/
+ 198:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   else /* AES encryption */
+ 199:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   {
+ 200:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 201:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     CRYP_KeyInit(&AES_CRYP_KeyInitStructure);
+ 23689              		.loc 1 201 0
+ 23690 0254 07F11803 		add	r3, r7, #24
+ 23691 0258 1846     		mov	r0, r3
+ 23692 025a FFF7FEFF 		bl	CRYP_KeyInit
+ 202:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 203:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     /* Crypto Init for Encryption process */
+ 204:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_InitStructure.CRYP_AlgoDir  = CRYP_AlgoDir_Encrypt;
+ 23693              		.loc 1 204 0
+ 23694 025e 4FF00003 		mov	r3, #0
+ 23695 0262 3B87     		strh	r3, [r7, #56]	@ movhi
+ 23696              	.L11:
+ 205:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   }
+ 206:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 207:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   AES_CRYP_InitStructure.CRYP_AlgoMode = CRYP_AlgoMode_AES_ECB;
+ 23697              		.loc 1 207 0
+ 23698 0264 4FF02003 		mov	r3, #32
+ 23699 0268 7B87     		strh	r3, [r7, #58]	@ movhi
+ 208:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   AES_CRYP_InitStructure.CRYP_DataType = CRYP_DataType_8b;
+ 23700              		.loc 1 208 0
+ 23701 026a 4FF08003 		mov	r3, #128
+ 23702 026e BB87     		strh	r3, [r7, #60]	@ movhi
+ 209:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_Init(&AES_CRYP_InitStructure);
+ 23703              		.loc 1 209 0
+ 23704 0270 07F13803 		add	r3, r7, #56
+ 23705 0274 1846     		mov	r0, r3
+ 23706 0276 FFF7FEFF 		bl	CRYP_Init
+ 210:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 211:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   /* Flush IN/OUT FIFOs */
+ 212:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_FIFOFlush();
+ 23707              		.loc 1 212 0
+ 23708 027a FFF7FEFF 		bl	CRYP_FIFOFlush
+ 213:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 214:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   /* Enable Crypto processor */
+ 215:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_Cmd(ENABLE);
+ 23709              		.loc 1 215 0
+ 23710 027e 4FF00100 		mov	r0, #1
+ 23711 0282 FFF7FEFF 		bl	CRYP_Cmd
+ 216:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 217:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   for(i=0; ((i<Ilength) && (status != ERROR)); i+=16)
+ 23712              		.loc 1 217 0
+ 23713 0286 4FF00003 		mov	r3, #0
+ 23714 028a BB64     		str	r3, [r7, #72]
+ 23715 028c 67E0     		b	.L12
+ 23716              	.L18:
+ 218:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   {
+ 219:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 220:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     /* Write the Input block in the IN FIFO */
+ 221:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     CRYP_DataIn(*(uint32_t*)(inputaddr));
+ 23717              		.loc 1 221 0
+ 23718 028e 3B6D     		ldr	r3, [r7, #80]
+ 23719 0290 1B68     		ldr	r3, [r3, #0]
+ 23720 0292 1846     		mov	r0, r3
+ 23721 0294 FFF7FEFF 		bl	CRYP_DataIn
+ 222:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     inputaddr+=4;
+ 23722              		.loc 1 222 0
+ 23723 0298 3B6D     		ldr	r3, [r7, #80]
+ 23724 029a 03F10403 		add	r3, r3, #4
+ 23725 029e 3B65     		str	r3, [r7, #80]
+ 223:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     CRYP_DataIn(*(uint32_t*)(inputaddr));
+ 23726              		.loc 1 223 0
+ 23727 02a0 3B6D     		ldr	r3, [r7, #80]
+ 23728 02a2 1B68     		ldr	r3, [r3, #0]
+ 23729 02a4 1846     		mov	r0, r3
+ 23730 02a6 FFF7FEFF 		bl	CRYP_DataIn
+ 224:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     inputaddr+=4;
+ 23731              		.loc 1 224 0
+ 23732 02aa 3B6D     		ldr	r3, [r7, #80]
+ 23733 02ac 03F10403 		add	r3, r3, #4
+ 23734 02b0 3B65     		str	r3, [r7, #80]
+ 225:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     CRYP_DataIn(*(uint32_t*)(inputaddr));
+ 23735              		.loc 1 225 0
+ 23736 02b2 3B6D     		ldr	r3, [r7, #80]
+ 23737 02b4 1B68     		ldr	r3, [r3, #0]
+ 23738 02b6 1846     		mov	r0, r3
+ 23739 02b8 FFF7FEFF 		bl	CRYP_DataIn
+ 226:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     inputaddr+=4;
+ 23740              		.loc 1 226 0
+ 23741 02bc 3B6D     		ldr	r3, [r7, #80]
+ 23742 02be 03F10403 		add	r3, r3, #4
+ 23743 02c2 3B65     		str	r3, [r7, #80]
+ 227:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     CRYP_DataIn(*(uint32_t*)(inputaddr));
+ 23744              		.loc 1 227 0
+ 23745 02c4 3B6D     		ldr	r3, [r7, #80]
+ 23746 02c6 1B68     		ldr	r3, [r3, #0]
+ 23747 02c8 1846     		mov	r0, r3
+ 23748 02ca FFF7FEFF 		bl	CRYP_DataIn
+ 228:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     inputaddr+=4;
+ 23749              		.loc 1 228 0
+ 23750 02ce 3B6D     		ldr	r3, [r7, #80]
+ 23751 02d0 03F10403 		add	r3, r3, #4
+ 23752 02d4 3B65     		str	r3, [r7, #80]
+ 229:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 230:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     /* Wait until the complete message has been processed */
+ 231:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     counter = 0;
+ 23753              		.loc 1 231 0
+ 23754 02d6 4FF00003 		mov	r3, #0
+ 23755 02da 7B61     		str	r3, [r7, #20]
+ 23756              	.L14:
+ 232:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     do
+ 233:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     {
+ 234:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       busystatus = CRYP_GetFlagStatus(CRYP_FLAG_BUSY);
+ 23757              		.loc 1 234 0 discriminator 1
+ 23758 02dc 4FF01000 		mov	r0, #16
+ 23759 02e0 FFF7FEFF 		bl	CRYP_GetFlagStatus
+ 23760 02e4 0346     		mov	r3, r0
+ 23761 02e6 7B64     		str	r3, [r7, #68]
+ 235:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       counter++;
+ 23762              		.loc 1 235 0 discriminator 1
+ 23763 02e8 7B69     		ldr	r3, [r7, #20]
+ 23764 02ea 03F10103 		add	r3, r3, #1
+ 23765 02ee 7B61     		str	r3, [r7, #20]
+ 236:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     }while ((counter != AESBUSY_TIMEOUT) && (busystatus != RESET));
+ 23766              		.loc 1 236 0 discriminator 1
+ 23767 02f0 7B69     		ldr	r3, [r7, #20]
+ 23768 02f2 B3F5803F 		cmp	r3, #65536
+ 23769 02f6 02D0     		beq	.L13
+ 23770 02f8 7B6C     		ldr	r3, [r7, #68]
+ 23771 02fa 002B     		cmp	r3, #0
+ 23772 02fc EED1     		bne	.L14
+ 23773              	.L13:
+ 237:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 238:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     if (busystatus != RESET)
+ 23774              		.loc 1 238 0
+ 23775 02fe 7B6C     		ldr	r3, [r7, #68]
+ 23776 0300 002B     		cmp	r3, #0
+ 23777 0302 04D0     		beq	.L15
+ 239:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****    {
+ 240:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****        status = ERROR;
+ 23778              		.loc 1 240 0
+ 23779 0304 4FF00003 		mov	r3, #0
+ 23780 0308 87F85730 		strb	r3, [r7, #87]
+ 23781 030c 23E0     		b	.L16
+ 23782              	.L15:
+ 241:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     }
+ 242:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     else
+ 243:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     {
+ 244:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 245:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       /* Read the Output block from the Output FIFO */
+ 246:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       *(uint32_t*)(outputaddr) = CRYP_DataOut();
+ 23783              		.loc 1 246 0
+ 23784 030e FC6C     		ldr	r4, [r7, #76]
+ 23785 0310 FFF7FEFF 		bl	CRYP_DataOut
+ 23786 0314 0346     		mov	r3, r0
+ 23787 0316 2360     		str	r3, [r4, #0]
+ 247:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       outputaddr+=4;
+ 23788              		.loc 1 247 0
+ 23789 0318 FB6C     		ldr	r3, [r7, #76]
+ 23790 031a 03F10403 		add	r3, r3, #4
+ 23791 031e FB64     		str	r3, [r7, #76]
+ 248:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       *(uint32_t*)(outputaddr) = CRYP_DataOut();
+ 23792              		.loc 1 248 0
+ 23793 0320 FC6C     		ldr	r4, [r7, #76]
+ 23794 0322 FFF7FEFF 		bl	CRYP_DataOut
+ 23795 0326 0346     		mov	r3, r0
+ 23796 0328 2360     		str	r3, [r4, #0]
+ 249:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       outputaddr+=4;
+ 23797              		.loc 1 249 0
+ 23798 032a FB6C     		ldr	r3, [r7, #76]
+ 23799 032c 03F10403 		add	r3, r3, #4
+ 23800 0330 FB64     		str	r3, [r7, #76]
+ 250:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       *(uint32_t*)(outputaddr) = CRYP_DataOut();
+ 23801              		.loc 1 250 0
+ 23802 0332 FC6C     		ldr	r4, [r7, #76]
+ 23803 0334 FFF7FEFF 		bl	CRYP_DataOut
+ 23804 0338 0346     		mov	r3, r0
+ 23805 033a 2360     		str	r3, [r4, #0]
+ 251:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       outputaddr+=4;
+ 23806              		.loc 1 251 0
+ 23807 033c FB6C     		ldr	r3, [r7, #76]
+ 23808 033e 03F10403 		add	r3, r3, #4
+ 23809 0342 FB64     		str	r3, [r7, #76]
+ 252:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       *(uint32_t*)(outputaddr) = CRYP_DataOut(); 
+ 23810              		.loc 1 252 0
+ 23811 0344 FC6C     		ldr	r4, [r7, #76]
+ 23812 0346 FFF7FEFF 		bl	CRYP_DataOut
+ 23813 034a 0346     		mov	r3, r0
+ 23814 034c 2360     		str	r3, [r4, #0]
+ 253:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       outputaddr+=4;
+ 23815              		.loc 1 253 0
+ 23816 034e FB6C     		ldr	r3, [r7, #76]
+ 23817 0350 03F10403 		add	r3, r3, #4
+ 23818 0354 FB64     		str	r3, [r7, #76]
+ 23819              	.L16:
+ 217:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   for(i=0; ((i<Ilength) && (status != ERROR)); i+=16)
+ 23820              		.loc 1 217 0
+ 23821 0356 BB6C     		ldr	r3, [r7, #72]
+ 23822 0358 03F11003 		add	r3, r3, #16
+ 23823 035c BB64     		str	r3, [r7, #72]
+ 23824              	.L12:
+ 217:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   for(i=0; ((i<Ilength) && (status != ERROR)); i+=16)
+ 23825              		.loc 1 217 0 is_stmt 0 discriminator 1
+ 23826 035e BA6C     		ldr	r2, [r7, #72]
+ 23827 0360 BB6E     		ldr	r3, [r7, #104]
+ 23828 0362 9A42     		cmp	r2, r3
+ 23829 0364 03D2     		bcs	.L17
+ 217:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   for(i=0; ((i<Ilength) && (status != ERROR)); i+=16)
+ 23830              		.loc 1 217 0 discriminator 2
+ 23831 0366 97F85730 		ldrb	r3, [r7, #87]	@ zero_extendqisi2
+ 23832 036a 002B     		cmp	r3, #0
+ 23833 036c 8FD1     		bne	.L18
+ 23834              	.L17:
+ 254:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     }
+ 255:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   }
+ 256:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 257:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   /* Disable Crypto */
+ 258:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_Cmd(DISABLE);
+ 23835              		.loc 1 258 0 is_stmt 1
+ 23836 036e 4FF00000 		mov	r0, #0
+ 23837 0372 FFF7FEFF 		bl	CRYP_Cmd
+ 259:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 260:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   return status; 
+ 23838              		.loc 1 260 0
+ 23839 0376 97F85730 		ldrb	r3, [r7, #87]	@ zero_extendqisi2
+ 261:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** }
+ 23840              		.loc 1 261 0
+ 23841 037a 1846     		mov	r0, r3
+ 23842 037c 07F15C07 		add	r7, r7, #92
+ 23843 0380 BD46     		mov	sp, r7
+ 23844 0382 90BD     		pop	{r4, r7, pc}
+ 23845              		.cfi_endproc
+ 23846              	.LFE29:
+ 23848              		.align	2
+ 23849              		.global	CRYP_AES_CBC
+ 23850              		.thumb
+ 23851              		.thumb_func
+ 23853              	CRYP_AES_CBC:
+ 23854              	.LFB30:
+ 262:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 263:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** /**
+ 264:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @brief  Encrypt and decrypt using AES in CBC Mode
+ 265:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @param  Mode: encryption or decryption Mode.
+ 266:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *          This parameter can be one of the following values:
+ 267:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *            @arg MODE_ENCRYPT: Encryption
+ 268:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *            @arg MODE_DECRYPT: Decryption
+ 269:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @param  InitVectors: Initialisation Vectors used for AES algorithm.
+ 270:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @param  Key: Key used for AES algorithm.
+ 271:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @param  Keysize: length of the Key, must be a 128, 192 or 256.
+ 272:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @param  Input: pointer to the Input buffer.
+ 273:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @param  Ilength: length of the Input buffer, must be a multiple of 16.
+ 274:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @param  Output: pointer to the returned buffer.
+ 275:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @retval An ErrorStatus enumeration value:
+ 276:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *          - SUCCESS: Operation done
+ 277:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *          - ERROR: Operation failed
+ 278:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   */
+ 279:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** ErrorStatus CRYP_AES_CBC(uint8_t Mode, uint8_t InitVectors[16], uint8_t *Key,
+ 280:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****                          uint16_t Keysize, uint8_t *Input, uint32_t Ilength,
+ 281:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****                          uint8_t *Output)
+ 282:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** {
+ 23855              		.loc 1 282 0
+ 23856              		.cfi_startproc
+ 23857              		@ args = 12, pretend = 0, frame = 104
+ 23858              		@ frame_needed = 1, uses_anonymous_args = 0
+ 23859 0384 90B5     		push	{r4, r7, lr}
+ 23860              	.LCFI3:
+ 23861              		.cfi_def_cfa_offset 12
+ 23862 0386 9BB0     		sub	sp, sp, #108
+ 23863              	.LCFI4:
+ 23864              		.cfi_def_cfa_offset 120
+ 23865 0388 00AF     		add	r7, sp, #0
+ 23866              		.cfi_offset 14, -4
+ 23867              		.cfi_offset 7, -8
+ 23868              		.cfi_offset 4, -12
+ 23869              	.LCFI5:
+ 23870              		.cfi_def_cfa_register 7
+ 23871 038a B960     		str	r1, [r7, #8]
+ 23872 038c 7A60     		str	r2, [r7, #4]
+ 23873 038e 0246     		mov	r2, r0
+ 23874 0390 FA73     		strb	r2, [r7, #15]
+ 23875 0392 7B80     		strh	r3, [r7, #2]	@ movhi
+ 283:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_InitTypeDef AES_CRYP_InitStructure;
+ 284:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_KeyInitTypeDef AES_CRYP_KeyInitStructure;
+ 285:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_IVInitTypeDef AES_CRYP_IVInitStructure;
+ 286:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   __IO uint32_t counter = 0;
+ 23876              		.loc 1 286 0
+ 23877 0394 4FF00003 		mov	r3, #0
+ 23878 0398 3B61     		str	r3, [r7, #16]
+ 287:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   uint32_t busystatus = 0;
+ 23879              		.loc 1 287 0
+ 23880 039a 4FF00003 		mov	r3, #0
+ 23881 039e 7B65     		str	r3, [r7, #84]
+ 288:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   ErrorStatus status = SUCCESS;
+ 23882              		.loc 1 288 0
+ 23883 03a0 4FF00103 		mov	r3, #1
+ 23884 03a4 87F86730 		strb	r3, [r7, #103]
+ 289:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   uint32_t keyaddr    = (uint32_t)Key;
+ 23885              		.loc 1 289 0
+ 23886 03a8 7B68     		ldr	r3, [r7, #4]
+ 23887 03aa 3B65     		str	r3, [r7, #80]
+ 290:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   uint32_t inputaddr  = (uint32_t)Input;
+ 23888              		.loc 1 290 0
+ 23889 03ac BB6F     		ldr	r3, [r7, #120]
+ 23890 03ae 3B66     		str	r3, [r7, #96]
+ 291:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   uint32_t outputaddr = (uint32_t)Output;
+ 23891              		.loc 1 291 0
+ 23892 03b0 D7F88030 		ldr	r3, [r7, #128]
+ 23893 03b4 FB65     		str	r3, [r7, #92]
+ 292:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   uint32_t ivaddr     = (uint32_t)InitVectors;
+ 23894              		.loc 1 292 0
+ 23895 03b6 BB68     		ldr	r3, [r7, #8]
+ 23896 03b8 FB64     		str	r3, [r7, #76]
+ 293:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   uint32_t i = 0;
+ 23897              		.loc 1 293 0
+ 23898 03ba 4FF00003 		mov	r3, #0
+ 23899 03be BB65     		str	r3, [r7, #88]
+ 294:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 295:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   /* Crypto structures initialisation*/
+ 296:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_KeyStructInit(&AES_CRYP_KeyInitStructure);
+ 23900              		.loc 1 296 0
+ 23901 03c0 07F12403 		add	r3, r7, #36
+ 23902 03c4 1846     		mov	r0, r3
+ 23903 03c6 FFF7FEFF 		bl	CRYP_KeyStructInit
+ 297:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 298:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   switch(Keysize)
+ 23904              		.loc 1 298 0
+ 23905 03ca 7B88     		ldrh	r3, [r7, #2]
+ 23906 03cc C02B     		cmp	r3, #192
+ 23907 03ce 32D0     		beq	.L23
+ 23908 03d0 B3F5807F 		cmp	r3, #256
+ 23909 03d4 72D0     		beq	.L24
+ 23910 03d6 802B     		cmp	r3, #128
+ 23911 03d8 40F0C980 		bne	.L38
+ 23912              	.L22:
+ 299:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   {
+ 300:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     case 128:
+ 301:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_InitStructure.CRYP_KeySize = CRYP_KeySize_128b;
+ 23913              		.loc 1 301 0
+ 23914 03dc 4FF00003 		mov	r3, #0
+ 23915 03e0 A7F84A30 		strh	r3, [r7, #74]	@ movhi
+ 302:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key2Left = __REV(*(uint32_t*)(keyaddr));
+ 23916              		.loc 1 302 0
+ 23917 03e4 3B6D     		ldr	r3, [r7, #80]
+ 23918 03e6 1B68     		ldr	r3, [r3, #0]
+ 23919 03e8 1846     		mov	r0, r3
+ 23920 03ea FFF7FEFF 		bl	__REV
+ 23921 03ee 0346     		mov	r3, r0
+ 23922 03f0 7B63     		str	r3, [r7, #52]
+ 303:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 23923              		.loc 1 303 0
+ 23924 03f2 3B6D     		ldr	r3, [r7, #80]
+ 23925 03f4 03F10403 		add	r3, r3, #4
+ 23926 03f8 3B65     		str	r3, [r7, #80]
+ 304:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key2Right= __REV(*(uint32_t*)(keyaddr));
+ 23927              		.loc 1 304 0
+ 23928 03fa 3B6D     		ldr	r3, [r7, #80]
+ 23929 03fc 1B68     		ldr	r3, [r3, #0]
+ 23930 03fe 1846     		mov	r0, r3
+ 23931 0400 FFF7FEFF 		bl	__REV
+ 23932 0404 0346     		mov	r3, r0
+ 23933 0406 BB63     		str	r3, [r7, #56]
+ 305:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 23934              		.loc 1 305 0
+ 23935 0408 3B6D     		ldr	r3, [r7, #80]
+ 23936 040a 03F10403 		add	r3, r3, #4
+ 23937 040e 3B65     		str	r3, [r7, #80]
+ 306:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key3Left = __REV(*(uint32_t*)(keyaddr));
+ 23938              		.loc 1 306 0
+ 23939 0410 3B6D     		ldr	r3, [r7, #80]
+ 23940 0412 1B68     		ldr	r3, [r3, #0]
+ 23941 0414 1846     		mov	r0, r3
+ 23942 0416 FFF7FEFF 		bl	__REV
+ 23943 041a 0346     		mov	r3, r0
+ 23944 041c FB63     		str	r3, [r7, #60]
+ 307:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 23945              		.loc 1 307 0
+ 23946 041e 3B6D     		ldr	r3, [r7, #80]
+ 23947 0420 03F10403 		add	r3, r3, #4
+ 23948 0424 3B65     		str	r3, [r7, #80]
+ 308:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key3Right= __REV(*(uint32_t*)(keyaddr));
+ 23949              		.loc 1 308 0
+ 23950 0426 3B6D     		ldr	r3, [r7, #80]
+ 23951 0428 1B68     		ldr	r3, [r3, #0]
+ 23952 042a 1846     		mov	r0, r3
+ 23953 042c FFF7FEFF 		bl	__REV
+ 23954 0430 0346     		mov	r3, r0
+ 23955 0432 3B64     		str	r3, [r7, #64]
+ 309:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     break;
+ 23956              		.loc 1 309 0
+ 23957 0434 9CE0     		b	.L25
+ 23958              	.L23:
+ 310:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     case 192:
+ 311:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_InitStructure.CRYP_KeySize  = CRYP_KeySize_192b;
+ 23959              		.loc 1 311 0
+ 23960 0436 4FF48073 		mov	r3, #256
+ 23961 043a A7F84A30 		strh	r3, [r7, #74]	@ movhi
+ 312:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key1Left = __REV(*(uint32_t*)(keyaddr));
+ 23962              		.loc 1 312 0
+ 23963 043e 3B6D     		ldr	r3, [r7, #80]
+ 23964 0440 1B68     		ldr	r3, [r3, #0]
+ 23965 0442 1846     		mov	r0, r3
+ 23966 0444 FFF7FEFF 		bl	__REV
+ 23967 0448 0346     		mov	r3, r0
+ 23968 044a FB62     		str	r3, [r7, #44]
+ 313:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 23969              		.loc 1 313 0
+ 23970 044c 3B6D     		ldr	r3, [r7, #80]
+ 23971 044e 03F10403 		add	r3, r3, #4
+ 23972 0452 3B65     		str	r3, [r7, #80]
+ 314:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key1Right= __REV(*(uint32_t*)(keyaddr));
+ 23973              		.loc 1 314 0
+ 23974 0454 3B6D     		ldr	r3, [r7, #80]
+ 23975 0456 1B68     		ldr	r3, [r3, #0]
+ 23976 0458 1846     		mov	r0, r3
+ 23977 045a FFF7FEFF 		bl	__REV
+ 23978 045e 0346     		mov	r3, r0
+ 23979 0460 3B63     		str	r3, [r7, #48]
+ 315:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 23980              		.loc 1 315 0
+ 23981 0462 3B6D     		ldr	r3, [r7, #80]
+ 23982 0464 03F10403 		add	r3, r3, #4
+ 23983 0468 3B65     		str	r3, [r7, #80]
+ 316:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key2Left = __REV(*(uint32_t*)(keyaddr));
+ 23984              		.loc 1 316 0
+ 23985 046a 3B6D     		ldr	r3, [r7, #80]
+ 23986 046c 1B68     		ldr	r3, [r3, #0]
+ 23987 046e 1846     		mov	r0, r3
+ 23988 0470 FFF7FEFF 		bl	__REV
+ 23989 0474 0346     		mov	r3, r0
+ 23990 0476 7B63     		str	r3, [r7, #52]
+ 317:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 23991              		.loc 1 317 0
+ 23992 0478 3B6D     		ldr	r3, [r7, #80]
+ 23993 047a 03F10403 		add	r3, r3, #4
+ 23994 047e 3B65     		str	r3, [r7, #80]
+ 318:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key2Right= __REV(*(uint32_t*)(keyaddr));
+ 23995              		.loc 1 318 0
+ 23996 0480 3B6D     		ldr	r3, [r7, #80]
+ 23997 0482 1B68     		ldr	r3, [r3, #0]
+ 23998 0484 1846     		mov	r0, r3
+ 23999 0486 FFF7FEFF 		bl	__REV
+ 24000 048a 0346     		mov	r3, r0
+ 24001 048c BB63     		str	r3, [r7, #56]
+ 319:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 24002              		.loc 1 319 0
+ 24003 048e 3B6D     		ldr	r3, [r7, #80]
+ 24004 0490 03F10403 		add	r3, r3, #4
+ 24005 0494 3B65     		str	r3, [r7, #80]
+ 320:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key3Left = __REV(*(uint32_t*)(keyaddr));
+ 24006              		.loc 1 320 0
+ 24007 0496 3B6D     		ldr	r3, [r7, #80]
+ 24008 0498 1B68     		ldr	r3, [r3, #0]
+ 24009 049a 1846     		mov	r0, r3
+ 24010 049c FFF7FEFF 		bl	__REV
+ 24011 04a0 0346     		mov	r3, r0
+ 24012 04a2 FB63     		str	r3, [r7, #60]
+ 321:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 24013              		.loc 1 321 0
+ 24014 04a4 3B6D     		ldr	r3, [r7, #80]
+ 24015 04a6 03F10403 		add	r3, r3, #4
+ 24016 04aa 3B65     		str	r3, [r7, #80]
+ 322:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key3Right= __REV(*(uint32_t*)(keyaddr));
+ 24017              		.loc 1 322 0
+ 24018 04ac 3B6D     		ldr	r3, [r7, #80]
+ 24019 04ae 1B68     		ldr	r3, [r3, #0]
+ 24020 04b0 1846     		mov	r0, r3
+ 24021 04b2 FFF7FEFF 		bl	__REV
+ 24022 04b6 0346     		mov	r3, r0
+ 24023 04b8 3B64     		str	r3, [r7, #64]
+ 323:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     break;
+ 24024              		.loc 1 323 0
+ 24025 04ba 59E0     		b	.L25
+ 24026              	.L24:
+ 324:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     case 256:
+ 325:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_InitStructure.CRYP_KeySize  = CRYP_KeySize_256b;
+ 24027              		.loc 1 325 0
+ 24028 04bc 4FF40073 		mov	r3, #512
+ 24029 04c0 A7F84A30 		strh	r3, [r7, #74]	@ movhi
+ 326:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key0Left = __REV(*(uint32_t*)(keyaddr));
+ 24030              		.loc 1 326 0
+ 24031 04c4 3B6D     		ldr	r3, [r7, #80]
+ 24032 04c6 1B68     		ldr	r3, [r3, #0]
+ 24033 04c8 1846     		mov	r0, r3
+ 24034 04ca FFF7FEFF 		bl	__REV
+ 24035 04ce 0346     		mov	r3, r0
+ 24036 04d0 7B62     		str	r3, [r7, #36]
+ 327:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 24037              		.loc 1 327 0
+ 24038 04d2 3B6D     		ldr	r3, [r7, #80]
+ 24039 04d4 03F10403 		add	r3, r3, #4
+ 24040 04d8 3B65     		str	r3, [r7, #80]
+ 328:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key0Right= __REV(*(uint32_t*)(keyaddr));
+ 24041              		.loc 1 328 0
+ 24042 04da 3B6D     		ldr	r3, [r7, #80]
+ 24043 04dc 1B68     		ldr	r3, [r3, #0]
+ 24044 04de 1846     		mov	r0, r3
+ 24045 04e0 FFF7FEFF 		bl	__REV
+ 24046 04e4 0346     		mov	r3, r0
+ 24047 04e6 BB62     		str	r3, [r7, #40]
+ 329:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 24048              		.loc 1 329 0
+ 24049 04e8 3B6D     		ldr	r3, [r7, #80]
+ 24050 04ea 03F10403 		add	r3, r3, #4
+ 24051 04ee 3B65     		str	r3, [r7, #80]
+ 330:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key1Left = __REV(*(uint32_t*)(keyaddr));
+ 24052              		.loc 1 330 0
+ 24053 04f0 3B6D     		ldr	r3, [r7, #80]
+ 24054 04f2 1B68     		ldr	r3, [r3, #0]
+ 24055 04f4 1846     		mov	r0, r3
+ 24056 04f6 FFF7FEFF 		bl	__REV
+ 24057 04fa 0346     		mov	r3, r0
+ 24058 04fc FB62     		str	r3, [r7, #44]
+ 331:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 24059              		.loc 1 331 0
+ 24060 04fe 3B6D     		ldr	r3, [r7, #80]
+ 24061 0500 03F10403 		add	r3, r3, #4
+ 24062 0504 3B65     		str	r3, [r7, #80]
+ 332:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key1Right= __REV(*(uint32_t*)(keyaddr));
+ 24063              		.loc 1 332 0
+ 24064 0506 3B6D     		ldr	r3, [r7, #80]
+ 24065 0508 1B68     		ldr	r3, [r3, #0]
+ 24066 050a 1846     		mov	r0, r3
+ 24067 050c FFF7FEFF 		bl	__REV
+ 24068 0510 0346     		mov	r3, r0
+ 24069 0512 3B63     		str	r3, [r7, #48]
+ 333:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 24070              		.loc 1 333 0
+ 24071 0514 3B6D     		ldr	r3, [r7, #80]
+ 24072 0516 03F10403 		add	r3, r3, #4
+ 24073 051a 3B65     		str	r3, [r7, #80]
+ 334:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key2Left = __REV(*(uint32_t*)(keyaddr));
+ 24074              		.loc 1 334 0
+ 24075 051c 3B6D     		ldr	r3, [r7, #80]
+ 24076 051e 1B68     		ldr	r3, [r3, #0]
+ 24077 0520 1846     		mov	r0, r3
+ 24078 0522 FFF7FEFF 		bl	__REV
+ 24079 0526 0346     		mov	r3, r0
+ 24080 0528 7B63     		str	r3, [r7, #52]
+ 335:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 24081              		.loc 1 335 0
+ 24082 052a 3B6D     		ldr	r3, [r7, #80]
+ 24083 052c 03F10403 		add	r3, r3, #4
+ 24084 0530 3B65     		str	r3, [r7, #80]
+ 336:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key2Right= __REV(*(uint32_t*)(keyaddr));
+ 24085              		.loc 1 336 0
+ 24086 0532 3B6D     		ldr	r3, [r7, #80]
+ 24087 0534 1B68     		ldr	r3, [r3, #0]
+ 24088 0536 1846     		mov	r0, r3
+ 24089 0538 FFF7FEFF 		bl	__REV
+ 24090 053c 0346     		mov	r3, r0
+ 24091 053e BB63     		str	r3, [r7, #56]
+ 337:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 24092              		.loc 1 337 0
+ 24093 0540 3B6D     		ldr	r3, [r7, #80]
+ 24094 0542 03F10403 		add	r3, r3, #4
+ 24095 0546 3B65     		str	r3, [r7, #80]
+ 338:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key3Left = __REV(*(uint32_t*)(keyaddr));
+ 24096              		.loc 1 338 0
+ 24097 0548 3B6D     		ldr	r3, [r7, #80]
+ 24098 054a 1B68     		ldr	r3, [r3, #0]
+ 24099 054c 1846     		mov	r0, r3
+ 24100 054e FFF7FEFF 		bl	__REV
+ 24101 0552 0346     		mov	r3, r0
+ 24102 0554 FB63     		str	r3, [r7, #60]
+ 339:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 24103              		.loc 1 339 0
+ 24104 0556 3B6D     		ldr	r3, [r7, #80]
+ 24105 0558 03F10403 		add	r3, r3, #4
+ 24106 055c 3B65     		str	r3, [r7, #80]
+ 340:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key3Right= __REV(*(uint32_t*)(keyaddr));
+ 24107              		.loc 1 340 0
+ 24108 055e 3B6D     		ldr	r3, [r7, #80]
+ 24109 0560 1B68     		ldr	r3, [r3, #0]
+ 24110 0562 1846     		mov	r0, r3
+ 24111 0564 FFF7FEFF 		bl	__REV
+ 24112 0568 0346     		mov	r3, r0
+ 24113 056a 3B64     		str	r3, [r7, #64]
+ 341:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     break;
+ 24114              		.loc 1 341 0
+ 24115 056c 00E0     		b	.L25
+ 24116              	.L38:
+ 342:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     default:
+ 343:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     break;
+ 24117              		.loc 1 343 0
+ 24118 056e 00BF     		nop
+ 24119              	.L25:
+ 344:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   }
+ 345:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 346:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   /* CRYP Initialization Vectors */
+ 347:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   AES_CRYP_IVInitStructure.CRYP_IV0Left = __REV(*(uint32_t*)(ivaddr));
+ 24120              		.loc 1 347 0
+ 24121 0570 FB6C     		ldr	r3, [r7, #76]
+ 24122 0572 1B68     		ldr	r3, [r3, #0]
+ 24123 0574 1846     		mov	r0, r3
+ 24124 0576 FFF7FEFF 		bl	__REV
+ 24125 057a 0346     		mov	r3, r0
+ 24126 057c 7B61     		str	r3, [r7, #20]
+ 348:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   ivaddr+=4;
+ 24127              		.loc 1 348 0
+ 24128 057e FB6C     		ldr	r3, [r7, #76]
+ 24129 0580 03F10403 		add	r3, r3, #4
+ 24130 0584 FB64     		str	r3, [r7, #76]
+ 349:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   AES_CRYP_IVInitStructure.CRYP_IV0Right= __REV(*(uint32_t*)(ivaddr));
+ 24131              		.loc 1 349 0
+ 24132 0586 FB6C     		ldr	r3, [r7, #76]
+ 24133 0588 1B68     		ldr	r3, [r3, #0]
+ 24134 058a 1846     		mov	r0, r3
+ 24135 058c FFF7FEFF 		bl	__REV
+ 24136 0590 0346     		mov	r3, r0
+ 24137 0592 BB61     		str	r3, [r7, #24]
+ 350:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   ivaddr+=4;
+ 24138              		.loc 1 350 0
+ 24139 0594 FB6C     		ldr	r3, [r7, #76]
+ 24140 0596 03F10403 		add	r3, r3, #4
+ 24141 059a FB64     		str	r3, [r7, #76]
+ 351:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   AES_CRYP_IVInitStructure.CRYP_IV1Left = __REV(*(uint32_t*)(ivaddr));
+ 24142              		.loc 1 351 0
+ 24143 059c FB6C     		ldr	r3, [r7, #76]
+ 24144 059e 1B68     		ldr	r3, [r3, #0]
+ 24145 05a0 1846     		mov	r0, r3
+ 24146 05a2 FFF7FEFF 		bl	__REV
+ 24147 05a6 0346     		mov	r3, r0
+ 24148 05a8 FB61     		str	r3, [r7, #28]
+ 352:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   ivaddr+=4;
+ 24149              		.loc 1 352 0
+ 24150 05aa FB6C     		ldr	r3, [r7, #76]
+ 24151 05ac 03F10403 		add	r3, r3, #4
+ 24152 05b0 FB64     		str	r3, [r7, #76]
+ 353:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   AES_CRYP_IVInitStructure.CRYP_IV1Right= __REV(*(uint32_t*)(ivaddr));
+ 24153              		.loc 1 353 0
+ 24154 05b2 FB6C     		ldr	r3, [r7, #76]
+ 24155 05b4 1B68     		ldr	r3, [r3, #0]
+ 24156 05b6 1846     		mov	r0, r3
+ 24157 05b8 FFF7FEFF 		bl	__REV
+ 24158 05bc 0346     		mov	r3, r0
+ 24159 05be 3B62     		str	r3, [r7, #32]
+ 354:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 355:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 356:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   /*------------------ AES Decryption ------------------*/
+ 357:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   if(Mode == MODE_DECRYPT) /* AES decryption */
+ 24160              		.loc 1 357 0
+ 24161 05c0 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 24162 05c2 002B     		cmp	r3, #0
+ 24163 05c4 39D1     		bne	.L26
+ 358:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   {
+ 359:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     /* Flush IN/OUT FIFOs */
+ 360:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     CRYP_FIFOFlush();
+ 24164              		.loc 1 360 0
+ 24165 05c6 FFF7FEFF 		bl	CRYP_FIFOFlush
+ 361:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 362:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     /* Crypto Init for Key preparation for decryption process */
+ 363:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_InitStructure.CRYP_AlgoDir = CRYP_AlgoDir_Decrypt;
+ 24166              		.loc 1 363 0
+ 24167 05ca 4FF00403 		mov	r3, #4
+ 24168 05ce A7F84430 		strh	r3, [r7, #68]	@ movhi
+ 364:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_InitStructure.CRYP_AlgoMode = CRYP_AlgoMode_AES_Key;
+ 24169              		.loc 1 364 0
+ 24170 05d2 4FF03803 		mov	r3, #56
+ 24171 05d6 A7F84630 		strh	r3, [r7, #70]	@ movhi
+ 365:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_InitStructure.CRYP_DataType = CRYP_DataType_32b;
+ 24172              		.loc 1 365 0
+ 24173 05da 4FF00003 		mov	r3, #0
+ 24174 05de A7F84830 		strh	r3, [r7, #72]	@ movhi
+ 366:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 367:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     CRYP_Init(&AES_CRYP_InitStructure);
+ 24175              		.loc 1 367 0
+ 24176 05e2 07F14403 		add	r3, r7, #68
+ 24177 05e6 1846     		mov	r0, r3
+ 24178 05e8 FFF7FEFF 		bl	CRYP_Init
+ 368:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 369:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     /* Key Initialisation */
+ 370:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     CRYP_KeyInit(&AES_CRYP_KeyInitStructure);
+ 24179              		.loc 1 370 0
+ 24180 05ec 07F12403 		add	r3, r7, #36
+ 24181 05f0 1846     		mov	r0, r3
+ 24182 05f2 FFF7FEFF 		bl	CRYP_KeyInit
+ 371:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 372:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     /* Enable Crypto processor */
+ 373:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     CRYP_Cmd(ENABLE);
+ 24183              		.loc 1 373 0
+ 24184 05f6 4FF00100 		mov	r0, #1
+ 24185 05fa FFF7FEFF 		bl	CRYP_Cmd
+ 24186              	.L28:
+ 374:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 375:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     /* wait until the Busy flag is RESET */
+ 376:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     do
+ 377:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     {
+ 378:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       busystatus = CRYP_GetFlagStatus(CRYP_FLAG_BUSY);
+ 24187              		.loc 1 378 0 discriminator 1
+ 24188 05fe 4FF01000 		mov	r0, #16
+ 24189 0602 FFF7FEFF 		bl	CRYP_GetFlagStatus
+ 24190 0606 0346     		mov	r3, r0
+ 24191 0608 7B65     		str	r3, [r7, #84]
+ 379:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       counter++;
+ 24192              		.loc 1 379 0 discriminator 1
+ 24193 060a 3B69     		ldr	r3, [r7, #16]
+ 24194 060c 03F10103 		add	r3, r3, #1
+ 24195 0610 3B61     		str	r3, [r7, #16]
+ 380:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     }while ((counter != AESBUSY_TIMEOUT) && (busystatus != RESET));
+ 24196              		.loc 1 380 0 discriminator 1
+ 24197 0612 3B69     		ldr	r3, [r7, #16]
+ 24198 0614 B3F5803F 		cmp	r3, #65536
+ 24199 0618 02D0     		beq	.L27
+ 24200 061a 7B6D     		ldr	r3, [r7, #84]
+ 24201 061c 002B     		cmp	r3, #0
+ 24202 061e EED1     		bne	.L28
+ 24203              	.L27:
+ 381:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 382:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     if (busystatus != RESET)
+ 24204              		.loc 1 382 0
+ 24205 0620 7B6D     		ldr	r3, [r7, #84]
+ 24206 0622 002B     		cmp	r3, #0
+ 24207 0624 04D0     		beq	.L29
+ 383:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****    {
+ 384:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****        status = ERROR;
+ 24208              		.loc 1 384 0
+ 24209 0626 4FF00003 		mov	r3, #0
+ 24210 062a 87F86730 		strb	r3, [r7, #103]
+ 24211 062e 0DE0     		b	.L30
+ 24212              	.L29:
+ 385:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     }
+ 386:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     else
+ 387:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     {
+ 388:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       /* Crypto Init for decryption process */  
+ 389:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       AES_CRYP_InitStructure.CRYP_AlgoDir = CRYP_AlgoDir_Decrypt;
+ 24213              		.loc 1 389 0
+ 24214 0630 4FF00403 		mov	r3, #4
+ 24215 0634 A7F84430 		strh	r3, [r7, #68]	@ movhi
+ 24216 0638 08E0     		b	.L30
+ 24217              	.L26:
+ 390:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     }
+ 391:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   }
+ 392:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   /*------------------ AES Encryption ------------------*/
+ 393:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   else /* AES encryption */
+ 394:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   {
+ 395:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     CRYP_KeyInit(&AES_CRYP_KeyInitStructure);
+ 24218              		.loc 1 395 0
+ 24219 063a 07F12403 		add	r3, r7, #36
+ 24220 063e 1846     		mov	r0, r3
+ 24221 0640 FFF7FEFF 		bl	CRYP_KeyInit
+ 396:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 397:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     /* Crypto Init for Encryption process */
+ 398:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_InitStructure.CRYP_AlgoDir  = CRYP_AlgoDir_Encrypt;
+ 24222              		.loc 1 398 0
+ 24223 0644 4FF00003 		mov	r3, #0
+ 24224 0648 A7F84430 		strh	r3, [r7, #68]	@ movhi
+ 24225              	.L30:
+ 399:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   }
+ 400:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   AES_CRYP_InitStructure.CRYP_AlgoMode = CRYP_AlgoMode_AES_CBC;
+ 24226              		.loc 1 400 0
+ 24227 064c 4FF02803 		mov	r3, #40
+ 24228 0650 A7F84630 		strh	r3, [r7, #70]	@ movhi
+ 401:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   AES_CRYP_InitStructure.CRYP_DataType = CRYP_DataType_8b;
+ 24229              		.loc 1 401 0
+ 24230 0654 4FF08003 		mov	r3, #128
+ 24231 0658 A7F84830 		strh	r3, [r7, #72]	@ movhi
+ 402:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_Init(&AES_CRYP_InitStructure);
+ 24232              		.loc 1 402 0
+ 24233 065c 07F14403 		add	r3, r7, #68
+ 24234 0660 1846     		mov	r0, r3
+ 24235 0662 FFF7FEFF 		bl	CRYP_Init
+ 403:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 404:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   /* CRYP Initialization Vectors */
+ 405:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_IVInit(&AES_CRYP_IVInitStructure);
+ 24236              		.loc 1 405 0
+ 24237 0666 07F11403 		add	r3, r7, #20
+ 24238 066a 1846     		mov	r0, r3
+ 24239 066c FFF7FEFF 		bl	CRYP_IVInit
+ 406:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 407:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   /* Flush IN/OUT FIFOs */
+ 408:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_FIFOFlush();
+ 24240              		.loc 1 408 0
+ 24241 0670 FFF7FEFF 		bl	CRYP_FIFOFlush
+ 409:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 410:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   /* Enable Crypto processor */
+ 411:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_Cmd(ENABLE);
+ 24242              		.loc 1 411 0
+ 24243 0674 4FF00100 		mov	r0, #1
+ 24244 0678 FFF7FEFF 		bl	CRYP_Cmd
+ 412:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 413:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 414:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   for(i=0; ((i<Ilength) && (status != ERROR)); i+=16)
+ 24245              		.loc 1 414 0
+ 24246 067c 4FF00003 		mov	r3, #0
+ 24247 0680 BB65     		str	r3, [r7, #88]
+ 24248 0682 67E0     		b	.L31
+ 24249              	.L37:
+ 415:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   {
+ 416:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 417:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     /* Write the Input block in the IN FIFO */
+ 418:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     CRYP_DataIn(*(uint32_t*)(inputaddr));
+ 24250              		.loc 1 418 0
+ 24251 0684 3B6E     		ldr	r3, [r7, #96]
+ 24252 0686 1B68     		ldr	r3, [r3, #0]
+ 24253 0688 1846     		mov	r0, r3
+ 24254 068a FFF7FEFF 		bl	CRYP_DataIn
+ 419:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     inputaddr+=4;
+ 24255              		.loc 1 419 0
+ 24256 068e 3B6E     		ldr	r3, [r7, #96]
+ 24257 0690 03F10403 		add	r3, r3, #4
+ 24258 0694 3B66     		str	r3, [r7, #96]
+ 420:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     CRYP_DataIn(*(uint32_t*)(inputaddr));
+ 24259              		.loc 1 420 0
+ 24260 0696 3B6E     		ldr	r3, [r7, #96]
+ 24261 0698 1B68     		ldr	r3, [r3, #0]
+ 24262 069a 1846     		mov	r0, r3
+ 24263 069c FFF7FEFF 		bl	CRYP_DataIn
+ 421:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     inputaddr+=4;
+ 24264              		.loc 1 421 0
+ 24265 06a0 3B6E     		ldr	r3, [r7, #96]
+ 24266 06a2 03F10403 		add	r3, r3, #4
+ 24267 06a6 3B66     		str	r3, [r7, #96]
+ 422:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     CRYP_DataIn(*(uint32_t*)(inputaddr));
+ 24268              		.loc 1 422 0
+ 24269 06a8 3B6E     		ldr	r3, [r7, #96]
+ 24270 06aa 1B68     		ldr	r3, [r3, #0]
+ 24271 06ac 1846     		mov	r0, r3
+ 24272 06ae FFF7FEFF 		bl	CRYP_DataIn
+ 423:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     inputaddr+=4;
+ 24273              		.loc 1 423 0
+ 24274 06b2 3B6E     		ldr	r3, [r7, #96]
+ 24275 06b4 03F10403 		add	r3, r3, #4
+ 24276 06b8 3B66     		str	r3, [r7, #96]
+ 424:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     CRYP_DataIn(*(uint32_t*)(inputaddr));
+ 24277              		.loc 1 424 0
+ 24278 06ba 3B6E     		ldr	r3, [r7, #96]
+ 24279 06bc 1B68     		ldr	r3, [r3, #0]
+ 24280 06be 1846     		mov	r0, r3
+ 24281 06c0 FFF7FEFF 		bl	CRYP_DataIn
+ 425:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     inputaddr+=4;
+ 24282              		.loc 1 425 0
+ 24283 06c4 3B6E     		ldr	r3, [r7, #96]
+ 24284 06c6 03F10403 		add	r3, r3, #4
+ 24285 06ca 3B66     		str	r3, [r7, #96]
+ 426:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     /* Wait until the complete message has been processed */
+ 427:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     counter = 0;
+ 24286              		.loc 1 427 0
+ 24287 06cc 4FF00003 		mov	r3, #0
+ 24288 06d0 3B61     		str	r3, [r7, #16]
+ 24289              	.L33:
+ 428:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     do
+ 429:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     {
+ 430:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       busystatus = CRYP_GetFlagStatus(CRYP_FLAG_BUSY);
+ 24290              		.loc 1 430 0 discriminator 1
+ 24291 06d2 4FF01000 		mov	r0, #16
+ 24292 06d6 FFF7FEFF 		bl	CRYP_GetFlagStatus
+ 24293 06da 0346     		mov	r3, r0
+ 24294 06dc 7B65     		str	r3, [r7, #84]
+ 431:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       counter++;
+ 24295              		.loc 1 431 0 discriminator 1
+ 24296 06de 3B69     		ldr	r3, [r7, #16]
+ 24297 06e0 03F10103 		add	r3, r3, #1
+ 24298 06e4 3B61     		str	r3, [r7, #16]
+ 432:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     }while ((counter != AESBUSY_TIMEOUT) && (busystatus != RESET));
+ 24299              		.loc 1 432 0 discriminator 1
+ 24300 06e6 3B69     		ldr	r3, [r7, #16]
+ 24301 06e8 B3F5803F 		cmp	r3, #65536
+ 24302 06ec 02D0     		beq	.L32
+ 24303 06ee 7B6D     		ldr	r3, [r7, #84]
+ 24304 06f0 002B     		cmp	r3, #0
+ 24305 06f2 EED1     		bne	.L33
+ 24306              	.L32:
+ 433:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 434:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     if (busystatus != RESET)
+ 24307              		.loc 1 434 0
+ 24308 06f4 7B6D     		ldr	r3, [r7, #84]
+ 24309 06f6 002B     		cmp	r3, #0
+ 24310 06f8 04D0     		beq	.L34
+ 435:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****    {
+ 436:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****        status = ERROR;
+ 24311              		.loc 1 436 0
+ 24312 06fa 4FF00003 		mov	r3, #0
+ 24313 06fe 87F86730 		strb	r3, [r7, #103]
+ 24314 0702 23E0     		b	.L35
+ 24315              	.L34:
+ 437:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     }
+ 438:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     else
+ 439:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     {
+ 440:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 441:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       /* Read the Output block from the Output FIFO */
+ 442:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       *(uint32_t*)(outputaddr) = CRYP_DataOut();
+ 24316              		.loc 1 442 0
+ 24317 0704 FC6D     		ldr	r4, [r7, #92]
+ 24318 0706 FFF7FEFF 		bl	CRYP_DataOut
+ 24319 070a 0346     		mov	r3, r0
+ 24320 070c 2360     		str	r3, [r4, #0]
+ 443:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       outputaddr+=4;
+ 24321              		.loc 1 443 0
+ 24322 070e FB6D     		ldr	r3, [r7, #92]
+ 24323 0710 03F10403 		add	r3, r3, #4
+ 24324 0714 FB65     		str	r3, [r7, #92]
+ 444:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       *(uint32_t*)(outputaddr) = CRYP_DataOut();
+ 24325              		.loc 1 444 0
+ 24326 0716 FC6D     		ldr	r4, [r7, #92]
+ 24327 0718 FFF7FEFF 		bl	CRYP_DataOut
+ 24328 071c 0346     		mov	r3, r0
+ 24329 071e 2360     		str	r3, [r4, #0]
+ 445:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       outputaddr+=4;
+ 24330              		.loc 1 445 0
+ 24331 0720 FB6D     		ldr	r3, [r7, #92]
+ 24332 0722 03F10403 		add	r3, r3, #4
+ 24333 0726 FB65     		str	r3, [r7, #92]
+ 446:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       *(uint32_t*)(outputaddr) = CRYP_DataOut();
+ 24334              		.loc 1 446 0
+ 24335 0728 FC6D     		ldr	r4, [r7, #92]
+ 24336 072a FFF7FEFF 		bl	CRYP_DataOut
+ 24337 072e 0346     		mov	r3, r0
+ 24338 0730 2360     		str	r3, [r4, #0]
+ 447:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       outputaddr+=4;
+ 24339              		.loc 1 447 0
+ 24340 0732 FB6D     		ldr	r3, [r7, #92]
+ 24341 0734 03F10403 		add	r3, r3, #4
+ 24342 0738 FB65     		str	r3, [r7, #92]
+ 448:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       *(uint32_t*)(outputaddr) = CRYP_DataOut();
+ 24343              		.loc 1 448 0
+ 24344 073a FC6D     		ldr	r4, [r7, #92]
+ 24345 073c FFF7FEFF 		bl	CRYP_DataOut
+ 24346 0740 0346     		mov	r3, r0
+ 24347 0742 2360     		str	r3, [r4, #0]
+ 449:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       outputaddr+=4;
+ 24348              		.loc 1 449 0
+ 24349 0744 FB6D     		ldr	r3, [r7, #92]
+ 24350 0746 03F10403 		add	r3, r3, #4
+ 24351 074a FB65     		str	r3, [r7, #92]
+ 24352              	.L35:
+ 414:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   for(i=0; ((i<Ilength) && (status != ERROR)); i+=16)
+ 24353              		.loc 1 414 0
+ 24354 074c BB6D     		ldr	r3, [r7, #88]
+ 24355 074e 03F11003 		add	r3, r3, #16
+ 24356 0752 BB65     		str	r3, [r7, #88]
+ 24357              	.L31:
+ 414:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   for(i=0; ((i<Ilength) && (status != ERROR)); i+=16)
+ 24358              		.loc 1 414 0 is_stmt 0 discriminator 1
+ 24359 0754 BA6D     		ldr	r2, [r7, #88]
+ 24360 0756 FB6F     		ldr	r3, [r7, #124]
+ 24361 0758 9A42     		cmp	r2, r3
+ 24362 075a 03D2     		bcs	.L36
+ 414:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   for(i=0; ((i<Ilength) && (status != ERROR)); i+=16)
+ 24363              		.loc 1 414 0 discriminator 2
+ 24364 075c 97F86730 		ldrb	r3, [r7, #103]	@ zero_extendqisi2
+ 24365 0760 002B     		cmp	r3, #0
+ 24366 0762 8FD1     		bne	.L37
+ 24367              	.L36:
+ 450:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     }
+ 451:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   }
+ 452:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 453:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   /* Disable Crypto */
+ 454:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_Cmd(DISABLE);
+ 24368              		.loc 1 454 0 is_stmt 1
+ 24369 0764 4FF00000 		mov	r0, #0
+ 24370 0768 FFF7FEFF 		bl	CRYP_Cmd
+ 455:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 456:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   return status;
+ 24371              		.loc 1 456 0
+ 24372 076c 97F86730 		ldrb	r3, [r7, #103]	@ zero_extendqisi2
+ 457:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** }
+ 24373              		.loc 1 457 0
+ 24374 0770 1846     		mov	r0, r3
+ 24375 0772 07F16C07 		add	r7, r7, #108
+ 24376 0776 BD46     		mov	sp, r7
+ 24377 0778 90BD     		pop	{r4, r7, pc}
+ 24378              		.cfi_endproc
+ 24379              	.LFE30:
+ 24381 077a 00BF     		.align	2
+ 24382              		.global	CRYP_AES_CTR
+ 24383              		.thumb
+ 24384              		.thumb_func
+ 24386              	CRYP_AES_CTR:
+ 24387              	.LFB31:
+ 458:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 459:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** /**
+ 460:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @brief  Encrypt and decrypt using AES in CTR Mode
+ 461:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @param  Mode: encryption or decryption Mode.
+ 462:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *           This parameter can be one of the following values:
+ 463:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *            @arg MODE_ENCRYPT: Encryption
+ 464:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *            @arg MODE_DECRYPT: Decryption
+ 465:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @param  InitVectors: Initialisation Vectors used for AES algorithm.
+ 466:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @param  Key: Key used for AES algorithm.
+ 467:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @param  Keysize: length of the Key, must be a 128, 192 or 256.
+ 468:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @param  Input: pointer to the Input buffer.
+ 469:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @param  Ilength: length of the Input buffer, must be a multiple of 16.
+ 470:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @param  Output: pointer to the returned buffer.
+ 471:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   * @retval An ErrorStatus enumeration value:
+ 472:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *          - SUCCESS: Operation done
+ 473:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   *          - ERROR: Operation failed
+ 474:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   */
+ 475:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** ErrorStatus CRYP_AES_CTR(uint8_t Mode, uint8_t InitVectors[16], uint8_t *Key, 
+ 476:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****                          uint16_t Keysize, uint8_t *Input, uint32_t Ilength,
+ 477:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****                          uint8_t *Output)
+ 478:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** {
+ 24388              		.loc 1 478 0
+ 24389              		.cfi_startproc
+ 24390              		@ args = 12, pretend = 0, frame = 104
+ 24391              		@ frame_needed = 1, uses_anonymous_args = 0
+ 24392 077c 90B5     		push	{r4, r7, lr}
+ 24393              	.LCFI6:
+ 24394              		.cfi_def_cfa_offset 12
+ 24395 077e 9BB0     		sub	sp, sp, #108
+ 24396              	.LCFI7:
+ 24397              		.cfi_def_cfa_offset 120
+ 24398 0780 00AF     		add	r7, sp, #0
+ 24399              		.cfi_offset 14, -4
+ 24400              		.cfi_offset 7, -8
+ 24401              		.cfi_offset 4, -12
+ 24402              	.LCFI8:
+ 24403              		.cfi_def_cfa_register 7
+ 24404 0782 B960     		str	r1, [r7, #8]
+ 24405 0784 7A60     		str	r2, [r7, #4]
+ 24406 0786 0246     		mov	r2, r0
+ 24407 0788 FA73     		strb	r2, [r7, #15]
+ 24408 078a 7B80     		strh	r3, [r7, #2]	@ movhi
+ 479:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_InitTypeDef AES_CRYP_InitStructure;
+ 480:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_KeyInitTypeDef AES_CRYP_KeyInitStructure;
+ 481:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_IVInitTypeDef AES_CRYP_IVInitStructure;
+ 482:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   __IO uint32_t counter = 0;
+ 24409              		.loc 1 482 0
+ 24410 078c 4FF00003 		mov	r3, #0
+ 24411 0790 3B61     		str	r3, [r7, #16]
+ 483:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   uint32_t busystatus = 0;
+ 24412              		.loc 1 483 0
+ 24413 0792 4FF00003 		mov	r3, #0
+ 24414 0796 7B65     		str	r3, [r7, #84]
+ 484:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   ErrorStatus status = SUCCESS;
+ 24415              		.loc 1 484 0
+ 24416 0798 4FF00103 		mov	r3, #1
+ 24417 079c 87F86730 		strb	r3, [r7, #103]
+ 485:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   uint32_t keyaddr    = (uint32_t)Key;
+ 24418              		.loc 1 485 0
+ 24419 07a0 7B68     		ldr	r3, [r7, #4]
+ 24420 07a2 3B65     		str	r3, [r7, #80]
+ 486:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   uint32_t inputaddr  = (uint32_t)Input;
+ 24421              		.loc 1 486 0
+ 24422 07a4 BB6F     		ldr	r3, [r7, #120]
+ 24423 07a6 3B66     		str	r3, [r7, #96]
+ 487:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   uint32_t outputaddr = (uint32_t)Output;
+ 24424              		.loc 1 487 0
+ 24425 07a8 D7F88030 		ldr	r3, [r7, #128]
+ 24426 07ac FB65     		str	r3, [r7, #92]
+ 488:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   uint32_t ivaddr     = (uint32_t)InitVectors;
+ 24427              		.loc 1 488 0
+ 24428 07ae BB68     		ldr	r3, [r7, #8]
+ 24429 07b0 FB64     		str	r3, [r7, #76]
+ 489:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   uint32_t i = 0;
+ 24430              		.loc 1 489 0
+ 24431 07b2 4FF00003 		mov	r3, #0
+ 24432 07b6 BB65     		str	r3, [r7, #88]
+ 490:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 491:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   /* Crypto structures initialisation*/
+ 492:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_KeyStructInit(&AES_CRYP_KeyInitStructure);
+ 24433              		.loc 1 492 0
+ 24434 07b8 07F12403 		add	r3, r7, #36
+ 24435 07bc 1846     		mov	r0, r3
+ 24436 07be FFF7FEFF 		bl	CRYP_KeyStructInit
+ 493:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 494:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   switch(Keysize)
+ 24437              		.loc 1 494 0
+ 24438 07c2 7B88     		ldrh	r3, [r7, #2]
+ 24439 07c4 C02B     		cmp	r3, #192
+ 24440 07c6 32D0     		beq	.L42
+ 24441 07c8 B3F5807F 		cmp	r3, #256
+ 24442 07cc 72D0     		beq	.L43
+ 24443 07ce 802B     		cmp	r3, #128
+ 24444 07d0 40F0C980 		bne	.L54
+ 24445              	.L41:
+ 495:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   {
+ 496:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     case 128:
+ 497:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_InitStructure.CRYP_KeySize = CRYP_KeySize_128b;
+ 24446              		.loc 1 497 0
+ 24447 07d4 4FF00003 		mov	r3, #0
+ 24448 07d8 A7F84A30 		strh	r3, [r7, #74]	@ movhi
+ 498:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key2Left = __REV(*(uint32_t*)(keyaddr));
+ 24449              		.loc 1 498 0
+ 24450 07dc 3B6D     		ldr	r3, [r7, #80]
+ 24451 07de 1B68     		ldr	r3, [r3, #0]
+ 24452 07e0 1846     		mov	r0, r3
+ 24453 07e2 FFF7FEFF 		bl	__REV
+ 24454 07e6 0346     		mov	r3, r0
+ 24455 07e8 7B63     		str	r3, [r7, #52]
+ 499:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 24456              		.loc 1 499 0
+ 24457 07ea 3B6D     		ldr	r3, [r7, #80]
+ 24458 07ec 03F10403 		add	r3, r3, #4
+ 24459 07f0 3B65     		str	r3, [r7, #80]
+ 500:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key2Right= __REV(*(uint32_t*)(keyaddr));
+ 24460              		.loc 1 500 0
+ 24461 07f2 3B6D     		ldr	r3, [r7, #80]
+ 24462 07f4 1B68     		ldr	r3, [r3, #0]
+ 24463 07f6 1846     		mov	r0, r3
+ 24464 07f8 FFF7FEFF 		bl	__REV
+ 24465 07fc 0346     		mov	r3, r0
+ 24466 07fe BB63     		str	r3, [r7, #56]
+ 501:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 24467              		.loc 1 501 0
+ 24468 0800 3B6D     		ldr	r3, [r7, #80]
+ 24469 0802 03F10403 		add	r3, r3, #4
+ 24470 0806 3B65     		str	r3, [r7, #80]
+ 502:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key3Left = __REV(*(uint32_t*)(keyaddr));
+ 24471              		.loc 1 502 0
+ 24472 0808 3B6D     		ldr	r3, [r7, #80]
+ 24473 080a 1B68     		ldr	r3, [r3, #0]
+ 24474 080c 1846     		mov	r0, r3
+ 24475 080e FFF7FEFF 		bl	__REV
+ 24476 0812 0346     		mov	r3, r0
+ 24477 0814 FB63     		str	r3, [r7, #60]
+ 503:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 24478              		.loc 1 503 0
+ 24479 0816 3B6D     		ldr	r3, [r7, #80]
+ 24480 0818 03F10403 		add	r3, r3, #4
+ 24481 081c 3B65     		str	r3, [r7, #80]
+ 504:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key3Right= __REV(*(uint32_t*)(keyaddr));
+ 24482              		.loc 1 504 0
+ 24483 081e 3B6D     		ldr	r3, [r7, #80]
+ 24484 0820 1B68     		ldr	r3, [r3, #0]
+ 24485 0822 1846     		mov	r0, r3
+ 24486 0824 FFF7FEFF 		bl	__REV
+ 24487 0828 0346     		mov	r3, r0
+ 24488 082a 3B64     		str	r3, [r7, #64]
+ 505:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     break;
+ 24489              		.loc 1 505 0
+ 24490 082c 9CE0     		b	.L44
+ 24491              	.L42:
+ 506:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     case 192:
+ 507:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_InitStructure.CRYP_KeySize  = CRYP_KeySize_192b;
+ 24492              		.loc 1 507 0
+ 24493 082e 4FF48073 		mov	r3, #256
+ 24494 0832 A7F84A30 		strh	r3, [r7, #74]	@ movhi
+ 508:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key1Left = __REV(*(uint32_t*)(keyaddr));
+ 24495              		.loc 1 508 0
+ 24496 0836 3B6D     		ldr	r3, [r7, #80]
+ 24497 0838 1B68     		ldr	r3, [r3, #0]
+ 24498 083a 1846     		mov	r0, r3
+ 24499 083c FFF7FEFF 		bl	__REV
+ 24500 0840 0346     		mov	r3, r0
+ 24501 0842 FB62     		str	r3, [r7, #44]
+ 509:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 24502              		.loc 1 509 0
+ 24503 0844 3B6D     		ldr	r3, [r7, #80]
+ 24504 0846 03F10403 		add	r3, r3, #4
+ 24505 084a 3B65     		str	r3, [r7, #80]
+ 510:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key1Right= __REV(*(uint32_t*)(keyaddr));
+ 24506              		.loc 1 510 0
+ 24507 084c 3B6D     		ldr	r3, [r7, #80]
+ 24508 084e 1B68     		ldr	r3, [r3, #0]
+ 24509 0850 1846     		mov	r0, r3
+ 24510 0852 FFF7FEFF 		bl	__REV
+ 24511 0856 0346     		mov	r3, r0
+ 24512 0858 3B63     		str	r3, [r7, #48]
+ 511:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 24513              		.loc 1 511 0
+ 24514 085a 3B6D     		ldr	r3, [r7, #80]
+ 24515 085c 03F10403 		add	r3, r3, #4
+ 24516 0860 3B65     		str	r3, [r7, #80]
+ 512:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key2Left = __REV(*(uint32_t*)(keyaddr));
+ 24517              		.loc 1 512 0
+ 24518 0862 3B6D     		ldr	r3, [r7, #80]
+ 24519 0864 1B68     		ldr	r3, [r3, #0]
+ 24520 0866 1846     		mov	r0, r3
+ 24521 0868 FFF7FEFF 		bl	__REV
+ 24522 086c 0346     		mov	r3, r0
+ 24523 086e 7B63     		str	r3, [r7, #52]
+ 513:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 24524              		.loc 1 513 0
+ 24525 0870 3B6D     		ldr	r3, [r7, #80]
+ 24526 0872 03F10403 		add	r3, r3, #4
+ 24527 0876 3B65     		str	r3, [r7, #80]
+ 514:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key2Right= __REV(*(uint32_t*)(keyaddr));
+ 24528              		.loc 1 514 0
+ 24529 0878 3B6D     		ldr	r3, [r7, #80]
+ 24530 087a 1B68     		ldr	r3, [r3, #0]
+ 24531 087c 1846     		mov	r0, r3
+ 24532 087e FFF7FEFF 		bl	__REV
+ 24533 0882 0346     		mov	r3, r0
+ 24534 0884 BB63     		str	r3, [r7, #56]
+ 515:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 24535              		.loc 1 515 0
+ 24536 0886 3B6D     		ldr	r3, [r7, #80]
+ 24537 0888 03F10403 		add	r3, r3, #4
+ 24538 088c 3B65     		str	r3, [r7, #80]
+ 516:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key3Left = __REV(*(uint32_t*)(keyaddr));
+ 24539              		.loc 1 516 0
+ 24540 088e 3B6D     		ldr	r3, [r7, #80]
+ 24541 0890 1B68     		ldr	r3, [r3, #0]
+ 24542 0892 1846     		mov	r0, r3
+ 24543 0894 FFF7FEFF 		bl	__REV
+ 24544 0898 0346     		mov	r3, r0
+ 24545 089a FB63     		str	r3, [r7, #60]
+ 517:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 24546              		.loc 1 517 0
+ 24547 089c 3B6D     		ldr	r3, [r7, #80]
+ 24548 089e 03F10403 		add	r3, r3, #4
+ 24549 08a2 3B65     		str	r3, [r7, #80]
+ 518:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key3Right= __REV(*(uint32_t*)(keyaddr));
+ 24550              		.loc 1 518 0
+ 24551 08a4 3B6D     		ldr	r3, [r7, #80]
+ 24552 08a6 1B68     		ldr	r3, [r3, #0]
+ 24553 08a8 1846     		mov	r0, r3
+ 24554 08aa FFF7FEFF 		bl	__REV
+ 24555 08ae 0346     		mov	r3, r0
+ 24556 08b0 3B64     		str	r3, [r7, #64]
+ 519:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     break;
+ 24557              		.loc 1 519 0
+ 24558 08b2 59E0     		b	.L44
+ 24559              	.L43:
+ 520:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     case 256:
+ 521:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_InitStructure.CRYP_KeySize  = CRYP_KeySize_256b;
+ 24560              		.loc 1 521 0
+ 24561 08b4 4FF40073 		mov	r3, #512
+ 24562 08b8 A7F84A30 		strh	r3, [r7, #74]	@ movhi
+ 522:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key0Left = __REV(*(uint32_t*)(keyaddr));
+ 24563              		.loc 1 522 0
+ 24564 08bc 3B6D     		ldr	r3, [r7, #80]
+ 24565 08be 1B68     		ldr	r3, [r3, #0]
+ 24566 08c0 1846     		mov	r0, r3
+ 24567 08c2 FFF7FEFF 		bl	__REV
+ 24568 08c6 0346     		mov	r3, r0
+ 24569 08c8 7B62     		str	r3, [r7, #36]
+ 523:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 24570              		.loc 1 523 0
+ 24571 08ca 3B6D     		ldr	r3, [r7, #80]
+ 24572 08cc 03F10403 		add	r3, r3, #4
+ 24573 08d0 3B65     		str	r3, [r7, #80]
+ 524:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key0Right= __REV(*(uint32_t*)(keyaddr));
+ 24574              		.loc 1 524 0
+ 24575 08d2 3B6D     		ldr	r3, [r7, #80]
+ 24576 08d4 1B68     		ldr	r3, [r3, #0]
+ 24577 08d6 1846     		mov	r0, r3
+ 24578 08d8 FFF7FEFF 		bl	__REV
+ 24579 08dc 0346     		mov	r3, r0
+ 24580 08de BB62     		str	r3, [r7, #40]
+ 525:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 24581              		.loc 1 525 0
+ 24582 08e0 3B6D     		ldr	r3, [r7, #80]
+ 24583 08e2 03F10403 		add	r3, r3, #4
+ 24584 08e6 3B65     		str	r3, [r7, #80]
+ 526:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key1Left = __REV(*(uint32_t*)(keyaddr));
+ 24585              		.loc 1 526 0
+ 24586 08e8 3B6D     		ldr	r3, [r7, #80]
+ 24587 08ea 1B68     		ldr	r3, [r3, #0]
+ 24588 08ec 1846     		mov	r0, r3
+ 24589 08ee FFF7FEFF 		bl	__REV
+ 24590 08f2 0346     		mov	r3, r0
+ 24591 08f4 FB62     		str	r3, [r7, #44]
+ 527:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 24592              		.loc 1 527 0
+ 24593 08f6 3B6D     		ldr	r3, [r7, #80]
+ 24594 08f8 03F10403 		add	r3, r3, #4
+ 24595 08fc 3B65     		str	r3, [r7, #80]
+ 528:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key1Right= __REV(*(uint32_t*)(keyaddr));
+ 24596              		.loc 1 528 0
+ 24597 08fe 3B6D     		ldr	r3, [r7, #80]
+ 24598 0900 1B68     		ldr	r3, [r3, #0]
+ 24599 0902 1846     		mov	r0, r3
+ 24600 0904 FFF7FEFF 		bl	__REV
+ 24601 0908 0346     		mov	r3, r0
+ 24602 090a 3B63     		str	r3, [r7, #48]
+ 529:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 24603              		.loc 1 529 0
+ 24604 090c 3B6D     		ldr	r3, [r7, #80]
+ 24605 090e 03F10403 		add	r3, r3, #4
+ 24606 0912 3B65     		str	r3, [r7, #80]
+ 530:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key2Left = __REV(*(uint32_t*)(keyaddr));
+ 24607              		.loc 1 530 0
+ 24608 0914 3B6D     		ldr	r3, [r7, #80]
+ 24609 0916 1B68     		ldr	r3, [r3, #0]
+ 24610 0918 1846     		mov	r0, r3
+ 24611 091a FFF7FEFF 		bl	__REV
+ 24612 091e 0346     		mov	r3, r0
+ 24613 0920 7B63     		str	r3, [r7, #52]
+ 531:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 24614              		.loc 1 531 0
+ 24615 0922 3B6D     		ldr	r3, [r7, #80]
+ 24616 0924 03F10403 		add	r3, r3, #4
+ 24617 0928 3B65     		str	r3, [r7, #80]
+ 532:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key2Right= __REV(*(uint32_t*)(keyaddr));
+ 24618              		.loc 1 532 0
+ 24619 092a 3B6D     		ldr	r3, [r7, #80]
+ 24620 092c 1B68     		ldr	r3, [r3, #0]
+ 24621 092e 1846     		mov	r0, r3
+ 24622 0930 FFF7FEFF 		bl	__REV
+ 24623 0934 0346     		mov	r3, r0
+ 24624 0936 BB63     		str	r3, [r7, #56]
+ 533:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 24625              		.loc 1 533 0
+ 24626 0938 3B6D     		ldr	r3, [r7, #80]
+ 24627 093a 03F10403 		add	r3, r3, #4
+ 24628 093e 3B65     		str	r3, [r7, #80]
+ 534:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key3Left = __REV(*(uint32_t*)(keyaddr));
+ 24629              		.loc 1 534 0
+ 24630 0940 3B6D     		ldr	r3, [r7, #80]
+ 24631 0942 1B68     		ldr	r3, [r3, #0]
+ 24632 0944 1846     		mov	r0, r3
+ 24633 0946 FFF7FEFF 		bl	__REV
+ 24634 094a 0346     		mov	r3, r0
+ 24635 094c FB63     		str	r3, [r7, #60]
+ 535:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     keyaddr+=4;
+ 24636              		.loc 1 535 0
+ 24637 094e 3B6D     		ldr	r3, [r7, #80]
+ 24638 0950 03F10403 		add	r3, r3, #4
+ 24639 0954 3B65     		str	r3, [r7, #80]
+ 536:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_KeyInitStructure.CRYP_Key3Right= __REV(*(uint32_t*)(keyaddr));
+ 24640              		.loc 1 536 0
+ 24641 0956 3B6D     		ldr	r3, [r7, #80]
+ 24642 0958 1B68     		ldr	r3, [r3, #0]
+ 24643 095a 1846     		mov	r0, r3
+ 24644 095c FFF7FEFF 		bl	__REV
+ 24645 0960 0346     		mov	r3, r0
+ 24646 0962 3B64     		str	r3, [r7, #64]
+ 537:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     break;
+ 24647              		.loc 1 537 0
+ 24648 0964 00E0     		b	.L44
+ 24649              	.L54:
+ 538:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     default:
+ 539:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     break;
+ 24650              		.loc 1 539 0
+ 24651 0966 00BF     		nop
+ 24652              	.L44:
+ 540:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   }
+ 541:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   /* CRYP Initialization Vectors */
+ 542:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   AES_CRYP_IVInitStructure.CRYP_IV0Left = __REV(*(uint32_t*)(ivaddr));
+ 24653              		.loc 1 542 0
+ 24654 0968 FB6C     		ldr	r3, [r7, #76]
+ 24655 096a 1B68     		ldr	r3, [r3, #0]
+ 24656 096c 1846     		mov	r0, r3
+ 24657 096e FFF7FEFF 		bl	__REV
+ 24658 0972 0346     		mov	r3, r0
+ 24659 0974 7B61     		str	r3, [r7, #20]
+ 543:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   ivaddr+=4;
+ 24660              		.loc 1 543 0
+ 24661 0976 FB6C     		ldr	r3, [r7, #76]
+ 24662 0978 03F10403 		add	r3, r3, #4
+ 24663 097c FB64     		str	r3, [r7, #76]
+ 544:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   AES_CRYP_IVInitStructure.CRYP_IV0Right= __REV(*(uint32_t*)(ivaddr));
+ 24664              		.loc 1 544 0
+ 24665 097e FB6C     		ldr	r3, [r7, #76]
+ 24666 0980 1B68     		ldr	r3, [r3, #0]
+ 24667 0982 1846     		mov	r0, r3
+ 24668 0984 FFF7FEFF 		bl	__REV
+ 24669 0988 0346     		mov	r3, r0
+ 24670 098a BB61     		str	r3, [r7, #24]
+ 545:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   ivaddr+=4;
+ 24671              		.loc 1 545 0
+ 24672 098c FB6C     		ldr	r3, [r7, #76]
+ 24673 098e 03F10403 		add	r3, r3, #4
+ 24674 0992 FB64     		str	r3, [r7, #76]
+ 546:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   AES_CRYP_IVInitStructure.CRYP_IV1Left = __REV(*(uint32_t*)(ivaddr));
+ 24675              		.loc 1 546 0
+ 24676 0994 FB6C     		ldr	r3, [r7, #76]
+ 24677 0996 1B68     		ldr	r3, [r3, #0]
+ 24678 0998 1846     		mov	r0, r3
+ 24679 099a FFF7FEFF 		bl	__REV
+ 24680 099e 0346     		mov	r3, r0
+ 24681 09a0 FB61     		str	r3, [r7, #28]
+ 547:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   ivaddr+=4;
+ 24682              		.loc 1 547 0
+ 24683 09a2 FB6C     		ldr	r3, [r7, #76]
+ 24684 09a4 03F10403 		add	r3, r3, #4
+ 24685 09a8 FB64     		str	r3, [r7, #76]
+ 548:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   AES_CRYP_IVInitStructure.CRYP_IV1Right= __REV(*(uint32_t*)(ivaddr));
+ 24686              		.loc 1 548 0
+ 24687 09aa FB6C     		ldr	r3, [r7, #76]
+ 24688 09ac 1B68     		ldr	r3, [r3, #0]
+ 24689 09ae 1846     		mov	r0, r3
+ 24690 09b0 FFF7FEFF 		bl	__REV
+ 24691 09b4 0346     		mov	r3, r0
+ 24692 09b6 3B62     		str	r3, [r7, #32]
+ 549:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 550:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   /* Key Initialisation */
+ 551:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_KeyInit(&AES_CRYP_KeyInitStructure);
+ 24693              		.loc 1 551 0
+ 24694 09b8 07F12403 		add	r3, r7, #36
+ 24695 09bc 1846     		mov	r0, r3
+ 24696 09be FFF7FEFF 		bl	CRYP_KeyInit
+ 552:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 553:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   /*------------------ AES Decryption ------------------*/
+ 554:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   if(Mode == MODE_DECRYPT) /* AES decryption */
+ 24697              		.loc 1 554 0
+ 24698 09c2 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 24699 09c4 002B     		cmp	r3, #0
+ 24700 09c6 04D1     		bne	.L45
+ 555:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   {
+ 556:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     /* Crypto Init for decryption process */
+ 557:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_InitStructure.CRYP_AlgoDir = CRYP_AlgoDir_Decrypt;
+ 24701              		.loc 1 557 0
+ 24702 09c8 4FF00403 		mov	r3, #4
+ 24703 09cc A7F84430 		strh	r3, [r7, #68]	@ movhi
+ 24704 09d0 03E0     		b	.L46
+ 24705              	.L45:
+ 558:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   }
+ 559:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   /*------------------ AES Encryption ------------------*/
+ 560:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   else /* AES encryption */
+ 561:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   {
+ 562:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     /* Crypto Init for Encryption process */
+ 563:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     AES_CRYP_InitStructure.CRYP_AlgoDir = CRYP_AlgoDir_Encrypt;
+ 24706              		.loc 1 563 0
+ 24707 09d2 4FF00003 		mov	r3, #0
+ 24708 09d6 A7F84430 		strh	r3, [r7, #68]	@ movhi
+ 24709              	.L46:
+ 564:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   }
+ 565:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   AES_CRYP_InitStructure.CRYP_AlgoMode = CRYP_AlgoMode_AES_CTR;
+ 24710              		.loc 1 565 0
+ 24711 09da 4FF03003 		mov	r3, #48
+ 24712 09de A7F84630 		strh	r3, [r7, #70]	@ movhi
+ 566:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   AES_CRYP_InitStructure.CRYP_DataType = CRYP_DataType_8b;
+ 24713              		.loc 1 566 0
+ 24714 09e2 4FF08003 		mov	r3, #128
+ 24715 09e6 A7F84830 		strh	r3, [r7, #72]	@ movhi
+ 567:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_Init(&AES_CRYP_InitStructure);
+ 24716              		.loc 1 567 0
+ 24717 09ea 07F14403 		add	r3, r7, #68
+ 24718 09ee 1846     		mov	r0, r3
+ 24719 09f0 FFF7FEFF 		bl	CRYP_Init
+ 568:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 569:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   /* CRYP Initialization Vectors */
+ 570:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_IVInit(&AES_CRYP_IVInitStructure);
+ 24720              		.loc 1 570 0
+ 24721 09f4 07F11403 		add	r3, r7, #20
+ 24722 09f8 1846     		mov	r0, r3
+ 24723 09fa FFF7FEFF 		bl	CRYP_IVInit
+ 571:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 572:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   /* Flush IN/OUT FIFOs */
+ 573:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_FIFOFlush();
+ 24724              		.loc 1 573 0
+ 24725 09fe FFF7FEFF 		bl	CRYP_FIFOFlush
+ 574:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 575:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   /* Enable Crypto processor */
+ 576:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_Cmd(ENABLE);
+ 24726              		.loc 1 576 0
+ 24727 0a02 4FF00100 		mov	r0, #1
+ 24728 0a06 FFF7FEFF 		bl	CRYP_Cmd
+ 577:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 578:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   for(i=0; ((i<Ilength) && (status != ERROR)); i+=16)
+ 24729              		.loc 1 578 0
+ 24730 0a0a 4FF00003 		mov	r3, #0
+ 24731 0a0e BB65     		str	r3, [r7, #88]
+ 24732 0a10 67E0     		b	.L47
+ 24733              	.L53:
+ 579:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   {
+ 580:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 581:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     /* Write the Input block in the IN FIFO */
+ 582:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     CRYP_DataIn(*(uint32_t*)(inputaddr));
+ 24734              		.loc 1 582 0
+ 24735 0a12 3B6E     		ldr	r3, [r7, #96]
+ 24736 0a14 1B68     		ldr	r3, [r3, #0]
+ 24737 0a16 1846     		mov	r0, r3
+ 24738 0a18 FFF7FEFF 		bl	CRYP_DataIn
+ 583:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     inputaddr+=4;
+ 24739              		.loc 1 583 0
+ 24740 0a1c 3B6E     		ldr	r3, [r7, #96]
+ 24741 0a1e 03F10403 		add	r3, r3, #4
+ 24742 0a22 3B66     		str	r3, [r7, #96]
+ 584:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     CRYP_DataIn(*(uint32_t*)(inputaddr));
+ 24743              		.loc 1 584 0
+ 24744 0a24 3B6E     		ldr	r3, [r7, #96]
+ 24745 0a26 1B68     		ldr	r3, [r3, #0]
+ 24746 0a28 1846     		mov	r0, r3
+ 24747 0a2a FFF7FEFF 		bl	CRYP_DataIn
+ 585:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     inputaddr+=4;
+ 24748              		.loc 1 585 0
+ 24749 0a2e 3B6E     		ldr	r3, [r7, #96]
+ 24750 0a30 03F10403 		add	r3, r3, #4
+ 24751 0a34 3B66     		str	r3, [r7, #96]
+ 586:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     CRYP_DataIn(*(uint32_t*)(inputaddr));
+ 24752              		.loc 1 586 0
+ 24753 0a36 3B6E     		ldr	r3, [r7, #96]
+ 24754 0a38 1B68     		ldr	r3, [r3, #0]
+ 24755 0a3a 1846     		mov	r0, r3
+ 24756 0a3c FFF7FEFF 		bl	CRYP_DataIn
+ 587:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     inputaddr+=4;
+ 24757              		.loc 1 587 0
+ 24758 0a40 3B6E     		ldr	r3, [r7, #96]
+ 24759 0a42 03F10403 		add	r3, r3, #4
+ 24760 0a46 3B66     		str	r3, [r7, #96]
+ 588:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     CRYP_DataIn(*(uint32_t*)(inputaddr));
+ 24761              		.loc 1 588 0
+ 24762 0a48 3B6E     		ldr	r3, [r7, #96]
+ 24763 0a4a 1B68     		ldr	r3, [r3, #0]
+ 24764 0a4c 1846     		mov	r0, r3
+ 24765 0a4e FFF7FEFF 		bl	CRYP_DataIn
+ 589:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     inputaddr+=4;
+ 24766              		.loc 1 589 0
+ 24767 0a52 3B6E     		ldr	r3, [r7, #96]
+ 24768 0a54 03F10403 		add	r3, r3, #4
+ 24769 0a58 3B66     		str	r3, [r7, #96]
+ 590:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     /* Wait until the complete message has been processed */
+ 591:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     counter = 0;
+ 24770              		.loc 1 591 0
+ 24771 0a5a 4FF00003 		mov	r3, #0
+ 24772 0a5e 3B61     		str	r3, [r7, #16]
+ 24773              	.L49:
+ 592:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     do
+ 593:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     {
+ 594:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       busystatus = CRYP_GetFlagStatus(CRYP_FLAG_BUSY);
+ 24774              		.loc 1 594 0 discriminator 1
+ 24775 0a60 4FF01000 		mov	r0, #16
+ 24776 0a64 FFF7FEFF 		bl	CRYP_GetFlagStatus
+ 24777 0a68 0346     		mov	r3, r0
+ 24778 0a6a 7B65     		str	r3, [r7, #84]
+ 595:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       counter++;
+ 24779              		.loc 1 595 0 discriminator 1
+ 24780 0a6c 3B69     		ldr	r3, [r7, #16]
+ 24781 0a6e 03F10103 		add	r3, r3, #1
+ 24782 0a72 3B61     		str	r3, [r7, #16]
+ 596:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     }while ((counter != AESBUSY_TIMEOUT) && (busystatus != RESET));
+ 24783              		.loc 1 596 0 discriminator 1
+ 24784 0a74 3B69     		ldr	r3, [r7, #16]
+ 24785 0a76 B3F5803F 		cmp	r3, #65536
+ 24786 0a7a 02D0     		beq	.L48
+ 24787 0a7c 7B6D     		ldr	r3, [r7, #84]
+ 24788 0a7e 002B     		cmp	r3, #0
+ 24789 0a80 EED1     		bne	.L49
+ 24790              	.L48:
+ 597:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 598:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     if (busystatus != RESET)
+ 24791              		.loc 1 598 0
+ 24792 0a82 7B6D     		ldr	r3, [r7, #84]
+ 24793 0a84 002B     		cmp	r3, #0
+ 24794 0a86 04D0     		beq	.L50
+ 599:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****    {
+ 600:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****        status = ERROR;
+ 24795              		.loc 1 600 0
+ 24796 0a88 4FF00003 		mov	r3, #0
+ 24797 0a8c 87F86730 		strb	r3, [r7, #103]
+ 24798 0a90 23E0     		b	.L51
+ 24799              	.L50:
+ 601:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     }
+ 602:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     else
+ 603:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     {
+ 604:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 605:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       /* Read the Output block from the Output FIFO */
+ 606:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       *(uint32_t*)(outputaddr) = CRYP_DataOut();
+ 24800              		.loc 1 606 0
+ 24801 0a92 FC6D     		ldr	r4, [r7, #92]
+ 24802 0a94 FFF7FEFF 		bl	CRYP_DataOut
+ 24803 0a98 0346     		mov	r3, r0
+ 24804 0a9a 2360     		str	r3, [r4, #0]
+ 607:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       outputaddr+=4;
+ 24805              		.loc 1 607 0
+ 24806 0a9c FB6D     		ldr	r3, [r7, #92]
+ 24807 0a9e 03F10403 		add	r3, r3, #4
+ 24808 0aa2 FB65     		str	r3, [r7, #92]
+ 608:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       *(uint32_t*)(outputaddr) = CRYP_DataOut();
+ 24809              		.loc 1 608 0
+ 24810 0aa4 FC6D     		ldr	r4, [r7, #92]
+ 24811 0aa6 FFF7FEFF 		bl	CRYP_DataOut
+ 24812 0aaa 0346     		mov	r3, r0
+ 24813 0aac 2360     		str	r3, [r4, #0]
+ 609:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       outputaddr+=4;
+ 24814              		.loc 1 609 0
+ 24815 0aae FB6D     		ldr	r3, [r7, #92]
+ 24816 0ab0 03F10403 		add	r3, r3, #4
+ 24817 0ab4 FB65     		str	r3, [r7, #92]
+ 610:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       *(uint32_t*)(outputaddr) = CRYP_DataOut();
+ 24818              		.loc 1 610 0
+ 24819 0ab6 FC6D     		ldr	r4, [r7, #92]
+ 24820 0ab8 FFF7FEFF 		bl	CRYP_DataOut
+ 24821 0abc 0346     		mov	r3, r0
+ 24822 0abe 2360     		str	r3, [r4, #0]
+ 611:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       outputaddr+=4;
+ 24823              		.loc 1 611 0
+ 24824 0ac0 FB6D     		ldr	r3, [r7, #92]
+ 24825 0ac2 03F10403 		add	r3, r3, #4
+ 24826 0ac6 FB65     		str	r3, [r7, #92]
+ 612:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       *(uint32_t*)(outputaddr) = CRYP_DataOut();
+ 24827              		.loc 1 612 0
+ 24828 0ac8 FC6D     		ldr	r4, [r7, #92]
+ 24829 0aca FFF7FEFF 		bl	CRYP_DataOut
+ 24830 0ace 0346     		mov	r3, r0
+ 24831 0ad0 2360     		str	r3, [r4, #0]
+ 613:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****       outputaddr+=4;
+ 24832              		.loc 1 613 0
+ 24833 0ad2 FB6D     		ldr	r3, [r7, #92]
+ 24834 0ad4 03F10403 		add	r3, r3, #4
+ 24835 0ad8 FB65     		str	r3, [r7, #92]
+ 24836              	.L51:
+ 578:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   for(i=0; ((i<Ilength) && (status != ERROR)); i+=16)
+ 24837              		.loc 1 578 0
+ 24838 0ada BB6D     		ldr	r3, [r7, #88]
+ 24839 0adc 03F11003 		add	r3, r3, #16
+ 24840 0ae0 BB65     		str	r3, [r7, #88]
+ 24841              	.L47:
+ 578:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   for(i=0; ((i<Ilength) && (status != ERROR)); i+=16)
+ 24842              		.loc 1 578 0 is_stmt 0 discriminator 1
+ 24843 0ae2 BA6D     		ldr	r2, [r7, #88]
+ 24844 0ae4 FB6F     		ldr	r3, [r7, #124]
+ 24845 0ae6 9A42     		cmp	r2, r3
+ 24846 0ae8 03D2     		bcs	.L52
+ 578:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   for(i=0; ((i<Ilength) && (status != ERROR)); i+=16)
+ 24847              		.loc 1 578 0 discriminator 2
+ 24848 0aea 97F86730 		ldrb	r3, [r7, #103]	@ zero_extendqisi2
+ 24849 0aee 002B     		cmp	r3, #0
+ 24850 0af0 8FD1     		bne	.L53
+ 24851              	.L52:
+ 614:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****     }
+ 615:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   }
+ 616:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   /* Disable Crypto */
+ 617:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   CRYP_Cmd(DISABLE);
+ 24852              		.loc 1 617 0 is_stmt 1
+ 24853 0af2 4FF00000 		mov	r0, #0
+ 24854 0af6 FFF7FEFF 		bl	CRYP_Cmd
+ 618:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** 
+ 619:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c ****   return status;
+ 24855              		.loc 1 619 0
+ 24856 0afa 97F86730 		ldrb	r3, [r7, #103]	@ zero_extendqisi2
+ 620:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_cryp_aes.c **** }
+ 24857              		.loc 1 620 0
+ 24858 0afe 1846     		mov	r0, r3
+ 24859 0b00 07F16C07 		add	r7, r7, #108
+ 24860 0b04 BD46     		mov	sp, r7
+ 24861 0b06 90BD     		pop	{r4, r7, pc}
+ 24862              		.cfi_endproc
+ 24863              	.LFE31:
+ 24865              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32f2xx_cryp_aes.c
+C:\Users\red4sch\AppData\Local\Temp\ccAUMCdR.s:23361  .text:00000000 $t
+C:\Users\red4sch\AppData\Local\Temp\ccAUMCdR.s:23366  .text:00000000 CRYP_AES_ECB
+C:\Users\red4sch\AppData\Local\Temp\ccAUMCdR.s:23853  .text:00000384 CRYP_AES_CBC
+C:\Users\red4sch\AppData\Local\Temp\ccAUMCdR.s:24386  .text:0000077c CRYP_AES_CTR
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+CRYP_KeyStructInit
+__REV
+CRYP_FIFOFlush
+CRYP_Init
+CRYP_KeyInit
+CRYP_Cmd
+CRYP_GetFlagStatus
+CRYP_DataIn
+CRYP_DataOut
+CRYP_IVInit

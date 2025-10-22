@@ -1,0 +1,851 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 18, 4
+  12              		.thumb
+  13              		.file	"stm32f2xx_hash_md5.c"
+  23              	.Ltext0:
+  24              		.file 1 "../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c"
+ 23361              		.align	2
+ 23362              		.global	HASH_MD5
+ 23363              		.thumb
+ 23364              		.thumb_func
+ 23366              	HASH_MD5:
+ 23367              	.LFB29:
+   1:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** /**
+   2:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   ******************************************************************************
+   3:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * @file    stm32f2xx_hash_md5.c
+   4:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * @author  MCD Application Team
+   5:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * @version V1.0.0
+   6:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * @date    18-April-2011
+   7:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * @brief   This file provides high level functions to compute the HASH MD5 and
+   8:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   *          HMAC MD5 Digest of an input message.
+   9:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   *          It uses the stm32f2xx_hash.c/.h drivers to access the STM32F2xx HASH
+  10:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   *          peripheral.
+  11:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   *
+  12:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   *  @verbatim
+  13:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   *    
+  14:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   *          ===================================================================
+  15:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   *                                   How to use this driver
+  16:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   *          ===================================================================
+  17:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   *          1. Enable The HASH controller clock using 
+  18:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   *            RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_HASH, ENABLE); function.
+  19:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   *
+  20:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   *          2. Calculate the HASH MD5 Digest using HASH_MD5() function.
+  21:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   *
+  22:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   *          3. Calculate the HMAC MD5 Digest using HMAC_MD5() function.
+  23:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   *
+  24:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   *  @endverbatim
+  25:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   *
+  26:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   ******************************************************************************
+  27:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * @attention
+  28:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   *
+  29:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+  30:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+  31:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+  32:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+  33:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+  34:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  35:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   *
+  36:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
+  37:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   ******************************************************************************
+  38:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   */
+  39:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+  40:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** /* Includes ------------------------------------------------------------------*/
+  41:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** #include "stm32f2xx_hash.h"
+  42:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+  43:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** /** @addtogroup STM32F2xx_StdPeriph_Driver
+  44:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * @{
+  45:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   */
+  46:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+  47:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** /** @defgroup HASH 
+  48:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * @brief HASH driver modules
+  49:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * @{
+  50:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   */
+  51:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+  52:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** /* Private typedef -----------------------------------------------------------*/
+  53:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** /* Private define ------------------------------------------------------------*/
+  54:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** #define MD5BUSY_TIMEOUT    ((uint32_t) 0x00010000)
+  55:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+  56:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** /* Private macro -------------------------------------------------------------*/
+  57:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** /* Private variables ---------------------------------------------------------*/
+  58:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** /* Private function prototypes -----------------------------------------------*/
+  59:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** /* Private functions ---------------------------------------------------------*/
+  60:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+  61:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** /** @defgroup HASH_Private_Functions
+  62:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * @{
+  63:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   */ 
+  64:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+  65:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** /** @defgroup HASH_Group7 High Level MD5 functions
+  66:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****  *  @brief   High Level MD5 Hash and HMAC functions 
+  67:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****  *
+  68:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** @verbatim   
+  69:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****  ===============================================================================
+  70:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****                           High Level MD5 Hash and HMAC functions
+  71:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****  ===============================================================================
+  72:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+  73:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+  74:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** @endverbatim
+  75:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * @{
+  76:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   */
+  77:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+  78:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** /**
+  79:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * @brief  Compute the HASH MD5 digest.
+  80:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * @param  Input: pointer to the Input buffer to be treated.
+  81:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * @param  Ilen: length of the Input buffer.
+  82:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * @param  Output: the returned digest
+  83:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * @retval An ErrorStatus enumeration value:
+  84:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   *          - SUCCESS: digest computation done
+  85:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   *          - ERROR: digest computation failed
+  86:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   */
+  87:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** ErrorStatus HASH_MD5(uint8_t *Input, uint32_t Ilen, uint8_t Output[16])
+  88:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** {
+ 23368              		.loc 1 88 0
+ 23369              		.cfi_startproc
+ 23370              		@ args = 0, pretend = 0, frame = 80
+ 23371              		@ frame_needed = 1, uses_anonymous_args = 0
+ 23372 0000 90B5     		push	{r4, r7, lr}
+ 23373              	.LCFI0:
+ 23374              		.cfi_def_cfa_offset 12
+ 23375 0002 95B0     		sub	sp, sp, #84
+ 23376              	.LCFI1:
+ 23377              		.cfi_def_cfa_offset 96
+ 23378 0004 00AF     		add	r7, sp, #0
+ 23379              		.cfi_offset 14, -4
+ 23380              		.cfi_offset 7, -8
+ 23381              		.cfi_offset 4, -12
+ 23382              	.LCFI2:
+ 23383              		.cfi_def_cfa_register 7
+ 23384 0006 F860     		str	r0, [r7, #12]
+ 23385 0008 B960     		str	r1, [r7, #8]
+ 23386 000a 7A60     		str	r2, [r7, #4]
+  89:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   HASH_InitTypeDef MD5_HASH_InitStructure;
+  90:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   HASH_MsgDigest MD5_MessageDigest;
+  91:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   __IO uint16_t nbvalidbitsdata = 0;
+ 23387              		.loc 1 91 0
+ 23388 000c 4FF00003 		mov	r3, #0
+ 23389 0010 FB82     		strh	r3, [r7, #22]	@ movhi
+  92:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   uint32_t i = 0;
+ 23390              		.loc 1 92 0
+ 23391 0012 4FF00003 		mov	r3, #0
+ 23392 0016 FB64     		str	r3, [r7, #76]
+  93:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   __IO uint32_t counter = 0;
+ 23393              		.loc 1 93 0
+ 23394 0018 4FF00003 		mov	r3, #0
+ 23395 001c 3B61     		str	r3, [r7, #16]
+  94:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   uint32_t busystatus = 0;
+ 23396              		.loc 1 94 0
+ 23397 001e 4FF00003 		mov	r3, #0
+ 23398 0022 3B64     		str	r3, [r7, #64]
+  95:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   ErrorStatus status = SUCCESS;
+ 23399              		.loc 1 95 0
+ 23400 0024 4FF00103 		mov	r3, #1
+ 23401 0028 87F84B30 		strb	r3, [r7, #75]
+  96:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   uint32_t inputaddr  = (uint32_t)Input;
+ 23402              		.loc 1 96 0
+ 23403 002c FB68     		ldr	r3, [r7, #12]
+ 23404 002e 7B64     		str	r3, [r7, #68]
+  97:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   uint32_t outputaddr = (uint32_t)Output;
+ 23405              		.loc 1 97 0
+ 23406 0030 7B68     		ldr	r3, [r7, #4]
+ 23407 0032 FB63     		str	r3, [r7, #60]
+  98:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+  99:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+ 100:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   /* Number of valid bits in last word of the Input data */
+ 101:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   nbvalidbitsdata = 8 * (Ilen % 4);
+ 23408              		.loc 1 101 0
+ 23409 0034 BB68     		ldr	r3, [r7, #8]
+ 23410 0036 9BB2     		uxth	r3, r3
+ 23411 0038 03F00303 		and	r3, r3, #3
+ 23412 003c 9BB2     		uxth	r3, r3
+ 23413 003e 4FEAC303 		lsl	r3, r3, #3
+ 23414 0042 9BB2     		uxth	r3, r3
+ 23415 0044 FB82     		strh	r3, [r7, #22]	@ movhi
+ 102:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+ 103:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   /* HASH peripheral initialization */
+ 104:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   HASH_DeInit();
+ 23416              		.loc 1 104 0
+ 23417 0046 FFF7FEFF 		bl	HASH_DeInit
+ 105:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+ 106:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   /* HASH Configuration */
+ 107:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   MD5_HASH_InitStructure.HASH_AlgoSelection = HASH_AlgoSelection_MD5;
+ 23418              		.loc 1 107 0
+ 23419 004a 4FF08003 		mov	r3, #128
+ 23420 004e FB62     		str	r3, [r7, #44]
+ 108:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   MD5_HASH_InitStructure.HASH_AlgoMode = HASH_AlgoMode_HASH;
+ 23421              		.loc 1 108 0
+ 23422 0050 4FF00003 		mov	r3, #0
+ 23423 0054 3B63     		str	r3, [r7, #48]
+ 109:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   MD5_HASH_InitStructure.HASH_DataType = HASH_DataType_8b;
+ 23424              		.loc 1 109 0
+ 23425 0056 4FF02003 		mov	r3, #32
+ 23426 005a 7B63     		str	r3, [r7, #52]
+ 110:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   HASH_Init(&MD5_HASH_InitStructure);
+ 23427              		.loc 1 110 0
+ 23428 005c 07F12C03 		add	r3, r7, #44
+ 23429 0060 1846     		mov	r0, r3
+ 23430 0062 FFF7FEFF 		bl	HASH_Init
+ 111:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+ 112:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   /* Configure the number of valid bits in last word of the data */
+ 113:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   HASH_SetLastWordValidBitsNbr(nbvalidbitsdata);
+ 23431              		.loc 1 113 0
+ 23432 0066 FB8A     		ldrh	r3, [r7, #22]	@ movhi
+ 23433 0068 9BB2     		uxth	r3, r3
+ 23434 006a 1846     		mov	r0, r3
+ 23435 006c FFF7FEFF 		bl	HASH_SetLastWordValidBitsNbr
+ 114:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+ 115:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   /* Write the Input block in the IN FIFO */
+ 116:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   for(i=0; i<Ilen; i+=4)
+ 23436              		.loc 1 116 0
+ 23437 0070 4FF00003 		mov	r3, #0
+ 23438 0074 FB64     		str	r3, [r7, #76]
+ 23439 0076 0CE0     		b	.L2
+ 23440              	.L3:
+ 117:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   {
+ 118:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     HASH_DataIn(*(uint32_t*)inputaddr);
+ 23441              		.loc 1 118 0 discriminator 2
+ 23442 0078 7B6C     		ldr	r3, [r7, #68]
+ 23443 007a 1B68     		ldr	r3, [r3, #0]
+ 23444 007c 1846     		mov	r0, r3
+ 23445 007e FFF7FEFF 		bl	HASH_DataIn
+ 119:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     inputaddr+=4;
+ 23446              		.loc 1 119 0 discriminator 2
+ 23447 0082 7B6C     		ldr	r3, [r7, #68]
+ 23448 0084 03F10403 		add	r3, r3, #4
+ 23449 0088 7B64     		str	r3, [r7, #68]
+ 116:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   for(i=0; i<Ilen; i+=4)
+ 23450              		.loc 1 116 0 discriminator 2
+ 23451 008a FB6C     		ldr	r3, [r7, #76]
+ 23452 008c 03F10403 		add	r3, r3, #4
+ 23453 0090 FB64     		str	r3, [r7, #76]
+ 23454              	.L2:
+ 116:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   for(i=0; i<Ilen; i+=4)
+ 23455              		.loc 1 116 0 is_stmt 0 discriminator 1
+ 23456 0092 FA6C     		ldr	r2, [r7, #76]
+ 23457 0094 BB68     		ldr	r3, [r7, #8]
+ 23458 0096 9A42     		cmp	r2, r3
+ 23459 0098 EED3     		bcc	.L3
+ 120:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   }
+ 121:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+ 122:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   /* Start the HASH processor */
+ 123:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   HASH_StartDigest();
+ 23460              		.loc 1 123 0 is_stmt 1
+ 23461 009a FFF7FEFF 		bl	HASH_StartDigest
+ 23462              	.L5:
+ 124:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+ 125:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   /* wait until the Busy flag is RESET */
+ 126:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   do
+ 127:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   {
+ 128:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     busystatus = HASH_GetFlagStatus(HASH_FLAG_BUSY);
+ 23463              		.loc 1 128 0 discriminator 1
+ 23464 009e 4FF00800 		mov	r0, #8
+ 23465 00a2 FFF7FEFF 		bl	HASH_GetFlagStatus
+ 23466 00a6 0346     		mov	r3, r0
+ 23467 00a8 3B64     		str	r3, [r7, #64]
+ 129:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     counter++;
+ 23468              		.loc 1 129 0 discriminator 1
+ 23469 00aa 3B69     		ldr	r3, [r7, #16]
+ 23470 00ac 03F10103 		add	r3, r3, #1
+ 23471 00b0 3B61     		str	r3, [r7, #16]
+ 130:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   }while ((counter != MD5BUSY_TIMEOUT) && (busystatus != RESET));
+ 23472              		.loc 1 130 0 discriminator 1
+ 23473 00b2 3B69     		ldr	r3, [r7, #16]
+ 23474 00b4 B3F5803F 		cmp	r3, #65536
+ 23475 00b8 02D0     		beq	.L4
+ 23476 00ba 3B6C     		ldr	r3, [r7, #64]
+ 23477 00bc 002B     		cmp	r3, #0
+ 23478 00be EED1     		bne	.L5
+ 23479              	.L4:
+ 131:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+ 132:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   if (busystatus != RESET)
+ 23480              		.loc 1 132 0
+ 23481 00c0 3B6C     		ldr	r3, [r7, #64]
+ 23482 00c2 002B     		cmp	r3, #0
+ 23483 00c4 04D0     		beq	.L6
+ 133:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   {
+ 134:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****      status = ERROR;
+ 23484              		.loc 1 134 0
+ 23485 00c6 4FF00003 		mov	r3, #0
+ 23486 00ca 87F84B30 		strb	r3, [r7, #75]
+ 23487 00ce 2CE0     		b	.L7
+ 23488              	.L6:
+ 135:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   }
+ 136:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   else
+ 137:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   {
+ 138:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     /* Read the message digest */
+ 139:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     HASH_GetDigest(&MD5_MessageDigest);
+ 23489              		.loc 1 139 0
+ 23490 00d0 07F11803 		add	r3, r7, #24
+ 23491 00d4 1846     		mov	r0, r3
+ 23492 00d6 FFF7FEFF 		bl	HASH_GetDigest
+ 140:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     *(uint32_t*)(outputaddr)  = __REV(MD5_MessageDigest.Data[0]);
+ 23493              		.loc 1 140 0
+ 23494 00da FC6B     		ldr	r4, [r7, #60]
+ 23495 00dc BB69     		ldr	r3, [r7, #24]
+ 23496 00de 1846     		mov	r0, r3
+ 23497 00e0 FFF7FEFF 		bl	__REV
+ 23498 00e4 0346     		mov	r3, r0
+ 23499 00e6 2360     		str	r3, [r4, #0]
+ 141:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     outputaddr+=4;
+ 23500              		.loc 1 141 0
+ 23501 00e8 FB6B     		ldr	r3, [r7, #60]
+ 23502 00ea 03F10403 		add	r3, r3, #4
+ 23503 00ee FB63     		str	r3, [r7, #60]
+ 142:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     *(uint32_t*)(outputaddr)  = __REV(MD5_MessageDigest.Data[1]);
+ 23504              		.loc 1 142 0
+ 23505 00f0 FC6B     		ldr	r4, [r7, #60]
+ 23506 00f2 FB69     		ldr	r3, [r7, #28]
+ 23507 00f4 1846     		mov	r0, r3
+ 23508 00f6 FFF7FEFF 		bl	__REV
+ 23509 00fa 0346     		mov	r3, r0
+ 23510 00fc 2360     		str	r3, [r4, #0]
+ 143:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     outputaddr+=4;
+ 23511              		.loc 1 143 0
+ 23512 00fe FB6B     		ldr	r3, [r7, #60]
+ 23513 0100 03F10403 		add	r3, r3, #4
+ 23514 0104 FB63     		str	r3, [r7, #60]
+ 144:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     *(uint32_t*)(outputaddr)  = __REV(MD5_MessageDigest.Data[2]);
+ 23515              		.loc 1 144 0
+ 23516 0106 FC6B     		ldr	r4, [r7, #60]
+ 23517 0108 3B6A     		ldr	r3, [r7, #32]
+ 23518 010a 1846     		mov	r0, r3
+ 23519 010c FFF7FEFF 		bl	__REV
+ 23520 0110 0346     		mov	r3, r0
+ 23521 0112 2360     		str	r3, [r4, #0]
+ 145:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     outputaddr+=4;
+ 23522              		.loc 1 145 0
+ 23523 0114 FB6B     		ldr	r3, [r7, #60]
+ 23524 0116 03F10403 		add	r3, r3, #4
+ 23525 011a FB63     		str	r3, [r7, #60]
+ 146:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     *(uint32_t*)(outputaddr)  = __REV(MD5_MessageDigest.Data[3]);
+ 23526              		.loc 1 146 0
+ 23527 011c FC6B     		ldr	r4, [r7, #60]
+ 23528 011e 7B6A     		ldr	r3, [r7, #36]
+ 23529 0120 1846     		mov	r0, r3
+ 23530 0122 FFF7FEFF 		bl	__REV
+ 23531 0126 0346     		mov	r3, r0
+ 23532 0128 2360     		str	r3, [r4, #0]
+ 23533              	.L7:
+ 147:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   }
+ 148:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   return status; 
+ 23534              		.loc 1 148 0
+ 23535 012a 97F84B30 		ldrb	r3, [r7, #75]	@ zero_extendqisi2
+ 149:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** }
+ 23536              		.loc 1 149 0
+ 23537 012e 1846     		mov	r0, r3
+ 23538 0130 07F15407 		add	r7, r7, #84
+ 23539 0134 BD46     		mov	sp, r7
+ 23540 0136 90BD     		pop	{r4, r7, pc}
+ 23541              		.cfi_endproc
+ 23542              	.LFE29:
+ 23544              		.align	2
+ 23545              		.global	HMAC_MD5
+ 23546              		.thumb
+ 23547              		.thumb_func
+ 23549              	HMAC_MD5:
+ 23550              	.LFB30:
+ 150:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+ 151:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** /**
+ 152:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * @brief  Compute the HMAC MD5 digest.
+ 153:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * @param  Key: pointer to the Key used for HMAC.
+ 154:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * @param  Keylen: length of the Key used for HMAC.
+ 155:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * @param  Input: pointer to the Input buffer to be treated.
+ 156:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * @param  Ilen: length of the Input buffer.
+ 157:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * @param  Output: the returned digest  
+ 158:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   * @retval An ErrorStatus enumeration value:
+ 159:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   *          - SUCCESS: digest computation done
+ 160:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   *          - ERROR: digest computation failed
+ 161:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   */
+ 162:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** ErrorStatus HMAC_MD5(uint8_t *Key, uint32_t Keylen, uint8_t *Input, 
+ 163:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****                      uint32_t Ilen, uint8_t Output[16])
+ 164:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** {
+ 23551              		.loc 1 164 0
+ 23552              		.cfi_startproc
+ 23553              		@ args = 4, pretend = 0, frame = 88
+ 23554              		@ frame_needed = 1, uses_anonymous_args = 0
+ 23555 0138 90B5     		push	{r4, r7, lr}
+ 23556              	.LCFI3:
+ 23557              		.cfi_def_cfa_offset 12
+ 23558 013a 97B0     		sub	sp, sp, #92
+ 23559              	.LCFI4:
+ 23560              		.cfi_def_cfa_offset 104
+ 23561 013c 00AF     		add	r7, sp, #0
+ 23562              		.cfi_offset 14, -4
+ 23563              		.cfi_offset 7, -8
+ 23564              		.cfi_offset 4, -12
+ 23565              	.LCFI5:
+ 23566              		.cfi_def_cfa_register 7
+ 23567 013e F860     		str	r0, [r7, #12]
+ 23568 0140 B960     		str	r1, [r7, #8]
+ 23569 0142 7A60     		str	r2, [r7, #4]
+ 23570 0144 3B60     		str	r3, [r7, #0]
+ 165:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   HASH_InitTypeDef MD5_HASH_InitStructure;
+ 166:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   HASH_MsgDigest MD5_MessageDigest;
+ 167:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   __IO uint16_t nbvalidbitsdata = 0;
+ 23571              		.loc 1 167 0
+ 23572 0146 4FF00003 		mov	r3, #0
+ 23573 014a 7B83     		strh	r3, [r7, #26]	@ movhi
+ 168:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   __IO uint16_t nbvalidbitskey = 0;
+ 23574              		.loc 1 168 0
+ 23575 014c 4FF00003 		mov	r3, #0
+ 23576 0150 3B83     		strh	r3, [r7, #24]	@ movhi
+ 169:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   uint32_t i = 0;
+ 23577              		.loc 1 169 0
+ 23578 0152 4FF00003 		mov	r3, #0
+ 23579 0156 7B65     		str	r3, [r7, #84]
+ 170:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   __IO uint32_t counter = 0;
+ 23580              		.loc 1 170 0
+ 23581 0158 4FF00003 		mov	r3, #0
+ 23582 015c 7B61     		str	r3, [r7, #20]
+ 171:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   uint32_t busystatus = 0;
+ 23583              		.loc 1 171 0
+ 23584 015e 4FF00003 		mov	r3, #0
+ 23585 0162 7B64     		str	r3, [r7, #68]
+ 172:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   ErrorStatus status = SUCCESS;
+ 23586              		.loc 1 172 0
+ 23587 0164 4FF00103 		mov	r3, #1
+ 23588 0168 87F85330 		strb	r3, [r7, #83]
+ 173:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   uint32_t keyaddr    = (uint32_t)Key;
+ 23589              		.loc 1 173 0
+ 23590 016c FB68     		ldr	r3, [r7, #12]
+ 23591 016e FB64     		str	r3, [r7, #76]
+ 174:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   uint32_t inputaddr  = (uint32_t)Input;
+ 23592              		.loc 1 174 0
+ 23593 0170 7B68     		ldr	r3, [r7, #4]
+ 23594 0172 BB64     		str	r3, [r7, #72]
+ 175:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   uint32_t outputaddr = (uint32_t)Output;
+ 23595              		.loc 1 175 0
+ 23596 0174 BB6E     		ldr	r3, [r7, #104]
+ 23597 0176 3B64     		str	r3, [r7, #64]
+ 176:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+ 177:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   /* Number of valid bits in last word of the Input data */
+ 178:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   nbvalidbitsdata = 8 * (Ilen % 4);
+ 23598              		.loc 1 178 0
+ 23599 0178 3B68     		ldr	r3, [r7, #0]
+ 23600 017a 9BB2     		uxth	r3, r3
+ 23601 017c 03F00303 		and	r3, r3, #3
+ 23602 0180 9BB2     		uxth	r3, r3
+ 23603 0182 4FEAC303 		lsl	r3, r3, #3
+ 23604 0186 9BB2     		uxth	r3, r3
+ 23605 0188 7B83     		strh	r3, [r7, #26]	@ movhi
+ 179:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+ 180:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   /* Number of valid bits in last word of the Key */
+ 181:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   nbvalidbitskey = 8 * (Keylen % 4);
+ 23606              		.loc 1 181 0
+ 23607 018a BB68     		ldr	r3, [r7, #8]
+ 23608 018c 9BB2     		uxth	r3, r3
+ 23609 018e 03F00303 		and	r3, r3, #3
+ 23610 0192 9BB2     		uxth	r3, r3
+ 23611 0194 4FEAC303 		lsl	r3, r3, #3
+ 23612 0198 9BB2     		uxth	r3, r3
+ 23613 019a 3B83     		strh	r3, [r7, #24]	@ movhi
+ 182:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****    
+ 183:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   /* HASH peripheral initialization */
+ 184:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   HASH_DeInit();
+ 23614              		.loc 1 184 0
+ 23615 019c FFF7FEFF 		bl	HASH_DeInit
+ 185:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+ 186:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   /* HASH Configuration */
+ 187:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   MD5_HASH_InitStructure.HASH_AlgoSelection = HASH_AlgoSelection_MD5;
+ 23616              		.loc 1 187 0
+ 23617 01a0 4FF08003 		mov	r3, #128
+ 23618 01a4 3B63     		str	r3, [r7, #48]
+ 188:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   MD5_HASH_InitStructure.HASH_AlgoMode = HASH_AlgoMode_HMAC;
+ 23619              		.loc 1 188 0
+ 23620 01a6 4FF04003 		mov	r3, #64
+ 23621 01aa 7B63     		str	r3, [r7, #52]
+ 189:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   MD5_HASH_InitStructure.HASH_DataType = HASH_DataType_8b;
+ 23622              		.loc 1 189 0
+ 23623 01ac 4FF02003 		mov	r3, #32
+ 23624 01b0 BB63     		str	r3, [r7, #56]
+ 190:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   if(Keylen > 64)
+ 23625              		.loc 1 190 0
+ 23626 01b2 BB68     		ldr	r3, [r7, #8]
+ 23627 01b4 402B     		cmp	r3, #64
+ 23628 01b6 03D9     		bls	.L9
+ 191:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   {
+ 192:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     /* HMAC long Key */
+ 193:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     MD5_HASH_InitStructure.HASH_HMACKeyType = HASH_HMACKeyType_LongKey;
+ 23629              		.loc 1 193 0
+ 23630 01b8 4FF48033 		mov	r3, #65536
+ 23631 01bc FB63     		str	r3, [r7, #60]
+ 23632 01be 02E0     		b	.L10
+ 23633              	.L9:
+ 194:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   }
+ 195:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   else
+ 196:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   {
+ 197:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     /* HMAC short Key */
+ 198:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     MD5_HASH_InitStructure.HASH_HMACKeyType = HASH_HMACKeyType_ShortKey;
+ 23634              		.loc 1 198 0
+ 23635 01c0 4FF00003 		mov	r3, #0
+ 23636 01c4 FB63     		str	r3, [r7, #60]
+ 23637              	.L10:
+ 199:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   }
+ 200:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   HASH_Init(&MD5_HASH_InitStructure);
+ 23638              		.loc 1 200 0
+ 23639 01c6 07F13003 		add	r3, r7, #48
+ 23640 01ca 1846     		mov	r0, r3
+ 23641 01cc FFF7FEFF 		bl	HASH_Init
+ 201:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+ 202:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   /* Configure the number of valid bits in last word of the Key */
+ 203:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   HASH_SetLastWordValidBitsNbr(nbvalidbitskey);
+ 23642              		.loc 1 203 0
+ 23643 01d0 3B8B     		ldrh	r3, [r7, #24]	@ movhi
+ 23644 01d2 9BB2     		uxth	r3, r3
+ 23645 01d4 1846     		mov	r0, r3
+ 23646 01d6 FFF7FEFF 		bl	HASH_SetLastWordValidBitsNbr
+ 204:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+ 205:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   /* Write the Key */
+ 206:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   for(i=0; i<Keylen; i+=4)
+ 23647              		.loc 1 206 0
+ 23648 01da 4FF00003 		mov	r3, #0
+ 23649 01de 7B65     		str	r3, [r7, #84]
+ 23650 01e0 0CE0     		b	.L11
+ 23651              	.L12:
+ 207:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   {
+ 208:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     HASH_DataIn(*(uint32_t*)keyaddr);
+ 23652              		.loc 1 208 0 discriminator 2
+ 23653 01e2 FB6C     		ldr	r3, [r7, #76]
+ 23654 01e4 1B68     		ldr	r3, [r3, #0]
+ 23655 01e6 1846     		mov	r0, r3
+ 23656 01e8 FFF7FEFF 		bl	HASH_DataIn
+ 209:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     keyaddr+=4;
+ 23657              		.loc 1 209 0 discriminator 2
+ 23658 01ec FB6C     		ldr	r3, [r7, #76]
+ 23659 01ee 03F10403 		add	r3, r3, #4
+ 23660 01f2 FB64     		str	r3, [r7, #76]
+ 206:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   for(i=0; i<Keylen; i+=4)
+ 23661              		.loc 1 206 0 discriminator 2
+ 23662 01f4 7B6D     		ldr	r3, [r7, #84]
+ 23663 01f6 03F10403 		add	r3, r3, #4
+ 23664 01fa 7B65     		str	r3, [r7, #84]
+ 23665              	.L11:
+ 206:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   for(i=0; i<Keylen; i+=4)
+ 23666              		.loc 1 206 0 is_stmt 0 discriminator 1
+ 23667 01fc 7A6D     		ldr	r2, [r7, #84]
+ 23668 01fe BB68     		ldr	r3, [r7, #8]
+ 23669 0200 9A42     		cmp	r2, r3
+ 23670 0202 EED3     		bcc	.L12
+ 210:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   }
+ 211:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   
+ 212:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   /* Start the HASH processor */
+ 213:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   HASH_StartDigest();
+ 23671              		.loc 1 213 0 is_stmt 1
+ 23672 0204 FFF7FEFF 		bl	HASH_StartDigest
+ 23673              	.L14:
+ 214:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+ 215:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   /* wait until the Busy flag is RESET */
+ 216:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   do
+ 217:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   {
+ 218:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     busystatus = HASH_GetFlagStatus(HASH_FLAG_BUSY);
+ 23674              		.loc 1 218 0 discriminator 1
+ 23675 0208 4FF00800 		mov	r0, #8
+ 23676 020c FFF7FEFF 		bl	HASH_GetFlagStatus
+ 23677 0210 0346     		mov	r3, r0
+ 23678 0212 7B64     		str	r3, [r7, #68]
+ 219:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     counter++;
+ 23679              		.loc 1 219 0 discriminator 1
+ 23680 0214 7B69     		ldr	r3, [r7, #20]
+ 23681 0216 03F10103 		add	r3, r3, #1
+ 23682 021a 7B61     		str	r3, [r7, #20]
+ 220:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   }while ((counter != MD5BUSY_TIMEOUT) && (busystatus != RESET));
+ 23683              		.loc 1 220 0 discriminator 1
+ 23684 021c 7B69     		ldr	r3, [r7, #20]
+ 23685 021e B3F5803F 		cmp	r3, #65536
+ 23686 0222 02D0     		beq	.L13
+ 23687 0224 7B6C     		ldr	r3, [r7, #68]
+ 23688 0226 002B     		cmp	r3, #0
+ 23689 0228 EED1     		bne	.L14
+ 23690              	.L13:
+ 221:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+ 222:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   if (busystatus != RESET)
+ 23691              		.loc 1 222 0
+ 23692 022a 7B6C     		ldr	r3, [r7, #68]
+ 23693 022c 002B     		cmp	r3, #0
+ 23694 022e 04D0     		beq	.L15
+ 223:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   {
+ 224:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****      status = ERROR;
+ 23695              		.loc 1 224 0
+ 23696 0230 4FF00003 		mov	r3, #0
+ 23697 0234 87F85330 		strb	r3, [r7, #83]
+ 23698 0238 9EE0     		b	.L16
+ 23699              	.L15:
+ 225:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   }
+ 226:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   else
+ 227:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   {
+ 228:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     /* Configure the number of valid bits in last word of the Input data */
+ 229:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     HASH_SetLastWordValidBitsNbr(nbvalidbitsdata);
+ 23700              		.loc 1 229 0
+ 23701 023a 7B8B     		ldrh	r3, [r7, #26]	@ movhi
+ 23702 023c 9BB2     		uxth	r3, r3
+ 23703 023e 1846     		mov	r0, r3
+ 23704 0240 FFF7FEFF 		bl	HASH_SetLastWordValidBitsNbr
+ 230:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+ 231:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     /* Write the Input block in the IN FIFO */
+ 232:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     for(i=0; i<Ilen; i+=4)
+ 23705              		.loc 1 232 0
+ 23706 0244 4FF00003 		mov	r3, #0
+ 23707 0248 7B65     		str	r3, [r7, #84]
+ 23708 024a 0CE0     		b	.L17
+ 23709              	.L18:
+ 233:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     {
+ 234:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****       HASH_DataIn(*(uint32_t*)inputaddr);
+ 23710              		.loc 1 234 0 discriminator 2
+ 23711 024c BB6C     		ldr	r3, [r7, #72]
+ 23712 024e 1B68     		ldr	r3, [r3, #0]
+ 23713 0250 1846     		mov	r0, r3
+ 23714 0252 FFF7FEFF 		bl	HASH_DataIn
+ 235:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****       inputaddr+=4;
+ 23715              		.loc 1 235 0 discriminator 2
+ 23716 0256 BB6C     		ldr	r3, [r7, #72]
+ 23717 0258 03F10403 		add	r3, r3, #4
+ 23718 025c BB64     		str	r3, [r7, #72]
+ 232:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     for(i=0; i<Ilen; i+=4)
+ 23719              		.loc 1 232 0 discriminator 2
+ 23720 025e 7B6D     		ldr	r3, [r7, #84]
+ 23721 0260 03F10403 		add	r3, r3, #4
+ 23722 0264 7B65     		str	r3, [r7, #84]
+ 23723              	.L17:
+ 232:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     for(i=0; i<Ilen; i+=4)
+ 23724              		.loc 1 232 0 is_stmt 0 discriminator 1
+ 23725 0266 7A6D     		ldr	r2, [r7, #84]
+ 23726 0268 3B68     		ldr	r3, [r7, #0]
+ 23727 026a 9A42     		cmp	r2, r3
+ 23728 026c EED3     		bcc	.L18
+ 236:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     }
+ 237:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+ 238:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     /* Start the HASH processor */
+ 239:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     HASH_StartDigest();
+ 23729              		.loc 1 239 0 is_stmt 1
+ 23730 026e FFF7FEFF 		bl	HASH_StartDigest
+ 240:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+ 241:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     /* wait until the Busy flag is RESET */
+ 242:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     counter =0;
+ 23731              		.loc 1 242 0
+ 23732 0272 4FF00003 		mov	r3, #0
+ 23733 0276 7B61     		str	r3, [r7, #20]
+ 23734              	.L20:
+ 243:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     do
+ 244:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     {
+ 245:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****        busystatus = HASH_GetFlagStatus(HASH_FLAG_BUSY);
+ 23735              		.loc 1 245 0 discriminator 1
+ 23736 0278 4FF00800 		mov	r0, #8
+ 23737 027c FFF7FEFF 		bl	HASH_GetFlagStatus
+ 23738 0280 0346     		mov	r3, r0
+ 23739 0282 7B64     		str	r3, [r7, #68]
+ 246:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****        counter++;
+ 23740              		.loc 1 246 0 discriminator 1
+ 23741 0284 7B69     		ldr	r3, [r7, #20]
+ 23742 0286 03F10103 		add	r3, r3, #1
+ 23743 028a 7B61     		str	r3, [r7, #20]
+ 247:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     }while ((counter != MD5BUSY_TIMEOUT) && (busystatus != RESET));
+ 23744              		.loc 1 247 0 discriminator 1
+ 23745 028c 7B69     		ldr	r3, [r7, #20]
+ 23746 028e B3F5803F 		cmp	r3, #65536
+ 23747 0292 02D0     		beq	.L19
+ 23748 0294 7B6C     		ldr	r3, [r7, #68]
+ 23749 0296 002B     		cmp	r3, #0
+ 23750 0298 EED1     		bne	.L20
+ 23751              	.L19:
+ 248:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+ 249:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     if (busystatus != RESET)
+ 23752              		.loc 1 249 0
+ 23753 029a 7B6C     		ldr	r3, [r7, #68]
+ 23754 029c 002B     		cmp	r3, #0
+ 23755 029e 04D0     		beq	.L21
+ 250:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     {
+ 251:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****       status = ERROR;
+ 23756              		.loc 1 251 0
+ 23757 02a0 4FF00003 		mov	r3, #0
+ 23758 02a4 87F85330 		strb	r3, [r7, #83]
+ 23759 02a8 66E0     		b	.L16
+ 23760              	.L21:
+ 252:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     }
+ 253:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     else
+ 254:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     {  
+ 255:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****       /* Configure the number of valid bits in last word of the Key */
+ 256:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****       HASH_SetLastWordValidBitsNbr(nbvalidbitskey);
+ 23761              		.loc 1 256 0
+ 23762 02aa 3B8B     		ldrh	r3, [r7, #24]	@ movhi
+ 23763 02ac 9BB2     		uxth	r3, r3
+ 23764 02ae 1846     		mov	r0, r3
+ 23765 02b0 FFF7FEFF 		bl	HASH_SetLastWordValidBitsNbr
+ 257:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+ 258:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****       /* Write the Key */
+ 259:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****       keyaddr = (uint32_t)Key;
+ 23766              		.loc 1 259 0
+ 23767 02b4 FB68     		ldr	r3, [r7, #12]
+ 23768 02b6 FB64     		str	r3, [r7, #76]
+ 260:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****       for(i=0; i<Keylen; i+=4)
+ 23769              		.loc 1 260 0
+ 23770 02b8 4FF00003 		mov	r3, #0
+ 23771 02bc 7B65     		str	r3, [r7, #84]
+ 23772 02be 0CE0     		b	.L22
+ 23773              	.L23:
+ 261:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****       {
+ 262:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****         HASH_DataIn(*(uint32_t*)keyaddr);
+ 23774              		.loc 1 262 0 discriminator 2
+ 23775 02c0 FB6C     		ldr	r3, [r7, #76]
+ 23776 02c2 1B68     		ldr	r3, [r3, #0]
+ 23777 02c4 1846     		mov	r0, r3
+ 23778 02c6 FFF7FEFF 		bl	HASH_DataIn
+ 263:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****         keyaddr+=4;
+ 23779              		.loc 1 263 0 discriminator 2
+ 23780 02ca FB6C     		ldr	r3, [r7, #76]
+ 23781 02cc 03F10403 		add	r3, r3, #4
+ 23782 02d0 FB64     		str	r3, [r7, #76]
+ 260:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****       for(i=0; i<Keylen; i+=4)
+ 23783              		.loc 1 260 0 discriminator 2
+ 23784 02d2 7B6D     		ldr	r3, [r7, #84]
+ 23785 02d4 03F10403 		add	r3, r3, #4
+ 23786 02d8 7B65     		str	r3, [r7, #84]
+ 23787              	.L22:
+ 260:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****       for(i=0; i<Keylen; i+=4)
+ 23788              		.loc 1 260 0 is_stmt 0 discriminator 1
+ 23789 02da 7A6D     		ldr	r2, [r7, #84]
+ 23790 02dc BB68     		ldr	r3, [r7, #8]
+ 23791 02de 9A42     		cmp	r2, r3
+ 23792 02e0 EED3     		bcc	.L23
+ 264:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****       }
+ 265:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   
+ 266:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****        /* Start the HASH processor */
+ 267:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****        HASH_StartDigest();
+ 23793              		.loc 1 267 0 is_stmt 1
+ 23794 02e2 FFF7FEFF 		bl	HASH_StartDigest
+ 268:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+ 269:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****        /* wait until the Busy flag is RESET */
+ 270:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****        counter =0;
+ 23795              		.loc 1 270 0
+ 23796 02e6 4FF00003 		mov	r3, #0
+ 23797 02ea 7B61     		str	r3, [r7, #20]
+ 23798              	.L25:
+ 271:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****        do
+ 272:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****        {
+ 273:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****           busystatus = HASH_GetFlagStatus(HASH_FLAG_BUSY);
+ 23799              		.loc 1 273 0 discriminator 1
+ 23800 02ec 4FF00800 		mov	r0, #8
+ 23801 02f0 FFF7FEFF 		bl	HASH_GetFlagStatus
+ 23802 02f4 0346     		mov	r3, r0
+ 23803 02f6 7B64     		str	r3, [r7, #68]
+ 274:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****           counter++;
+ 23804              		.loc 1 274 0 discriminator 1
+ 23805 02f8 7B69     		ldr	r3, [r7, #20]
+ 23806 02fa 03F10103 		add	r3, r3, #1
+ 23807 02fe 7B61     		str	r3, [r7, #20]
+ 275:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****       }while ((counter != MD5BUSY_TIMEOUT) && (busystatus != RESET));
+ 23808              		.loc 1 275 0 discriminator 1
+ 23809 0300 7B69     		ldr	r3, [r7, #20]
+ 23810 0302 B3F5803F 		cmp	r3, #65536
+ 23811 0306 02D0     		beq	.L24
+ 23812 0308 7B6C     		ldr	r3, [r7, #68]
+ 23813 030a 002B     		cmp	r3, #0
+ 23814 030c EED1     		bne	.L25
+ 23815              	.L24:
+ 276:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** 
+ 277:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****       if (busystatus != RESET)
+ 23816              		.loc 1 277 0
+ 23817 030e 7B6C     		ldr	r3, [r7, #68]
+ 23818 0310 002B     		cmp	r3, #0
+ 23819 0312 04D0     		beq	.L26
+ 278:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****       {
+ 279:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****          status = ERROR;
+ 23820              		.loc 1 279 0
+ 23821 0314 4FF00003 		mov	r3, #0
+ 23822 0318 87F85330 		strb	r3, [r7, #83]
+ 23823 031c 2CE0     		b	.L16
+ 23824              	.L26:
+ 280:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****       }
+ 281:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****       else
+ 282:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****       {
+ 283:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****          /* Read the message digest */
+ 284:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****          HASH_GetDigest(&MD5_MessageDigest);
+ 23825              		.loc 1 284 0
+ 23826 031e 07F11C03 		add	r3, r7, #28
+ 23827 0322 1846     		mov	r0, r3
+ 23828 0324 FFF7FEFF 		bl	HASH_GetDigest
+ 285:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****          *(uint32_t*)(outputaddr)  = __REV(MD5_MessageDigest.Data[0]);
+ 23829              		.loc 1 285 0
+ 23830 0328 3C6C     		ldr	r4, [r7, #64]
+ 23831 032a FB69     		ldr	r3, [r7, #28]
+ 23832 032c 1846     		mov	r0, r3
+ 23833 032e FFF7FEFF 		bl	__REV
+ 23834 0332 0346     		mov	r3, r0
+ 23835 0334 2360     		str	r3, [r4, #0]
+ 286:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****          outputaddr+=4;
+ 23836              		.loc 1 286 0
+ 23837 0336 3B6C     		ldr	r3, [r7, #64]
+ 23838 0338 03F10403 		add	r3, r3, #4
+ 23839 033c 3B64     		str	r3, [r7, #64]
+ 287:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****          *(uint32_t*)(outputaddr)  = __REV(MD5_MessageDigest.Data[1]);
+ 23840              		.loc 1 287 0
+ 23841 033e 3C6C     		ldr	r4, [r7, #64]
+ 23842 0340 3B6A     		ldr	r3, [r7, #32]
+ 23843 0342 1846     		mov	r0, r3
+ 23844 0344 FFF7FEFF 		bl	__REV
+ 23845 0348 0346     		mov	r3, r0
+ 23846 034a 2360     		str	r3, [r4, #0]
+ 288:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****          outputaddr+=4;
+ 23847              		.loc 1 288 0
+ 23848 034c 3B6C     		ldr	r3, [r7, #64]
+ 23849 034e 03F10403 		add	r3, r3, #4
+ 23850 0352 3B64     		str	r3, [r7, #64]
+ 289:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****          *(uint32_t*)(outputaddr)  = __REV(MD5_MessageDigest.Data[2]);
+ 23851              		.loc 1 289 0
+ 23852 0354 3C6C     		ldr	r4, [r7, #64]
+ 23853 0356 7B6A     		ldr	r3, [r7, #36]
+ 23854 0358 1846     		mov	r0, r3
+ 23855 035a FFF7FEFF 		bl	__REV
+ 23856 035e 0346     		mov	r3, r0
+ 23857 0360 2360     		str	r3, [r4, #0]
+ 290:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****          outputaddr+=4;
+ 23858              		.loc 1 290 0
+ 23859 0362 3B6C     		ldr	r3, [r7, #64]
+ 23860 0364 03F10403 		add	r3, r3, #4
+ 23861 0368 3B64     		str	r3, [r7, #64]
+ 291:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****          *(uint32_t*)(outputaddr)  = __REV(MD5_MessageDigest.Data[3]);
+ 23862              		.loc 1 291 0
+ 23863 036a 3C6C     		ldr	r4, [r7, #64]
+ 23864 036c BB6A     		ldr	r3, [r7, #40]
+ 23865 036e 1846     		mov	r0, r3
+ 23866 0370 FFF7FEFF 		bl	__REV
+ 23867 0374 0346     		mov	r3, r0
+ 23868 0376 2360     		str	r3, [r4, #0]
+ 23869              	.L16:
+ 292:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****       }
+ 293:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****     }
+ 294:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   }
+ 295:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c ****   return status;  
+ 23870              		.loc 1 295 0
+ 23871 0378 97F85330 		ldrb	r3, [r7, #83]	@ zero_extendqisi2
+ 296:../STM32F2xx_StdPeriph_Driver/src/stm32f2xx_hash_md5.c **** }
+ 23872              		.loc 1 296 0
+ 23873 037c 1846     		mov	r0, r3
+ 23874 037e 07F15C07 		add	r7, r7, #92
+ 23875 0382 BD46     		mov	sp, r7
+ 23876 0384 90BD     		pop	{r4, r7, pc}
+ 23877              		.cfi_endproc
+ 23878              	.LFE30:
+ 23880              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32f2xx_hash_md5.c
+C:\Users\red4sch\AppData\Local\Temp\ccD0vhvq.s:23361  .text:00000000 $t
+C:\Users\red4sch\AppData\Local\Temp\ccD0vhvq.s:23366  .text:00000000 HASH_MD5
+C:\Users\red4sch\AppData\Local\Temp\ccD0vhvq.s:23549  .text:00000138 HMAC_MD5
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+HASH_DeInit
+HASH_Init
+HASH_SetLastWordValidBitsNbr
+HASH_DataIn
+HASH_StartDigest
+HASH_GetFlagStatus
+HASH_GetDigest
+__REV

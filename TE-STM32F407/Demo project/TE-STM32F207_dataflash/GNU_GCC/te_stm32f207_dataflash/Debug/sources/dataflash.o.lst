@@ -1,0 +1,1097 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 18, 4
+  12              		.thumb
+  13              		.file	"dataflash.c"
+  23              	.Ltext0:
+  24              		.file 1 "../sources/dataflash.c"
+ 24385              		.align	2
+ 24386              		.global	sFLASH_SendByte
+ 24387              		.thumb
+ 24388              		.thumb_func
+ 24390              	sFLASH_SendByte:
+ 24391              	.LFB29:
+   1:../sources/dataflash.c **** /* ----------------------------------------------------------------------------
+   2:../sources/dataflash.c ****  *         ATMEL Microcontroller Software Support  -  ROUSSET  -
+   3:../sources/dataflash.c ****  * ----------------------------------------------------------------------------
+   4:../sources/dataflash.c ****  * Copyright (c) 2008, Atmel Corporation
+   5:../sources/dataflash.c **** 
+   6:../sources/dataflash.c ****  * All rights reserved.
+   7:../sources/dataflash.c ****  *
+   8:../sources/dataflash.c ****  * Redistribution and use in source and binary forms, with or without
+   9:../sources/dataflash.c ****  * modification, are permitted provided that the following conditions are met:
+  10:../sources/dataflash.c ****  *
+  11:../sources/dataflash.c ****  * - Redistributions of source code must retain the above copyright notice,
+  12:../sources/dataflash.c ****  * this list of conditions and the disclaimer below.
+  13:../sources/dataflash.c ****  *
+  14:../sources/dataflash.c ****  * Atmel's name may not be used to endorse or promote products derived from
+  15:../sources/dataflash.c ****  * this software without specific prior written permission.
+  16:../sources/dataflash.c ****  *
+  17:../sources/dataflash.c ****  * DISCLAIMER: THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR
+  18:../sources/dataflash.c ****  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+  19:../sources/dataflash.c ****  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
+  20:../sources/dataflash.c ****  * DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR ANY DIRECT, INDIRECT,
+  21:../sources/dataflash.c ****  * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  22:../sources/dataflash.c ****  * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+  23:../sources/dataflash.c ****  * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  24:../sources/dataflash.c ****  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+  25:../sources/dataflash.c ****  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+  26:../sources/dataflash.c ****  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  27:../sources/dataflash.c ****  * ----------------------------------------------------------------------------
+  28:../sources/dataflash.c ****  * File Name           : dataflash.c
+  29:../sources/dataflash.c ****  * Object              : ATMEL DataFlash High level functions
+  30:../sources/dataflash.c ****  * Creation            : NLe Jul 12th 2006
+  31:../sources/dataflash.c ****  *---------------------------------------------------------------------------
+  32:../sources/dataflash.c **** */
+  33:../sources/dataflash.c **** 
+  34:../sources/dataflash.c **** #include "dataflash.h"
+  35:../sources/dataflash.c **** #include <stdlib.h>
+  36:../sources/dataflash.c **** #include <stdint.h>
+  37:../sources/dataflash.c **** #include "TE_STM32F207.h"
+  38:../sources/dataflash.c **** 
+  39:../sources/dataflash.c **** extern div_t	udiv(unsigned int dividend, unsigned int divisor);
+  40:../sources/dataflash.c **** 
+  41:../sources/dataflash.c **** /**
+  42:../sources/dataflash.c ****   * @brief  Sends a byte through the SPI interface and return the byte received
+  43:../sources/dataflash.c ****   *         from the SPI bus.
+  44:../sources/dataflash.c ****   * @param  byte: byte to send.
+  45:../sources/dataflash.c ****   * @retval The value of the received byte.
+  46:../sources/dataflash.c ****   */
+  47:../sources/dataflash.c **** uint8_t sFLASH_SendByte(uint8_t byte)
+  48:../sources/dataflash.c **** {
+ 24392              		.loc 1 48 0
+ 24393              		.cfi_startproc
+ 24394              		@ args = 0, pretend = 0, frame = 8
+ 24395              		@ frame_needed = 1, uses_anonymous_args = 0
+ 24396 0000 80B5     		push	{r7, lr}
+ 24397              	.LCFI0:
+ 24398              		.cfi_def_cfa_offset 8
+ 24399 0002 82B0     		sub	sp, sp, #8
+ 24400              	.LCFI1:
+ 24401              		.cfi_def_cfa_offset 16
+ 24402 0004 00AF     		add	r7, sp, #0
+ 24403              		.cfi_offset 14, -4
+ 24404              		.cfi_offset 7, -8
+ 24405              	.LCFI2:
+ 24406              		.cfi_def_cfa_register 7
+ 24407 0006 0346     		mov	r3, r0
+ 24408 0008 FB71     		strb	r3, [r7, #7]
+  49:../sources/dataflash.c ****   /*!< Loop while DR register in not emplty */
+  50:../sources/dataflash.c ****   while (SPI_I2S_GetFlagStatus(sFLASH_SPI, SPI_I2S_FLAG_TXE) == RESET);
+ 24409              		.loc 1 50 0
+ 24410 000a 00BF     		nop
+ 24411              	.L2:
+ 24412              		.loc 1 50 0 is_stmt 0 discriminator 1
+ 24413 000c 4FF47050 		mov	r0, #15360
+ 24414 0010 C4F20000 		movt	r0, 16384
+ 24415 0014 4FF00201 		mov	r1, #2
+ 24416 0018 FFF7FEFF 		bl	SPI_I2S_GetFlagStatus
+ 24417 001c 0346     		mov	r3, r0
+ 24418 001e 002B     		cmp	r3, #0
+ 24419 0020 F4D0     		beq	.L2
+  51:../sources/dataflash.c **** 
+  52:../sources/dataflash.c ****   /*!< Send byte through the SPI1 peripheral */
+  53:../sources/dataflash.c ****   SPI_I2S_SendData(sFLASH_SPI, byte);
+ 24420              		.loc 1 53 0 is_stmt 1
+ 24421 0022 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 24422 0024 9BB2     		uxth	r3, r3
+ 24423 0026 4FF47050 		mov	r0, #15360
+ 24424 002a C4F20000 		movt	r0, 16384
+ 24425 002e 1946     		mov	r1, r3
+ 24426 0030 FFF7FEFF 		bl	SPI_I2S_SendData
+  54:../sources/dataflash.c **** 
+  55:../sources/dataflash.c ****   /*!< Wait to receive a byte */
+  56:../sources/dataflash.c ****   while (SPI_I2S_GetFlagStatus(sFLASH_SPI, SPI_I2S_FLAG_RXNE) == RESET);
+ 24427              		.loc 1 56 0
+ 24428 0034 00BF     		nop
+ 24429              	.L3:
+ 24430              		.loc 1 56 0 is_stmt 0 discriminator 1
+ 24431 0036 4FF47050 		mov	r0, #15360
+ 24432 003a C4F20000 		movt	r0, 16384
+ 24433 003e 4FF00101 		mov	r1, #1
+ 24434 0042 FFF7FEFF 		bl	SPI_I2S_GetFlagStatus
+ 24435 0046 0346     		mov	r3, r0
+ 24436 0048 002B     		cmp	r3, #0
+ 24437 004a F4D0     		beq	.L3
+  57:../sources/dataflash.c **** 
+  58:../sources/dataflash.c ****   /*!< Return the byte read from the SPI bus */
+  59:../sources/dataflash.c ****   return SPI_I2S_ReceiveData(sFLASH_SPI);
+ 24438              		.loc 1 59 0 is_stmt 1
+ 24439 004c 4FF47050 		mov	r0, #15360
+ 24440 0050 C4F20000 		movt	r0, 16384
+ 24441 0054 FFF7FEFF 		bl	SPI_I2S_ReceiveData
+ 24442 0058 0346     		mov	r3, r0
+ 24443 005a DBB2     		uxtb	r3, r3
+  60:../sources/dataflash.c **** }
+ 24444              		.loc 1 60 0
+ 24445 005c 1846     		mov	r0, r3
+ 24446 005e 07F10807 		add	r7, r7, #8
+ 24447 0062 BD46     		mov	sp, r7
+ 24448 0064 80BD     		pop	{r7, pc}
+ 24449              		.cfi_endproc
+ 24450              	.LFE29:
+ 24452 0066 00BF     		.align	2
+ 24453              		.global	df_send_command
+ 24454              		.thumb
+ 24455              		.thumb_func
+ 24457              	df_send_command:
+ 24458              	.LFB30:
+  61:../sources/dataflash.c **** 
+  62:../sources/dataflash.c **** 
+  63:../sources/dataflash.c **** #ifdef ATMEL
+  64:../sources/dataflash.c **** /* Write SPI register */
+  65:../sources/dataflash.c **** static inline void write_spi(unsigned int offset, const unsigned int value)
+  66:../sources/dataflash.c **** {
+  67:../sources/dataflash.c **** 	writel(value, offset + AT91C_BASE_SPI);
+  68:../sources/dataflash.c **** }
+  69:../sources/dataflash.c **** 
+  70:../sources/dataflash.c **** 
+  71:../sources/dataflash.c **** /* Read SPI registers */
+  72:../sources/dataflash.c **** static inline unsigned int read_spi(unsigned int offset)
+  73:../sources/dataflash.c **** {
+  74:../sources/dataflash.c **** 	return readl(offset + AT91C_BASE_SPI);
+  75:../sources/dataflash.c **** }
+  76:../sources/dataflash.c **** 
+  77:../sources/dataflash.c **** 
+  78:../sources/dataflash.c **** /*------------------------------------------------------------------------------*/
+  79:../sources/dataflash.c **** /* \fn    df_spi_init								*/
+  80:../sources/dataflash.c **** /* \brief Configure SPI								*/
+  81:../sources/dataflash.c **** /*------------------------------------------------------------------------------*/
+  82:../sources/dataflash.c **** static int df_spi_init(unsigned int pcs, unsigned int spi_csr)
+  83:../sources/dataflash.c **** {
+  84:../sources/dataflash.c **** 	unsigned int ncs = 0;
+  85:../sources/dataflash.c **** 
+  86:../sources/dataflash.c **** 	/* Open PIO for SPI0 */
+  87:../sources/dataflash.c **** 	df_hw_init();
+  88:../sources/dataflash.c **** 
+  89:../sources/dataflash.c **** 	/* Enables the SPI0 Clock */
+  90:../sources/dataflash.c **** 	writel((1 << AT91C_ID_SPI), PMC_PCER + AT91C_BASE_PMC);
+  91:../sources/dataflash.c **** 
+  92:../sources/dataflash.c **** 	/* Reset SPI0 */
+  93:../sources/dataflash.c ****         write_spi(SPI_CR, AT91C_SPI_SWRST);
+  94:../sources/dataflash.c **** 	/* SPI may need two software reset */
+  95:../sources/dataflash.c **** 	write_spi(SPI_CR, AT91C_SPI_SWRST);
+  96:../sources/dataflash.c **** 
+  97:../sources/dataflash.c ****     	/* Configure SPI0 in Master Mode with No CS selected */
+  98:../sources/dataflash.c ****     	write_spi(SPI_MR, AT91C_SPI_MSTR | AT91C_SPI_MODFDIS | AT91C_SPI_PCS);
+  99:../sources/dataflash.c **** 
+ 100:../sources/dataflash.c **** 	switch (pcs)
+ 101:../sources/dataflash.c **** 	{
+ 102:../sources/dataflash.c **** 		case AT91C_SPI_PCS0_DATAFLASH:	ncs = 0;	break;
+ 103:../sources/dataflash.c **** 		case AT91C_SPI_PCS1_DATAFLASH:	ncs = 1;	break;
+ 104:../sources/dataflash.c **** 		case AT91C_SPI_PCS2_DATAFLASH:	ncs = 2;	break;
+ 105:../sources/dataflash.c **** 		case AT91C_SPI_PCS3_DATAFLASH:	ncs = 3;	break;
+ 106:../sources/dataflash.c **** 	}
+ 107:../sources/dataflash.c **** 	/* Configure CSx */
+ 108:../sources/dataflash.c **** 	write_spi(SPI_CSR + 4*ncs, spi_csr);
+ 109:../sources/dataflash.c **** 
+ 110:../sources/dataflash.c **** 	/* Choose CSx */
+ 111:../sources/dataflash.c **** 	write_spi(SPI_MR, read_spi(SPI_MR) & 0xFFF0FFFF);
+ 112:../sources/dataflash.c **** 	write_spi(SPI_MR, read_spi(SPI_MR) | ((pcs<<16) & AT91C_SPI_PCS));
+ 113:../sources/dataflash.c **** 
+ 114:../sources/dataflash.c **** 	/* SPI_Enable */
+ 115:../sources/dataflash.c **** 	write_spi(SPI_CR, AT91C_SPI_SPIEN);
+ 116:../sources/dataflash.c **** 
+ 117:../sources/dataflash.c **** 	return 0;
+ 118:../sources/dataflash.c **** }
+ 119:../sources/dataflash.c **** 
+ 120:../sources/dataflash.c **** 
+ 121:../sources/dataflash.c **** 
+ 122:../sources/dataflash.c **** /*------------------------------------------------------------------------------*/
+ 123:../sources/dataflash.c **** /* \fn    df_is_busy								*/
+ 124:../sources/dataflash.c **** /* \brief Test if SPI has received a buffer or not				*/
+ 125:../sources/dataflash.c **** /*------------------------------------------------------------------------------*/
+ 126:../sources/dataflash.c **** static AT91S_DF_SEM df_is_busy(
+ 127:../sources/dataflash.c **** 	AT91PS_DF pDataFlash)
+ 128:../sources/dataflash.c **** {
+ 129:../sources/dataflash.c **** 	unsigned int dStatus; = read_spi(SPI_SR);
+ 130:../sources/dataflash.c **** 
+ 131:../sources/dataflash.c **** 	/* If End of Receive Transfer interrupt occurred */
+ 132:../sources/dataflash.c ****  	if (( dStatus & AT91C_SPI_RXBUFF))
+ 133:../sources/dataflash.c ****  	{
+ 134:../sources/dataflash.c **** 	 	write_spi(SPI_PTCR, AT91C_PDC_TXTDIS);	/* PDC Disable Tx */
+ 135:../sources/dataflash.c **** 	 	write_spi(SPI_PTCR, AT91C_PDC_RXTDIS);	/* PDC Disable Rx */
+ 136:../sources/dataflash.c ****  		/* Release the semaphore */
+ 137:../sources/dataflash.c **** 		pDataFlash->bSemaphore = UNLOCKED;
+ 138:../sources/dataflash.c **** 		return UNLOCKED;
+ 139:../sources/dataflash.c **** 	}
+ 140:../sources/dataflash.c **** 	return  pDataFlash->bSemaphore;
+ 141:../sources/dataflash.c **** }
+ 142:../sources/dataflash.c **** #endif
+ 143:../sources/dataflash.c **** /*------------------------------------------------------------------------------*/
+ 144:../sources/dataflash.c **** /* \fn    df_send_command							*/
+ 145:../sources/dataflash.c **** /* \brief Generic function to send a command to the dataflash			*/
+ 146:../sources/dataflash.c **** /*------------------------------------------------------------------------------*/
+ 147:../sources/dataflash.c **** char df_send_command (
+ 148:../sources/dataflash.c **** 	AT91PS_DF pDataFlash,
+ 149:../sources/dataflash.c **** 	unsigned char bCmd,      /* Command value */
+ 150:../sources/dataflash.c **** 	unsigned char bCmdSize,  /* Command Size */
+ 151:../sources/dataflash.c **** 	char         *pData,     /* Data to be sent */
+ 152:../sources/dataflash.c **** 	unsigned int  dDataSize, /* Data Size */
+ 153:../sources/dataflash.c **** 	unsigned int  dAddress)  /* Dataflash Address */
+ 154:../sources/dataflash.c **** {
+ 24459              		.loc 1 154 0
+ 24460              		.cfi_startproc
+ 24461              		@ args = 8, pretend = 0, frame = 40
+ 24462              		@ frame_needed = 1, uses_anonymous_args = 0
+ 24463 0068 80B5     		push	{r7, lr}
+ 24464              	.LCFI3:
+ 24465              		.cfi_def_cfa_offset 8
+ 24466 006a 8AB0     		sub	sp, sp, #40
+ 24467              	.LCFI4:
+ 24468              		.cfi_def_cfa_offset 48
+ 24469 006c 00AF     		add	r7, sp, #0
+ 24470              		.cfi_offset 14, -4
+ 24471              		.cfi_offset 7, -8
+ 24472              	.LCFI5:
+ 24473              		.cfi_def_cfa_register 7
+ 24474 006e F860     		str	r0, [r7, #12]
+ 24475 0070 7B60     		str	r3, [r7, #4]
+ 24476 0072 0B46     		mov	r3, r1
+ 24477 0074 FB72     		strb	r3, [r7, #11]
+ 24478 0076 1346     		mov	r3, r2
+ 24479 0078 BB72     		strb	r3, [r7, #10]
+ 155:../sources/dataflash.c **** 	unsigned int dInternalAdr;
+ 156:../sources/dataflash.c **** 	unsigned int count;
+ 157:../sources/dataflash.c **** 	unsigned char *CmdPtr;
+ 158:../sources/dataflash.c **** 
+ 159:../sources/dataflash.c **** 	div_t result = udiv(dAddress, AT91C_PAGE_SIZE(pDataFlash));
+ 24480              		.loc 1 159 0
+ 24481 007a FB68     		ldr	r3, [r7, #12]
+ 24482 007c 1B69     		ldr	r3, [r3, #16]
+ 24483 007e 07F11402 		add	r2, r7, #20
+ 24484 0082 1046     		mov	r0, r2
+ 24485 0084 796B     		ldr	r1, [r7, #52]
+ 24486 0086 1A46     		mov	r2, r3
+ 24487 0088 FFF7FEFF 		bl	udiv
+ 160:../sources/dataflash.c **** 
+ 161:../sources/dataflash.c ****  	/* Try to get the dataflash semaphore */
+ 162:../sources/dataflash.c **** //	if ((pDataFlash->bSemaphore) != UNLOCKED)
+ 163:../sources/dataflash.c **** //		return (char) 0;
+ 164:../sources/dataflash.c **** //	pDataFlash->bSemaphore = LOCKED;
+ 165:../sources/dataflash.c **** 
+ 166:../sources/dataflash.c **** 	/* Compute command pattern */
+ 167:../sources/dataflash.c ****     if (pDataFlash->dfDescription.binaryPageMode == 0) {
+ 24488              		.loc 1 167 0
+ 24489 008c FB68     		ldr	r3, [r7, #12]
+ 24490 008e 1B6A     		ldr	r3, [r3, #32]
+ 24491 0090 002B     		cmp	r3, #0
+ 24492 0092 08D1     		bne	.L5
+ 168:../sources/dataflash.c ****         dInternalAdr = (result.quot << AT91C_PAGE_OFFSET(pDataFlash)) + result.rem;
+ 24493              		.loc 1 168 0
+ 24494 0094 7A69     		ldr	r2, [r7, #20]
+ 24495 0096 FB68     		ldr	r3, [r7, #12]
+ 24496 0098 5B69     		ldr	r3, [r3, #20]
+ 24497 009a 02FA03F2 		lsl	r2, r2, r3
+ 24498 009e BB69     		ldr	r3, [r7, #24]
+ 24499 00a0 1344     		add	r3, r2, r3
+ 24500 00a2 7B62     		str	r3, [r7, #36]
+ 24501 00a4 01E0     		b	.L6
+ 24502              	.L5:
+ 169:../sources/dataflash.c ****     } else {
+ 170:../sources/dataflash.c ****         dInternalAdr = dAddress;
+ 24503              		.loc 1 170 0
+ 24504 00a6 7B6B     		ldr	r3, [r7, #52]
+ 24505 00a8 7B62     		str	r3, [r7, #36]
+ 24506              	.L6:
+ 171:../sources/dataflash.c ****     }
+ 172:../sources/dataflash.c **** 
+ 173:../sources/dataflash.c ****  	if (AT91C_DF_NB_PAGE(pDataFlash) >= 16384)
+ 24507              		.loc 1 173 0
+ 24508 00aa FB68     		ldr	r3, [r7, #12]
+ 24509 00ac DA68     		ldr	r2, [r3, #12]
+ 24510 00ae 43F6FF73 		movw	r3, #16383
+ 24511 00b2 9A42     		cmp	r2, r3
+ 24512 00b4 25DD     		ble	.L7
+ 174:../sources/dataflash.c **** 	{
+ 175:../sources/dataflash.c **** 		pDataFlash->command[0] = (bCmd & 0x000000FF) | \
+ 24513              		.loc 1 175 0
+ 24514 00b6 FA7A     		ldrb	r2, [r7, #11]	@ zero_extendqisi2
+ 176:../sources/dataflash.c **** 	                             ((dInternalAdr & 0x0F000000) >> 16) | \
+ 24515              		.loc 1 176 0
+ 24516 00b8 7B6A     		ldr	r3, [r7, #36]
+ 24517 00ba 03F07063 		and	r3, r3, #251658240
+ 24518 00be 4FEA1343 		lsr	r3, r3, #16
+ 175:../sources/dataflash.c **** 		pDataFlash->command[0] = (bCmd & 0x000000FF) | \
+ 24519              		.loc 1 175 0
+ 24520 00c2 42EA0302 		orr	r2, r2, r3
+ 177:../sources/dataflash.c **** 	                             ((dInternalAdr & 0x00FF0000) >>  0) | \
+ 24521              		.loc 1 177 0
+ 24522 00c6 7B6A     		ldr	r3, [r7, #36]
+ 24523 00c8 03F47F03 		and	r3, r3, #16711680
+ 176:../sources/dataflash.c **** 	                             ((dInternalAdr & 0x0F000000) >> 16) | \
+ 24524              		.loc 1 176 0
+ 24525 00cc 42EA0302 		orr	r2, r2, r3
+ 178:../sources/dataflash.c **** 	                             ((dInternalAdr & 0x0000FF00) << 16);
+ 24526              		.loc 1 178 0
+ 24527 00d0 7B6A     		ldr	r3, [r7, #36]
+ 24528 00d2 03F47F43 		and	r3, r3, #65280
+ 24529 00d6 4FEA0343 		lsl	r3, r3, #16
+ 177:../sources/dataflash.c **** 	                             ((dInternalAdr & 0x00FF0000) >>  0) | \
+ 24530              		.loc 1 177 0
+ 24531 00da 42EA0302 		orr	r2, r2, r3
+ 175:../sources/dataflash.c **** 		pDataFlash->command[0] = (bCmd & 0x000000FF) | \
+ 24532              		.loc 1 175 0
+ 24533 00de FB68     		ldr	r3, [r7, #12]
+ 24534 00e0 5A60     		str	r2, [r3, #4]
+ 179:../sources/dataflash.c ****  		pDataFlash->command[1] =  (dInternalAdr & 0x000000FF);
+ 24535              		.loc 1 179 0
+ 24536 00e2 7B6A     		ldr	r3, [r7, #36]
+ 24537 00e4 03F0FF02 		and	r2, r3, #255
+ 24538 00e8 FB68     		ldr	r3, [r7, #12]
+ 24539 00ea 9A60     		str	r2, [r3, #8]
+ 180:../sources/dataflash.c **** 
+ 181:../sources/dataflash.c **** 		if ((bCmd != DB_CONTINUOUS_ARRAY_READ) && (bCmd != DB_PAGE_READ))
+ 24540              		.loc 1 181 0
+ 24541 00ec FB7A     		ldrb	r3, [r7, #11]	@ zero_extendqisi2
+ 24542 00ee E82B     		cmp	r3, #232
+ 24543 00f0 21D0     		beq	.L8
+ 24544              		.loc 1 181 0 is_stmt 0 discriminator 1
+ 24545 00f2 FB7A     		ldrb	r3, [r7, #11]	@ zero_extendqisi2
+ 24546 00f4 D22B     		cmp	r3, #210
+ 24547 00f6 1ED0     		beq	.L8
+ 182:../sources/dataflash.c **** 			bCmdSize++;
+ 24548              		.loc 1 182 0 is_stmt 1
+ 24549 00f8 BB7A     		ldrb	r3, [r7, #10]
+ 24550 00fa 03F10103 		add	r3, r3, #1
+ 24551 00fe BB72     		strb	r3, [r7, #10]
+ 24552 0100 19E0     		b	.L8
+ 24553              	.L7:
+ 183:../sources/dataflash.c **** 	}
+ 184:../sources/dataflash.c **** 	else
+ 185:../sources/dataflash.c **** 	{
+ 186:../sources/dataflash.c **** 		pDataFlash->command[0] = (bCmd & 0x000000FF) | \
+ 24554              		.loc 1 186 0
+ 24555 0102 FA7A     		ldrb	r2, [r7, #11]	@ zero_extendqisi2
+ 187:../sources/dataflash.c **** 	                             ((dInternalAdr & 0x00FF0000) >> 8) | \
+ 24556              		.loc 1 187 0
+ 24557 0104 7B6A     		ldr	r3, [r7, #36]
+ 24558 0106 03F47F03 		and	r3, r3, #16711680
+ 24559 010a 4FEA1323 		lsr	r3, r3, #8
+ 186:../sources/dataflash.c **** 		pDataFlash->command[0] = (bCmd & 0x000000FF) | \
+ 24560              		.loc 1 186 0
+ 24561 010e 42EA0302 		orr	r2, r2, r3
+ 188:../sources/dataflash.c **** 	                             ((dInternalAdr & 0x0000FF00) << 8) | \
+ 24562              		.loc 1 188 0
+ 24563 0112 7B6A     		ldr	r3, [r7, #36]
+ 24564 0114 03F47F43 		and	r3, r3, #65280
+ 24565 0118 4FEA0323 		lsl	r3, r3, #8
+ 187:../sources/dataflash.c **** 	                             ((dInternalAdr & 0x00FF0000) >> 8) | \
+ 24566              		.loc 1 187 0
+ 24567 011c 42EA0302 		orr	r2, r2, r3
+ 189:../sources/dataflash.c **** 	                             ((dInternalAdr & 0x000000FF) << 24);
+ 24568              		.loc 1 189 0
+ 24569 0120 7B6A     		ldr	r3, [r7, #36]
+ 24570 0122 4FEA0363 		lsl	r3, r3, #24
+ 188:../sources/dataflash.c **** 	                             ((dInternalAdr & 0x0000FF00) << 8) | \
+ 24571              		.loc 1 188 0
+ 24572 0126 42EA0302 		orr	r2, r2, r3
+ 186:../sources/dataflash.c **** 		pDataFlash->command[0] = (bCmd & 0x000000FF) | \
+ 24573              		.loc 1 186 0
+ 24574 012a FB68     		ldr	r3, [r7, #12]
+ 24575 012c 5A60     		str	r2, [r3, #4]
+ 190:../sources/dataflash.c ****  		pDataFlash->command[1] = 0;
+ 24576              		.loc 1 190 0
+ 24577 012e FB68     		ldr	r3, [r7, #12]
+ 24578 0130 4FF00002 		mov	r2, #0
+ 24579 0134 9A60     		str	r2, [r3, #8]
+ 24580              	.L8:
+ 191:../sources/dataflash.c **** 	}
+ 192:../sources/dataflash.c **** 
+ 193:../sources/dataflash.c ****  	sFLASH_CS_LOW();
+ 24581              		.loc 1 193 0
+ 24582 0136 4FF44060 		mov	r0, #3072
+ 24583 013a C4F20200 		movt	r0, 16386
+ 24584 013e 4FF00401 		mov	r1, #4
+ 24585 0142 FFF7FEFF 		bl	GPIO_ResetBits
+ 194:../sources/dataflash.c **** 
+ 195:../sources/dataflash.c ****  	CmdPtr = (unsigned char * )(&pDataFlash->command[0]);
+ 24586              		.loc 1 195 0
+ 24587 0146 FB68     		ldr	r3, [r7, #12]
+ 24588 0148 03F10403 		add	r3, r3, #4
+ 24589 014c FB61     		str	r3, [r7, #28]
+ 196:../sources/dataflash.c **** 
+ 197:../sources/dataflash.c **** 
+ 198:../sources/dataflash.c ****  	for (count=0;count<bCmdSize;count++) {
+ 24590              		.loc 1 198 0
+ 24591 014e 4FF00003 		mov	r3, #0
+ 24592 0152 3B62     		str	r3, [r7, #32]
+ 24593 0154 10E0     		b	.L9
+ 24594              	.L10:
+ 199:../sources/dataflash.c ****  		*CmdPtr = sFLASH_SendByte(*CmdPtr);
+ 24595              		.loc 1 199 0 discriminator 2
+ 24596 0156 FB69     		ldr	r3, [r7, #28]
+ 24597 0158 1B78     		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 24598 015a 1846     		mov	r0, r3
+ 24599 015c FFF7FEFF 		bl	sFLASH_SendByte
+ 24600 0160 0346     		mov	r3, r0
+ 24601 0162 1A46     		mov	r2, r3
+ 24602 0164 FB69     		ldr	r3, [r7, #28]
+ 24603 0166 1A70     		strb	r2, [r3, #0]
+ 200:../sources/dataflash.c ****  		CmdPtr++;
+ 24604              		.loc 1 200 0 discriminator 2
+ 24605 0168 FB69     		ldr	r3, [r7, #28]
+ 24606 016a 03F10103 		add	r3, r3, #1
+ 24607 016e FB61     		str	r3, [r7, #28]
+ 198:../sources/dataflash.c ****  	for (count=0;count<bCmdSize;count++) {
+ 24608              		.loc 1 198 0 discriminator 2
+ 24609 0170 3B6A     		ldr	r3, [r7, #32]
+ 24610 0172 03F10103 		add	r3, r3, #1
+ 24611 0176 3B62     		str	r3, [r7, #32]
+ 24612              	.L9:
+ 198:../sources/dataflash.c ****  	for (count=0;count<bCmdSize;count++) {
+ 24613              		.loc 1 198 0 is_stmt 0 discriminator 1
+ 24614 0178 BA7A     		ldrb	r2, [r7, #10]	@ zero_extendqisi2
+ 24615 017a 3B6A     		ldr	r3, [r7, #32]
+ 24616 017c 9A42     		cmp	r2, r3
+ 24617 017e EAD8     		bhi	.L10
+ 201:../sources/dataflash.c ****  	}
+ 202:../sources/dataflash.c **** 
+ 203:../sources/dataflash.c ****  	for (count=0;count<dDataSize;count++) {
+ 24618              		.loc 1 203 0 is_stmt 1
+ 24619 0180 4FF00003 		mov	r3, #0
+ 24620 0184 3B62     		str	r3, [r7, #32]
+ 24621 0186 10E0     		b	.L11
+ 24622              	.L12:
+ 204:../sources/dataflash.c ****  		*pData = sFLASH_SendByte(*pData);
+ 24623              		.loc 1 204 0 discriminator 2
+ 24624 0188 7B68     		ldr	r3, [r7, #4]
+ 24625 018a 1B78     		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 24626 018c 1846     		mov	r0, r3
+ 24627 018e FFF7FEFF 		bl	sFLASH_SendByte
+ 24628 0192 0346     		mov	r3, r0
+ 24629 0194 1A46     		mov	r2, r3
+ 24630 0196 7B68     		ldr	r3, [r7, #4]
+ 24631 0198 1A70     		strb	r2, [r3, #0]
+ 205:../sources/dataflash.c ****  		pData++;
+ 24632              		.loc 1 205 0 discriminator 2
+ 24633 019a 7B68     		ldr	r3, [r7, #4]
+ 24634 019c 03F10103 		add	r3, r3, #1
+ 24635 01a0 7B60     		str	r3, [r7, #4]
+ 203:../sources/dataflash.c ****  	for (count=0;count<dDataSize;count++) {
+ 24636              		.loc 1 203 0 discriminator 2
+ 24637 01a2 3B6A     		ldr	r3, [r7, #32]
+ 24638 01a4 03F10103 		add	r3, r3, #1
+ 24639 01a8 3B62     		str	r3, [r7, #32]
+ 24640              	.L11:
+ 203:../sources/dataflash.c ****  	for (count=0;count<dDataSize;count++) {
+ 24641              		.loc 1 203 0 is_stmt 0 discriminator 1
+ 24642 01aa 3A6A     		ldr	r2, [r7, #32]
+ 24643 01ac 3B6B     		ldr	r3, [r7, #48]
+ 24644 01ae 9A42     		cmp	r2, r3
+ 24645 01b0 EAD3     		bcc	.L12
+ 206:../sources/dataflash.c ****  	}
+ 207:../sources/dataflash.c **** 
+ 208:../sources/dataflash.c ****  	sFLASH_CS_HIGH();
+ 24646              		.loc 1 208 0 is_stmt 1
+ 24647 01b2 4FF44060 		mov	r0, #3072
+ 24648 01b6 C4F20200 		movt	r0, 16386
+ 24649 01ba 4FF00401 		mov	r1, #4
+ 24650 01be FFF7FEFF 		bl	GPIO_SetBits
+ 209:../sources/dataflash.c ****  	/* Send Command and data through the SPI */
+ 210:../sources/dataflash.c ****  //	write_spi(SPI_PTCR, AT91C_PDC_RXTDIS);				/* PDC Disable Rx*/
+ 211:../sources/dataflash.c ****  //	write_spi(SPI_RPR, (unsigned int) &(pDataFlash->command));	/* PDC Set Rx */
+ 212:../sources/dataflash.c **** //	write_spi(SPI_RCR, bCmdSize);
+ 213:../sources/dataflash.c **** // 	write_spi(SPI_RNPR, (unsigned int) pData);			/* PDC Set Next	Rx */
+ 214:../sources/dataflash.c **** //	write_spi(SPI_RNCR, dDataSize);
+ 215:../sources/dataflash.c **** 
+ 216:../sources/dataflash.c **** // 	write_spi(SPI_PTCR, AT91C_PDC_TXTDIS);				/* PDC Disable Tx */
+ 217:../sources/dataflash.c **** // 	write_spi(SPI_TPR, (unsigned int) &(pDataFlash->command));	/* PDC Set Tx */
+ 218:../sources/dataflash.c **** //	write_spi(SPI_TCR, bCmdSize);
+ 219:../sources/dataflash.c **** // 	write_spi(SPI_TNPR, (unsigned int) pData);			/* PDC Set Next Tx */
+ 220:../sources/dataflash.c **** //	write_spi(SPI_TNCR, dDataSize);
+ 221:../sources/dataflash.c **** 
+ 222:../sources/dataflash.c **** // 	write_spi(SPI_PTCR, AT91C_PDC_RXTEN);				/* PDC Enable Rx */
+ 223:../sources/dataflash.c **** // 	write_spi(SPI_PTCR, AT91C_PDC_TXTEN);				/* PDC Enable Tx */
+ 224:../sources/dataflash.c **** 
+ 225:../sources/dataflash.c **** //    	while (df_is_busy(pDataFlash) == LOCKED);
+ 226:../sources/dataflash.c **** 
+ 227:../sources/dataflash.c **** 
+ 228:../sources/dataflash.c **** 
+ 229:../sources/dataflash.c **** 	return 1;
+ 24651              		.loc 1 229 0
+ 24652 01c2 4FF00103 		mov	r3, #1
+ 230:../sources/dataflash.c **** }
+ 24653              		.loc 1 230 0
+ 24654 01c6 1846     		mov	r0, r3
+ 24655 01c8 07F12807 		add	r7, r7, #40
+ 24656 01cc BD46     		mov	sp, r7
+ 24657 01ce 80BD     		pop	{r7, pc}
+ 24658              		.cfi_endproc
+ 24659              	.LFE30:
+ 24661              		.align	2
+ 24662              		.thumb
+ 24663              		.thumb_func
+ 24665              	df_wait_ready:
+ 24666              	.LFB31:
+ 231:../sources/dataflash.c **** 
+ 232:../sources/dataflash.c **** /*------------------------------------------------------------------------------*/
+ 233:../sources/dataflash.c **** /* \fn    df_wait_ready								*/
+ 234:../sources/dataflash.c **** /* \brief wait for DataFlash to be ready					*/
+ 235:../sources/dataflash.c **** /*------------------------------------------------------------------------------*/
+ 236:../sources/dataflash.c **** static char df_wait_ready(AT91PS_DF pDataFlash)
+ 237:../sources/dataflash.c **** {
+ 24667              		.loc 1 237 0
+ 24668              		.cfi_startproc
+ 24669              		@ args = 0, pretend = 0, frame = 16
+ 24670              		@ frame_needed = 1, uses_anonymous_args = 0
+ 24671 01d0 80B5     		push	{r7, lr}
+ 24672              	.LCFI6:
+ 24673              		.cfi_def_cfa_offset 8
+ 24674 01d2 86B0     		sub	sp, sp, #24
+ 24675              	.LCFI7:
+ 24676              		.cfi_def_cfa_offset 32
+ 24677 01d4 02AF     		add	r7, sp, #8
+ 24678              		.cfi_offset 14, -4
+ 24679              		.cfi_offset 7, -8
+ 24680              	.LCFI8:
+ 24681              		.cfi_def_cfa 7, 24
+ 24682 01d6 7860     		str	r0, [r7, #4]
+ 238:../sources/dataflash.c **** 	unsigned int timeout = 0;
+ 24683              		.loc 1 238 0
+ 24684 01d8 4FF00003 		mov	r3, #0
+ 24685 01dc FB60     		str	r3, [r7, #12]
+ 239:../sources/dataflash.c **** 
+ 240:../sources/dataflash.c **** 	while (timeout++ < AT91C_DF_TIMEOUT)
+ 24686              		.loc 1 240 0
+ 24687 01de 1AE0     		b	.L14
+ 24688              	.L16:
+ 241:../sources/dataflash.c **** 	{
+ 242:../sources/dataflash.c **** 		if (df_get_status(pDataFlash))
+ 24689              		.loc 1 242 0
+ 24690 01e0 4FF00003 		mov	r3, #0
+ 24691 01e4 0093     		str	r3, [sp, #0]
+ 24692 01e6 4FF00003 		mov	r3, #0
+ 24693 01ea 0193     		str	r3, [sp, #4]
+ 24694 01ec 7868     		ldr	r0, [r7, #4]
+ 24695 01ee 4FF0D701 		mov	r1, #215
+ 24696 01f2 4FF00202 		mov	r2, #2
+ 24697 01f6 4FF00003 		mov	r3, #0
+ 24698 01fa FFF7FEFF 		bl	df_send_command
+ 24699 01fe 0346     		mov	r3, r0
+ 24700 0200 002B     		cmp	r3, #0
+ 24701 0202 08D0     		beq	.L14
+ 243:../sources/dataflash.c **** 		{
+ 244:../sources/dataflash.c **** 			if (df_is_ready(pDataFlash))
+ 24702              		.loc 1 244 0
+ 24703 0204 7B68     		ldr	r3, [r7, #4]
+ 24704 0206 5B68     		ldr	r3, [r3, #4]
+ 24705 0208 03F40043 		and	r3, r3, #32768
+ 24706 020c 002B     		cmp	r3, #0
+ 24707 020e 02D0     		beq	.L14
+ 245:../sources/dataflash.c **** 				return 1;
+ 24708              		.loc 1 245 0
+ 24709 0210 4FF00103 		mov	r3, #1
+ 24710 0214 11E0     		b	.L15
+ 24711              	.L14:
+ 240:../sources/dataflash.c **** 	while (timeout++ < AT91C_DF_TIMEOUT)
+ 24712              		.loc 1 240 0 discriminator 1
+ 24713 0216 FA68     		ldr	r2, [r7, #12]
+ 24714 0218 49F27F63 		movw	r3, #38527
+ 24715 021c C0F29803 		movt	r3, 152
+ 24716 0220 9A42     		cmp	r2, r3
+ 24717 0222 8CBF     		ite	hi
+ 24718 0224 0023     		movhi	r3, #0
+ 24719 0226 0123     		movls	r3, #1
+ 24720 0228 DBB2     		uxtb	r3, r3
+ 24721 022a FA68     		ldr	r2, [r7, #12]
+ 24722 022c 02F10102 		add	r2, r2, #1
+ 24723 0230 FA60     		str	r2, [r7, #12]
+ 24724 0232 002B     		cmp	r3, #0
+ 24725 0234 D4D1     		bne	.L16
+ 246:../sources/dataflash.c **** 		}
+ 247:../sources/dataflash.c **** 	}
+ 248:../sources/dataflash.c **** 
+ 249:../sources/dataflash.c **** 	return 0;
+ 24726              		.loc 1 249 0
+ 24727 0236 4FF00003 		mov	r3, #0
+ 24728              	.L15:
+ 250:../sources/dataflash.c **** }
+ 24729              		.loc 1 250 0
+ 24730 023a 1846     		mov	r0, r3
+ 24731 023c 07F11007 		add	r7, r7, #16
+ 24732 0240 BD46     		mov	sp, r7
+ 24733 0242 80BD     		pop	{r7, pc}
+ 24734              		.cfi_endproc
+ 24735              	.LFE31:
+ 24737              		.align	2
+ 24738              		.thumb
+ 24739              		.thumb_func
+ 24741              	df_read:
+ 24742              	.LFB32:
+ 251:../sources/dataflash.c **** 
+ 252:../sources/dataflash.c **** /*------------------------------------------------------------------------------*/
+ 253:../sources/dataflash.c **** /* \fn    df_read								*/
+ 254:../sources/dataflash.c **** /* \brief Read a block in dataflash						*/
+ 255:../sources/dataflash.c **** /*------------------------------------------------------------------------------*/
+ 256:../sources/dataflash.c **** static int df_read(
+ 257:../sources/dataflash.c **** 	AT91PS_DF pDf,
+ 258:../sources/dataflash.c **** 	unsigned int addr,
+ 259:../sources/dataflash.c **** 	unsigned char *buffer,
+ 260:../sources/dataflash.c **** 	unsigned int size)
+ 261:../sources/dataflash.c **** {
+ 24743              		.loc 1 261 0
+ 24744              		.cfi_startproc
+ 24745              		@ args = 0, pretend = 0, frame = 24
+ 24746              		@ frame_needed = 1, uses_anonymous_args = 0
+ 24747 0244 80B5     		push	{r7, lr}
+ 24748              	.LCFI9:
+ 24749              		.cfi_def_cfa_offset 8
+ 24750 0246 88B0     		sub	sp, sp, #32
+ 24751              	.LCFI10:
+ 24752              		.cfi_def_cfa_offset 40
+ 24753 0248 02AF     		add	r7, sp, #8
+ 24754              		.cfi_offset 14, -4
+ 24755              		.cfi_offset 7, -8
+ 24756              	.LCFI11:
+ 24757              		.cfi_def_cfa 7, 32
+ 24758 024a F860     		str	r0, [r7, #12]
+ 24759 024c B960     		str	r1, [r7, #8]
+ 24760 024e 7A60     		str	r2, [r7, #4]
+ 24761 0250 3B60     		str	r3, [r7, #0]
+ 262:../sources/dataflash.c **** 	unsigned int SizeToRead;
+ 263:../sources/dataflash.c **** 
+ 264:../sources/dataflash.c **** 	while (size)
+ 24762              		.loc 1 264 0
+ 24763 0252 22E0     		b	.L18
+ 24764              	.L19:
+ 265:../sources/dataflash.c **** 	{
+ 266:../sources/dataflash.c **** 		SizeToRead = (size < AT91C_MAX_PDC_SIZE)? size : AT91C_MAX_PDC_SIZE;
+ 24765              		.loc 1 266 0
+ 24766 0254 3A68     		ldr	r2, [r7, #0]
+ 24767 0256 4FF6FF73 		movw	r3, #65535
+ 24768 025a 9A42     		cmp	r2, r3
+ 24769 025c 38BF     		it	cc
+ 24770 025e 1346     		movcc	r3, r2
+ 24771 0260 7B61     		str	r3, [r7, #20]
+ 267:../sources/dataflash.c **** 
+ 268:../sources/dataflash.c **** 		/* wait the dataflash ready status */
+ 269:../sources/dataflash.c **** 		df_wait_ready(pDf);
+ 24772              		.loc 1 269 0
+ 24773 0262 F868     		ldr	r0, [r7, #12]
+ 24774 0264 FFF7B4FF 		bl	df_wait_ready
+ 270:../sources/dataflash.c **** 	    	df_continuous_read(pDf, (char *)buffer, SizeToRead, addr);
+ 24775              		.loc 1 270 0
+ 24776 0268 7B69     		ldr	r3, [r7, #20]
+ 24777 026a 0093     		str	r3, [sp, #0]
+ 24778 026c BB68     		ldr	r3, [r7, #8]
+ 24779 026e 0193     		str	r3, [sp, #4]
+ 24780 0270 F868     		ldr	r0, [r7, #12]
+ 24781 0272 4FF0E801 		mov	r1, #232
+ 24782 0276 4FF00802 		mov	r2, #8
+ 24783 027a 7B68     		ldr	r3, [r7, #4]
+ 24784 027c FFF7FEFF 		bl	df_send_command
+ 271:../sources/dataflash.c **** 
+ 272:../sources/dataflash.c **** 		size -= SizeToRead;
+ 24785              		.loc 1 272 0
+ 24786 0280 3A68     		ldr	r2, [r7, #0]
+ 24787 0282 7B69     		ldr	r3, [r7, #20]
+ 24788 0284 C3EB0203 		rsb	r3, r3, r2
+ 24789 0288 3B60     		str	r3, [r7, #0]
+ 273:../sources/dataflash.c **** 		addr += SizeToRead;
+ 24790              		.loc 1 273 0
+ 24791 028a BA68     		ldr	r2, [r7, #8]
+ 24792 028c 7B69     		ldr	r3, [r7, #20]
+ 24793 028e 1344     		add	r3, r2, r3
+ 24794 0290 BB60     		str	r3, [r7, #8]
+ 274:../sources/dataflash.c **** 		buffer += SizeToRead;
+ 24795              		.loc 1 274 0
+ 24796 0292 7A68     		ldr	r2, [r7, #4]
+ 24797 0294 7B69     		ldr	r3, [r7, #20]
+ 24798 0296 1344     		add	r3, r2, r3
+ 24799 0298 7B60     		str	r3, [r7, #4]
+ 24800              	.L18:
+ 264:../sources/dataflash.c **** 	while (size)
+ 24801              		.loc 1 264 0 discriminator 1
+ 24802 029a 3B68     		ldr	r3, [r7, #0]
+ 24803 029c 002B     		cmp	r3, #0
+ 24804 029e D9D1     		bne	.L19
+ 275:../sources/dataflash.c **** 	}
+ 276:../sources/dataflash.c **** 
+ 277:../sources/dataflash.c ****    	return 0;
+ 24805              		.loc 1 277 0
+ 24806 02a0 4FF00003 		mov	r3, #0
+ 278:../sources/dataflash.c **** }
+ 24807              		.loc 1 278 0
+ 24808 02a4 1846     		mov	r0, r3
+ 24809 02a6 07F11807 		add	r7, r7, #24
+ 24810 02aa BD46     		mov	sp, r7
+ 24811 02ac 80BD     		pop	{r7, pc}
+ 24812              		.cfi_endproc
+ 24813              	.LFE32:
+ 24815 02ae 00BF     		.align	2
+ 24816              		.thumb
+ 24817              		.thumb_func
+ 24819              	df_download:
+ 24820              	.LFB33:
+ 279:../sources/dataflash.c **** 
+ 280:../sources/dataflash.c **** /*----------------------------------------------------------------------*/
+ 281:../sources/dataflash.c **** /* \fn    df_download							*/
+ 282:../sources/dataflash.c **** /* \brief load the content of the dataflash				*/
+ 283:../sources/dataflash.c **** /*----------------------------------------------------------------------*/
+ 284:../sources/dataflash.c **** static int df_download(AT91PS_DF pDf, unsigned int img_addr, unsigned int img_size, unsigned int im
+ 285:../sources/dataflash.c **** {
+ 24821              		.loc 1 285 0
+ 24822              		.cfi_startproc
+ 24823              		@ args = 0, pretend = 0, frame = 16
+ 24824              		@ frame_needed = 1, uses_anonymous_args = 0
+ 24825 02b0 80B5     		push	{r7, lr}
+ 24826              	.LCFI12:
+ 24827              		.cfi_def_cfa_offset 8
+ 24828 02b2 84B0     		sub	sp, sp, #16
+ 24829              	.LCFI13:
+ 24830              		.cfi_def_cfa_offset 24
+ 24831 02b4 00AF     		add	r7, sp, #0
+ 24832              		.cfi_offset 14, -4
+ 24833              		.cfi_offset 7, -8
+ 24834              	.LCFI14:
+ 24835              		.cfi_def_cfa_register 7
+ 24836 02b6 F860     		str	r0, [r7, #12]
+ 24837 02b8 B960     		str	r1, [r7, #8]
+ 24838 02ba 7A60     		str	r2, [r7, #4]
+ 24839 02bc 3B60     		str	r3, [r7, #0]
+ 286:../sources/dataflash.c **** 	/* read bytes in the dataflash */
+ 287:../sources/dataflash.c **** 	df_read(pDf, img_addr,(unsigned char *)img_dest, img_size);
+ 24840              		.loc 1 287 0
+ 24841 02be 3B68     		ldr	r3, [r7, #0]
+ 24842 02c0 F868     		ldr	r0, [r7, #12]
+ 24843 02c2 B968     		ldr	r1, [r7, #8]
+ 24844 02c4 1A46     		mov	r2, r3
+ 24845 02c6 7B68     		ldr	r3, [r7, #4]
+ 24846 02c8 FFF7BCFF 		bl	df_read
+ 288:../sources/dataflash.c **** 
+ 289:../sources/dataflash.c **** 	/* wait the dataflash ready status */
+ 290:../sources/dataflash.c **** 	df_wait_ready(pDf);
+ 24847              		.loc 1 290 0
+ 24848 02cc F868     		ldr	r0, [r7, #12]
+ 24849 02ce FFF77FFF 		bl	df_wait_ready
+ 291:../sources/dataflash.c **** 
+ 292:../sources/dataflash.c ****     return 0;
+ 24850              		.loc 1 292 0
+ 24851 02d2 4FF00003 		mov	r3, #0
+ 293:../sources/dataflash.c **** }
+ 24852              		.loc 1 293 0
+ 24853 02d6 1846     		mov	r0, r3
+ 24854 02d8 07F11007 		add	r7, r7, #16
+ 24855 02dc BD46     		mov	sp, r7
+ 24856 02de 80BD     		pop	{r7, pc}
+ 24857              		.cfi_endproc
+ 24858              	.LFE33:
+ 24860              		.align	2
+ 24861              		.thumb
+ 24862              		.thumb_func
+ 24864              	df_probe:
+ 24865              	.LFB34:
+ 294:../sources/dataflash.c **** 
+ 295:../sources/dataflash.c **** /*----------------------------------------------------------------------*/
+ 296:../sources/dataflash.c **** /* \fn    df_probe							*/
+ 297:../sources/dataflash.c **** /* \brief Returns DataFlash ID						*/
+ 298:../sources/dataflash.c **** /*----------------------------------------------------------------------*/
+ 299:../sources/dataflash.c **** static int df_probe(AT91PS_DF pDf)
+ 300:../sources/dataflash.c **** {
+ 24866              		.loc 1 300 0
+ 24867              		.cfi_startproc
+ 24868              		@ args = 0, pretend = 0, frame = 16
+ 24869              		@ frame_needed = 1, uses_anonymous_args = 0
+ 24870 02e0 80B5     		push	{r7, lr}
+ 24871              	.LCFI15:
+ 24872              		.cfi_def_cfa_offset 8
+ 24873 02e2 86B0     		sub	sp, sp, #24
+ 24874              	.LCFI16:
+ 24875              		.cfi_def_cfa_offset 32
+ 24876 02e4 02AF     		add	r7, sp, #8
+ 24877              		.cfi_offset 14, -4
+ 24878              		.cfi_offset 7, -8
+ 24879              	.LCFI17:
+ 24880              		.cfi_def_cfa 7, 24
+ 24881 02e6 7860     		str	r0, [r7, #4]
+ 301:../sources/dataflash.c ****     char *pResult = (char *)(pDf->command);
+ 24882              		.loc 1 301 0
+ 24883 02e8 7B68     		ldr	r3, [r7, #4]
+ 24884 02ea 03F10403 		add	r3, r3, #4
+ 24885 02ee FB60     		str	r3, [r7, #12]
+ 302:../sources/dataflash.c **** 
+ 303:../sources/dataflash.c ****     df_get_status(pDf);
+ 24886              		.loc 1 303 0
+ 24887 02f0 4FF00003 		mov	r3, #0
+ 24888 02f4 0093     		str	r3, [sp, #0]
+ 24889 02f6 4FF00003 		mov	r3, #0
+ 24890 02fa 0193     		str	r3, [sp, #4]
+ 24891 02fc 7868     		ldr	r0, [r7, #4]
+ 24892 02fe 4FF0D701 		mov	r1, #215
+ 24893 0302 4FF00202 		mov	r2, #2
+ 24894 0306 4FF00003 		mov	r3, #0
+ 24895 030a FFF7FEFF 		bl	df_send_command
+ 304:../sources/dataflash.c **** 
+ 305:../sources/dataflash.c ****     // Check if DataFlash has been configured in binary page mode
+ 306:../sources/dataflash.c ****     if ((pResult[1] & 0x1) == 0x1) {
+ 24896              		.loc 1 306 0
+ 24897 030e FB68     		ldr	r3, [r7, #12]
+ 24898 0310 03F10103 		add	r3, r3, #1
+ 24899 0314 1B78     		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 24900 0316 03F00103 		and	r3, r3, #1
+ 24901 031a DBB2     		uxtb	r3, r3
+ 24902 031c 002B     		cmp	r3, #0
+ 24903 031e 04D0     		beq	.L22
+ 307:../sources/dataflash.c ****         pDf->dfDescription.binaryPageMode = 1;
+ 24904              		.loc 1 307 0
+ 24905 0320 7B68     		ldr	r3, [r7, #4]
+ 24906 0322 4FF00102 		mov	r2, #1
+ 24907 0326 1A62     		str	r2, [r3, #32]
+ 24908 0328 03E0     		b	.L23
+ 24909              	.L22:
+ 308:../sources/dataflash.c **** #ifdef CFG_DEBUG
+ 309:../sources/dataflash.c **** 	dbg_print("DataFlash in binary mode\n\r");
+ 310:../sources/dataflash.c **** #endif /* CFG_DEBUG */
+ 311:../sources/dataflash.c ****     } else {
+ 312:../sources/dataflash.c ****         pDf->dfDescription.binaryPageMode = 0;
+ 24910              		.loc 1 312 0
+ 24911 032a 7B68     		ldr	r3, [r7, #4]
+ 24912 032c 4FF00002 		mov	r2, #0
+ 24913 0330 1A62     		str	r2, [r3, #32]
+ 24914              	.L23:
+ 313:../sources/dataflash.c ****     }
+ 314:../sources/dataflash.c **** 
+ 315:../sources/dataflash.c ****     return (pResult[1] & 0x3C);
+ 24915              		.loc 1 315 0
+ 24916 0332 FB68     		ldr	r3, [r7, #12]
+ 24917 0334 03F10103 		add	r3, r3, #1
+ 24918 0338 1B78     		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 24919 033a 03F03C03 		and	r3, r3, #60
+ 316:../sources/dataflash.c **** }
+ 24920              		.loc 1 316 0
+ 24921 033e 1846     		mov	r0, r3
+ 24922 0340 07F11007 		add	r7, r7, #16
+ 24923 0344 BD46     		mov	sp, r7
+ 24924 0346 80BD     		pop	{r7, pc}
+ 24925              		.cfi_endproc
+ 24926              	.LFE34:
+ 24928              		.align	2
+ 24929              		.global	df_init
+ 24930              		.thumb
+ 24931              		.thumb_func
+ 24933              	df_init:
+ 24934              	.LFB35:
+ 317:../sources/dataflash.c **** 
+ 318:../sources/dataflash.c **** /*----------------------------------------------------------------------*/
+ 319:../sources/dataflash.c **** /* \fn    df_init							*/
+ 320:../sources/dataflash.c **** /* \brief This function tries to identify the DataFlash connected	*/
+ 321:../sources/dataflash.c **** /*----------------------------------------------------------------------*/
+ 322:../sources/dataflash.c **** int df_init (AT91PS_DF pDf)
+ 323:../sources/dataflash.c **** {
+ 24935              		.loc 1 323 0
+ 24936              		.cfi_startproc
+ 24937              		@ args = 0, pretend = 0, frame = 16
+ 24938              		@ frame_needed = 1, uses_anonymous_args = 0
+ 24939 0348 80B5     		push	{r7, lr}
+ 24940              	.LCFI18:
+ 24941              		.cfi_def_cfa_offset 8
+ 24942 034a 84B0     		sub	sp, sp, #16
+ 24943              	.LCFI19:
+ 24944              		.cfi_def_cfa_offset 24
+ 24945 034c 00AF     		add	r7, sp, #0
+ 24946              		.cfi_offset 14, -4
+ 24947              		.cfi_offset 7, -8
+ 24948              	.LCFI20:
+ 24949              		.cfi_def_cfa_register 7
+ 24950 034e 7860     		str	r0, [r7, #4]
+ 324:../sources/dataflash.c **** 	int dfcode = 0;
+ 24951              		.loc 1 324 0
+ 24952 0350 4FF00003 		mov	r3, #0
+ 24953 0354 BB60     		str	r3, [r7, #8]
+ 325:../sources/dataflash.c **** 	int status = 1;
+ 24954              		.loc 1 325 0
+ 24955 0356 4FF00103 		mov	r3, #1
+ 24956 035a FB60     		str	r3, [r7, #12]
+ 326:../sources/dataflash.c **** 
+ 327:../sources/dataflash.c **** 	/* Default: AT45DB321B */
+ 328:../sources/dataflash.c **** 	pDf->dfDescription.pages_number = 8192;
+ 24957              		.loc 1 328 0
+ 24958 035c 7B68     		ldr	r3, [r7, #4]
+ 24959 035e 4FF40052 		mov	r2, #8192
+ 24960 0362 DA60     		str	r2, [r3, #12]
+ 329:../sources/dataflash.c **** 	pDf->dfDescription.pages_size = 528;
+ 24961              		.loc 1 329 0
+ 24962 0364 7B68     		ldr	r3, [r7, #4]
+ 24963 0366 4FF40472 		mov	r2, #528
+ 24964 036a 1A61     		str	r2, [r3, #16]
+ 330:../sources/dataflash.c **** 	pDf->dfDescription.page_offset = 10;
+ 24965              		.loc 1 330 0
+ 24966 036c 7B68     		ldr	r3, [r7, #4]
+ 24967 036e 4FF00A02 		mov	r2, #10
+ 24968 0372 5A61     		str	r2, [r3, #20]
+ 331:../sources/dataflash.c **** 
+ 332:../sources/dataflash.c **** 	dfcode = df_probe (pDf);
+ 24969              		.loc 1 332 0
+ 24970 0374 7868     		ldr	r0, [r7, #4]
+ 24971 0376 FFF7B3FF 		bl	df_probe
+ 24972 037a 0346     		mov	r3, r0
+ 24973 037c BB60     		str	r3, [r7, #8]
+ 333:../sources/dataflash.c **** 
+ 334:../sources/dataflash.c **** 	switch (dfcode)
+ 24974              		.loc 1 334 0
+ 24975 037e BB68     		ldr	r3, [r7, #8]
+ 24976 0380 342B     		cmp	r3, #52
+ 24977 0382 10D0     		beq	.L27
+ 24978 0384 3C2B     		cmp	r3, #60
+ 24979 0386 1BD0     		beq	.L28
+ 24980 0388 2C2B     		cmp	r3, #44
+ 24981 038a 26D1     		bne	.L30
+ 24982              	.L26:
+ 335:../sources/dataflash.c **** 	{
+ 336:../sources/dataflash.c **** /*		case AT45DB011B:
+ 337:../sources/dataflash.c **** 			pDf->dfDescription.pages_number = 512;
+ 338:../sources/dataflash.c **** 			pDf->dfDescription.pages_size = 264;
+ 339:../sources/dataflash.c **** 			pDf->dfDescription.page_offset = 9;
+ 340:../sources/dataflash.c **** 			break;
+ 341:../sources/dataflash.c **** 
+ 342:../sources/dataflash.c **** 		case AT45DB021B:
+ 343:../sources/dataflash.c **** 			pDf->dfDescription.pages_number = 1024;
+ 344:../sources/dataflash.c **** 			pDf->dfDescription.pages_size = 264;
+ 345:../sources/dataflash.c **** 			pDf->dfDescription.page_offset = 9;
+ 346:../sources/dataflash.c **** 			break;
+ 347:../sources/dataflash.c **** 
+ 348:../sources/dataflash.c **** 		case AT45DB041B:
+ 349:../sources/dataflash.c **** 			pDf->dfDescription.pages_number = 2048;
+ 350:../sources/dataflash.c **** 			pDf->dfDescription.pages_size = 264;
+ 351:../sources/dataflash.c **** 			pDf->dfDescription.page_offset = 9;
+ 352:../sources/dataflash.c **** 			break;
+ 353:../sources/dataflash.c **** 
+ 354:../sources/dataflash.c **** 		case AT45DB081B:
+ 355:../sources/dataflash.c **** 			pDf->dfDescription.pages_number = 4096;
+ 356:../sources/dataflash.c **** 			pDf->dfDescription.pages_size = 264;
+ 357:../sources/dataflash.c **** 			pDf->dfDescription.page_offset = 9;
+ 358:../sources/dataflash.c **** 			break;
+ 359:../sources/dataflash.c **** */
+ 360:../sources/dataflash.c **** 		case AT45DB161B:
+ 361:../sources/dataflash.c **** 			pDf->dfDescription.pages_number = 4096;
+ 24983              		.loc 1 361 0
+ 24984 038c 7B68     		ldr	r3, [r7, #4]
+ 24985 038e 4FF48052 		mov	r2, #4096
+ 24986 0392 DA60     		str	r2, [r3, #12]
+ 362:../sources/dataflash.c **** 			pDf->dfDescription.pages_size = 528;
+ 24987              		.loc 1 362 0
+ 24988 0394 7B68     		ldr	r3, [r7, #4]
+ 24989 0396 4FF40472 		mov	r2, #528
+ 24990 039a 1A61     		str	r2, [r3, #16]
+ 363:../sources/dataflash.c **** 			pDf->dfDescription.page_offset = 10;
+ 24991              		.loc 1 363 0
+ 24992 039c 7B68     		ldr	r3, [r7, #4]
+ 24993 039e 4FF00A02 		mov	r2, #10
+ 24994 03a2 5A61     		str	r2, [r3, #20]
+ 364:../sources/dataflash.c **** 			break;
+ 24995              		.loc 1 364 0
+ 24996 03a4 1DE0     		b	.L29
+ 24997              	.L27:
+ 365:../sources/dataflash.c **** 
+ 366:../sources/dataflash.c **** 		case AT45DB321B:
+ 367:../sources/dataflash.c **** 			pDf->dfDescription.pages_number = 8192;
+ 24998              		.loc 1 367 0
+ 24999 03a6 7B68     		ldr	r3, [r7, #4]
+ 25000 03a8 4FF40052 		mov	r2, #8192
+ 25001 03ac DA60     		str	r2, [r3, #12]
+ 368:../sources/dataflash.c **** 			pDf->dfDescription.pages_size = 528;
+ 25002              		.loc 1 368 0
+ 25003 03ae 7B68     		ldr	r3, [r7, #4]
+ 25004 03b0 4FF40472 		mov	r2, #528
+ 25005 03b4 1A61     		str	r2, [r3, #16]
+ 369:../sources/dataflash.c **** 			pDf->dfDescription.page_offset = 10;
+ 25006              		.loc 1 369 0
+ 25007 03b6 7B68     		ldr	r3, [r7, #4]
+ 25008 03b8 4FF00A02 		mov	r2, #10
+ 25009 03bc 5A61     		str	r2, [r3, #20]
+ 370:../sources/dataflash.c **** 			break;
+ 25010              		.loc 1 370 0
+ 25011 03be 10E0     		b	.L29
+ 25012              	.L28:
+ 371:../sources/dataflash.c **** 
+ 372:../sources/dataflash.c **** 		case AT45DB642:
+ 373:../sources/dataflash.c **** 			pDf->dfDescription.pages_number = 8192;
+ 25013              		.loc 1 373 0
+ 25014 03c0 7B68     		ldr	r3, [r7, #4]
+ 25015 03c2 4FF40052 		mov	r2, #8192
+ 25016 03c6 DA60     		str	r2, [r3, #12]
+ 374:../sources/dataflash.c **** 			pDf->dfDescription.pages_size = 1056;
+ 25017              		.loc 1 374 0
+ 25018 03c8 7B68     		ldr	r3, [r7, #4]
+ 25019 03ca 4FF48462 		mov	r2, #1056
+ 25020 03ce 1A61     		str	r2, [r3, #16]
+ 375:../sources/dataflash.c **** 			pDf->dfDescription.page_offset = 11;
+ 25021              		.loc 1 375 0
+ 25022 03d0 7B68     		ldr	r3, [r7, #4]
+ 25023 03d2 4FF00B02 		mov	r2, #11
+ 25024 03d6 5A61     		str	r2, [r3, #20]
+ 376:../sources/dataflash.c **** 			break;
+ 25025              		.loc 1 376 0
+ 25026 03d8 03E0     		b	.L29
+ 25027              	.L30:
+ 377:../sources/dataflash.c **** /*
+ 378:../sources/dataflash.c **** 		case AT45DB1282:
+ 379:../sources/dataflash.c **** 			pDf->dfDescription.pages_number = 16384;
+ 380:../sources/dataflash.c **** 			pDf->dfDescription.pages_size = 1056;
+ 381:../sources/dataflash.c **** 			pDf->dfDescription.page_offset = 11;
+ 382:../sources/dataflash.c **** 			break;
+ 383:../sources/dataflash.c **** 
+ 384:../sources/dataflash.c **** 		case AT45DB2562:
+ 385:../sources/dataflash.c **** 			pDf->dfDescription.pages_number = 16384;
+ 386:../sources/dataflash.c **** 			pDf->dfDescription.pages_size = 2112;
+ 387:../sources/dataflash.c **** 			pDf->dfDescription.page_offset = 12;
+ 388:../sources/dataflash.c **** 			break;
+ 389:../sources/dataflash.c **** 
+ 390:../sources/dataflash.c **** 		case AT45DB5122:
+ 391:../sources/dataflash.c **** 			pDf->dfDescription.pages_number = 32768;
+ 392:../sources/dataflash.c **** 			pDf->dfDescription.pages_size = 2112;
+ 393:../sources/dataflash.c **** 			pDf->dfDescription.page_offset = 12;
+ 394:../sources/dataflash.c **** 			break;
+ 395:../sources/dataflash.c **** */
+ 396:../sources/dataflash.c **** 		default:
+ 397:../sources/dataflash.c **** 		        status = 0;
+ 25028              		.loc 1 397 0
+ 25029 03da 4FF00003 		mov	r3, #0
+ 25030 03de FB60     		str	r3, [r7, #12]
+ 398:../sources/dataflash.c **** 			break;
+ 25031              		.loc 1 398 0
+ 25032 03e0 00BF     		nop
+ 25033              	.L29:
+ 399:../sources/dataflash.c **** 	}
+ 400:../sources/dataflash.c **** 
+ 401:../sources/dataflash.c **** 	return status;
+ 25034              		.loc 1 401 0
+ 25035 03e2 FB68     		ldr	r3, [r7, #12]
+ 402:../sources/dataflash.c **** }
+ 25036              		.loc 1 402 0
+ 25037 03e4 1846     		mov	r0, r3
+ 25038 03e6 07F11007 		add	r7, r7, #16
+ 25039 03ea BD46     		mov	sp, r7
+ 25040 03ec 80BD     		pop	{r7, pc}
+ 25041              		.cfi_endproc
+ 25042              	.LFE35:
+ 25044              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 dataflash.c
+                            *COM*:00000004 ADCConvertedValue
+C:\Users\red4sch\AppData\Local\Temp\ccfipwU4.s:24385  .text:00000000 $t
+C:\Users\red4sch\AppData\Local\Temp\ccfipwU4.s:24390  .text:00000000 sFLASH_SendByte
+C:\Users\red4sch\AppData\Local\Temp\ccfipwU4.s:24457  .text:00000068 df_send_command
+C:\Users\red4sch\AppData\Local\Temp\ccfipwU4.s:24665  .text:000001d0 df_wait_ready
+C:\Users\red4sch\AppData\Local\Temp\ccfipwU4.s:24741  .text:00000244 df_read
+C:\Users\red4sch\AppData\Local\Temp\ccfipwU4.s:24819  .text:000002b0 df_download
+C:\Users\red4sch\AppData\Local\Temp\ccfipwU4.s:24864  .text:000002e0 df_probe
+C:\Users\red4sch\AppData\Local\Temp\ccfipwU4.s:24933  .text:00000348 df_init
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+SPI_I2S_GetFlagStatus
+SPI_I2S_SendData
+SPI_I2S_ReceiveData
+udiv
+GPIO_ResetBits
+GPIO_SetBits
