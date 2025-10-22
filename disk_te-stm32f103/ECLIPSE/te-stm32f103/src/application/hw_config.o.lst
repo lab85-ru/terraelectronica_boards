@@ -1,0 +1,246 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 18, 4
+  12              		.thumb
+  13              		.file	"hw_config.c"
+  23              	.Ltext0:
+ 19819              		.align	1
+ 19820              		.global	GetCpuClock
+ 19821              		.thumb
+ 19822              		.thumb_func
+ 19824              	GetCpuClock:
+ 19825              	.LFB30:
+   1:hw_config.c   **** #include "appdefs.h"
+   2:hw_config.c   **** #include "hw_config.h"
+   3:hw_config.c   **** 
+   4:hw_config.c   **** // возвращает тактовую частоту процессора
+   5:hw_config.c   **** uint32_t GetCpuClock()
+   6:hw_config.c   ****   {
+ 19826              		.loc 1 6 0
+ 19827              		.cfi_startproc
+ 19828              		@ args = 0, pretend = 0, frame = 24
+ 19829              		@ frame_needed = 0, uses_anonymous_args = 0
+ 19830 0000 7FB5     		push	{r0, r1, r2, r3, r4, r5, r6, lr}
+ 19831              	.LCFI0:
+ 19832              		.cfi_def_cfa_offset 32
+ 19833              		.cfi_offset 14, -4
+ 19834              		.cfi_offset 6, -8
+ 19835              		.cfi_offset 5, -12
+ 19836              		.cfi_offset 4, -16
+ 19837              		.cfi_offset 3, -20
+ 19838              		.cfi_offset 2, -24
+ 19839              		.cfi_offset 1, -28
+ 19840              		.cfi_offset 0, -32
+   7:hw_config.c   **** 	// вычисление тактовых частот
+   8:hw_config.c   **** 	RCC_ClocksTypeDef RCC_Clocks ;
+   9:hw_config.c   **** 	RCC_GetClocksFreq( &RCC_Clocks ) ;
+ 19841              		.loc 1 9 0
+ 19842 0002 034B     		ldr	r3, .L2
+ 19843 0004 01A8     		add	r0, sp, #4
+ 19844 0006 9847     		blx	r3
+  10:hw_config.c   **** 	return RCC_Clocks.SYSCLK_Frequency ;
+  11:hw_config.c   ****   }
+ 19845              		.loc 1 11 0
+ 19846 0008 0198     		ldr	r0, [sp, #4]
+ 19847 000a 07B0     		add	sp, sp, #28
+ 19848 000c 00BD     		pop	{pc}
+ 19849              	.L3:
+ 19850 000e 00BF     		.align	2
+ 19851              	.L2:
+ 19852 0010 00000000 		.word	RCC_GetClocksFreq
+ 19853              		.cfi_endproc
+ 19854              	.LFE30:
+ 19856              		.section	.text.SystemStartup,"ax",%progbits
+ 19857              		.align	1
+ 19858              		.global	SystemStartup
+ 19859              		.thumb
+ 19860              		.thumb_func
+ 19862              	SystemStartup:
+ 19863              	.LFB31:
+  12:hw_config.c   **** 
+  13:hw_config.c   **** void SystemStartup(void)
+  14:hw_config.c   **** {
+ 19864              		.loc 1 14 0
+ 19865              		.cfi_startproc
+ 19866              		@ args = 0, pretend = 0, frame = 0
+ 19867              		@ frame_needed = 0, uses_anonymous_args = 0
+ 19868 0000 10B5     		push	{r4, lr}
+ 19869              	.LCFI1:
+ 19870              		.cfi_def_cfa_offset 8
+ 19871              		.cfi_offset 14, -4
+ 19872              		.cfi_offset 4, -8
+  15:hw_config.c   ****   //GpioDeinit();
+  16:hw_config.c   **** 
+  17:hw_config.c   ****   /* Unlock the internal flash */
+  18:hw_config.c   ****   FLASH_Unlock();
+ 19873              		.loc 1 18 0
+ 19874 0002 194A     		ldr	r2, .L10
+ 19875 0004 9047     		blx	r2
+  19:hw_config.c   **** 
+  20:hw_config.c   ****   /* RCC system reset(for debug purpose) */
+  21:hw_config.c   ****   RCC_DeInit();
+ 19876              		.loc 1 21 0
+ 19877 0006 1948     		ldr	r0, .L10+4
+ 19878 0008 8047     		blx	r0
+  22:hw_config.c   **** 
+  23:hw_config.c   ****   /* Enable HSE */
+  24:hw_config.c   ****   RCC_HSEConfig(RCC_HSE_ON);
+ 19879              		.loc 1 24 0
+ 19880 000a 4FF48030 		mov	r0, #65536
+ 19881 000e 1849     		ldr	r1, .L10+8
+ 19882 0010 8847     		blx	r1
+  25:hw_config.c   **** 
+  26:hw_config.c   ****   /* Wait till HSE is ready */
+  27:hw_config.c   ****   ErrorStatus HSEStartUpStatus  = RCC_WaitForHSEStartUp();
+ 19883              		.loc 1 27 0
+ 19884 0012 184B     		ldr	r3, .L10+12
+ 19885 0014 9847     		blx	r3
+  28:hw_config.c   **** 
+  29:hw_config.c   ****   if (HSEStartUpStatus == SUCCESS)
+ 19886              		.loc 1 29 0
+ 19887 0016 0128     		cmp	r0, #1
+  27:hw_config.c   ****   ErrorStatus HSEStartUpStatus  = RCC_WaitForHSEStartUp();
+ 19888              		.loc 1 27 0
+ 19889 0018 0446     		mov	r4, r0
+ 19890              	.LVL0:
+ 19891              		.loc 1 29 0
+ 19892 001a 24D1     		bne	.L4
+  30:hw_config.c   ****   {
+  31:hw_config.c   ****     /* Enable Prefetch Buffer */
+  32:hw_config.c   ****     FLASH_PrefetchBufferCmd(FLASH_PrefetchBuffer_Enable);
+ 19893              		.loc 1 32 0
+ 19894 001c 164A     		ldr	r2, .L10+16
+ 19895 001e 1020     		movs	r0, #16
+ 19896              	.LVL1:
+ 19897 0020 9047     		blx	r2
+  33:hw_config.c   **** 
+  34:hw_config.c   ****     /* Flash 2 wait state */
+  35:hw_config.c   ****     FLASH_SetLatency(FLASH_Latency_2);
+ 19898              		.loc 1 35 0
+ 19899 0022 1649     		ldr	r1, .L10+20
+ 19900 0024 0220     		movs	r0, #2
+ 19901 0026 8847     		blx	r1
+  36:hw_config.c   **** 
+  37:hw_config.c   ****     /* HCLK = SYSCLK */
+  38:hw_config.c   ****     RCC_HCLKConfig(RCC_SYSCLK_Div1);
+ 19902              		.loc 1 38 0
+ 19903 0028 154B     		ldr	r3, .L10+24
+ 19904 002a 0020     		movs	r0, #0
+ 19905 002c 9847     		blx	r3
+  39:hw_config.c   **** 
+  40:hw_config.c   ****     /* PCLK2 = HCLK */
+  41:hw_config.c   ****     RCC_PCLK2Config(RCC_HCLK_Div1);
+ 19906              		.loc 1 41 0
+ 19907 002e 154A     		ldr	r2, .L10+28
+ 19908 0030 0020     		movs	r0, #0
+ 19909 0032 9047     		blx	r2
+  42:hw_config.c   **** 
+  43:hw_config.c   ****     /* PCLK1 = HCLK/2 */
+  44:hw_config.c   ****     RCC_PCLK1Config(RCC_HCLK_Div2);
+ 19910              		.loc 1 44 0
+ 19911 0034 4FF48060 		mov	r0, #1024
+ 19912 0038 1349     		ldr	r1, .L10+32
+ 19913 003a 8847     		blx	r1
+  45:hw_config.c   **** 
+  46:hw_config.c   ****     /* PLLCLK = 8MHz * 9 = 72 MHz */
+  47:hw_config.c   ****     RCC_PLLConfig(RCC_PLLSource_HSE_Div1, RCC_PLLMul_9 );
+ 19914              		.loc 1 47 0
+ 19915 003c 4FF48030 		mov	r0, #65536
+ 19916 0040 4FF4E011 		mov	r1, #1835008
+ 19917 0044 114B     		ldr	r3, .L10+36
+ 19918 0046 9847     		blx	r3
+  48:hw_config.c   **** 
+  49:hw_config.c   ****     /* Enable PLL */
+  50:hw_config.c   ****     RCC_PLLCmd(ENABLE);
+ 19919              		.loc 1 50 0
+ 19920 0048 2046     		mov	r0, r4
+ 19921 004a 114C     		ldr	r4, .L10+40
+ 19922              	.LVL2:
+ 19923 004c A047     		blx	r4
+ 19924              	.LVL3:
+  51:hw_config.c   **** 
+  52:hw_config.c   ****     /* Wait till PLL is ready */
+  53:hw_config.c   ****     while (RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET)
+ 19925              		.loc 1 53 0
+ 19926 004e 114C     		ldr	r4, .L10+44
+ 19927              	.L6:
+ 19928              		.loc 1 53 0 is_stmt 0 discriminator 1
+ 19929 0050 3920     		movs	r0, #57
+ 19930 0052 A047     		blx	r4
+ 19931 0054 0028     		cmp	r0, #0
+ 19932 0056 FBD0     		beq	.L6
+  54:hw_config.c   ****     {}
+  55:hw_config.c   **** 
+  56:hw_config.c   ****     /* Select PLL as system clock source */
+  57:hw_config.c   ****     RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
+ 19933              		.loc 1 57 0 is_stmt 1
+ 19934 0058 0F4C     		ldr	r4, .L10+48
+ 19935 005a 0220     		movs	r0, #2
+ 19936 005c A047     		blx	r4
+  58:hw_config.c   **** 
+  59:hw_config.c   ****     /* Wait till PLL is used as system clock source */
+  60:hw_config.c   ****     while (RCC_GetSYSCLKSource() != 0x08)
+ 19937              		.loc 1 60 0
+ 19938 005e 0F4C     		ldr	r4, .L10+52
+ 19939              	.L7:
+ 19940              		.loc 1 60 0 is_stmt 0 discriminator 1
+ 19941 0060 A047     		blx	r4
+ 19942 0062 0828     		cmp	r0, #8
+ 19943 0064 FCD1     		bne	.L7
+ 19944              	.L4:
+ 19945 0066 10BD     		pop	{r4, pc}
+ 19946              	.L11:
+ 19947              		.align	2
+ 19948              	.L10:
+ 19949 0068 00000000 		.word	FLASH_Unlock
+ 19950 006c 00000000 		.word	RCC_DeInit
+ 19951 0070 00000000 		.word	RCC_HSEConfig
+ 19952 0074 00000000 		.word	RCC_WaitForHSEStartUp
+ 19953 0078 00000000 		.word	FLASH_PrefetchBufferCmd
+ 19954 007c 00000000 		.word	FLASH_SetLatency
+ 19955 0080 00000000 		.word	RCC_HCLKConfig
+ 19956 0084 00000000 		.word	RCC_PCLK2Config
+ 19957 0088 00000000 		.word	RCC_PCLK1Config
+ 19958 008c 00000000 		.word	RCC_PLLConfig
+ 19959 0090 00000000 		.word	RCC_PLLCmd
+ 19960 0094 00000000 		.word	RCC_GetFlagStatus
+ 19961 0098 00000000 		.word	RCC_SYSCLKConfig
+ 19962 009c 00000000 		.word	RCC_GetSYSCLKSource
+ 19963              		.cfi_endproc
+ 19964              	.LFE31:
+ 19966              		.text
+ 19967              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 hw_config.c
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccMgwO8.s:19819  .text.GetCpuClock:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccMgwO8.s:19824  .text.GetCpuClock:00000000 GetCpuClock
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccMgwO8.s:19852  .text.GetCpuClock:00000010 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccMgwO8.s:19857  .text.SystemStartup:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccMgwO8.s:19862  .text.SystemStartup:00000000 SystemStartup
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccMgwO8.s:19949  .text.SystemStartup:00000068 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+RCC_GetClocksFreq
+FLASH_Unlock
+RCC_DeInit
+RCC_HSEConfig
+RCC_WaitForHSEStartUp
+FLASH_PrefetchBufferCmd
+FLASH_SetLatency
+RCC_HCLKConfig
+RCC_PCLK2Config
+RCC_PCLK1Config
+RCC_PLLConfig
+RCC_PLLCmd
+RCC_GetFlagStatus
+RCC_SYSCLKConfig
+RCC_GetSYSCLKSource

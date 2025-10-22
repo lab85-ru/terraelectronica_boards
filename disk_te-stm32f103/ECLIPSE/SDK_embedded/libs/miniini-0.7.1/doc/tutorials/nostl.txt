@@ -1,0 +1,21 @@
+Compiling MiniINI witout STL
+
+
+MiniINI was created to be as minimalistic as possible, but sometimes, even that
+is not enough. By default, MiniINI includes STL and cotains methods using STL
+classes. If you really need absolute minimalism, e.g. for embedded systems, STL
+misght be too big for you.
+
+For this reason, MiniINI has an option of disabling all STL functionality.
+In order to use MiniINI without STL, you have to compile it using:
+```
+make no-stl
+```
+This will compile MiniINI binaries without STL support. You can then install it
+as usual using **make install** as root or **sudo make install**.
+You also have to define a macro called **INI_NO_STL** before any inclusion if the
+MiniINI header, i.e.:
+```
+#define INI_NO_STL
+#include <miniini.h>
+```

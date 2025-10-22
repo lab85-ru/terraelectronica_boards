@@ -1,0 +1,421 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 18, 4
+  12              		.thumb
+  13              		.file	"debug_led.c"
+  23              	.Ltext0:
+ 19819              		.align	1
+ 19820              		.global	DebugLedInit
+ 19821              		.thumb
+ 19822              		.thumb_func
+ 19824              	DebugLedInit:
+ 19825              	.LFB30:
+   1:debug_led.c   **** #include "debug_led.h"
+   2:debug_led.c   **** #include "stm32f10x.h"
+   3:debug_led.c   **** 
+   4:debug_led.c   **** static uint8_t debug_led_blink_bits ;
+   5:debug_led.c   **** 
+   6:debug_led.c   **** void DebugLedInit()
+   7:debug_led.c   **** {
+ 19826              		.loc 1 7 0
+ 19827              		.cfi_startproc
+ 19828              		@ args = 0, pretend = 0, frame = 8
+ 19829              		@ frame_needed = 0, uses_anonymous_args = 0
+ 19830 0000 07B5     		push	{r0, r1, r2, lr}
+ 19831              	.LCFI0:
+ 19832              		.cfi_def_cfa_offset 16
+ 19833              		.cfi_offset 14, -4
+ 19834              		.cfi_offset 2, -8
+ 19835              		.cfi_offset 1, -12
+ 19836              		.cfi_offset 0, -16
+   8:debug_led.c   **** 	RCC_APB2PeriphClockCmd(DEBUG_LED_RCC_APB2Periph_GPIO , ENABLE);
+ 19837              		.loc 1 8 0
+ 19838 0002 094B     		ldr	r3, .L2
+ 19839 0004 0420     		movs	r0, #4
+ 19840 0006 0121     		movs	r1, #1
+ 19841 0008 9847     		blx	r3
+   9:debug_led.c   ****     // инициализация вывода LED
+  10:debug_led.c   ****     GPIO_InitTypeDef GPIO_InitStructure;
+  11:debug_led.c   ****     GPIO_InitStructure.GPIO_Pin =  DEBUG_LED_PIN_D10 | DEBUG_LED_PIN_D11 | DEBUG_LED_PIN_D12;
+  12:debug_led.c   ****     GPIO_InitStructure.GPIO_Mode = DEBUG_LED_GPIO_MODE;
+ 19842              		.loc 1 12 0
+ 19843 000a 1021     		movs	r1, #16
+  13:debug_led.c   ****     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 19844              		.loc 1 13 0
+ 19845 000c 0320     		movs	r0, #3
+  11:debug_led.c   ****     GPIO_InitStructure.GPIO_Pin =  DEBUG_LED_PIN_D10 | DEBUG_LED_PIN_D11 | DEBUG_LED_PIN_D12;
+ 19846              		.loc 1 11 0
+ 19847 000e 7022     		movs	r2, #112
+  12:debug_led.c   ****     GPIO_InitStructure.GPIO_Mode = DEBUG_LED_GPIO_MODE;
+ 19848              		.loc 1 12 0
+ 19849 0010 8DF80710 		strb	r1, [sp, #7]
+ 19850              		.loc 1 13 0
+ 19851 0014 8DF80600 		strb	r0, [sp, #6]
+  11:debug_led.c   ****     GPIO_InitStructure.GPIO_Pin =  DEBUG_LED_PIN_D10 | DEBUG_LED_PIN_D11 | DEBUG_LED_PIN_D12;
+ 19852              		.loc 1 11 0
+ 19853 0018 ADF80420 		strh	r2, [sp, #4]	@ movhi
+  14:debug_led.c   ****     GPIO_Init(DEBUG_LED_PORT, &GPIO_InitStructure);
+ 19854              		.loc 1 14 0
+ 19855 001c 0348     		ldr	r0, .L2+4
+ 19856 001e 01A9     		add	r1, sp, #4
+ 19857 0020 034B     		ldr	r3, .L2+8
+ 19858 0022 9847     		blx	r3
+  15:debug_led.c   **** }
+ 19859              		.loc 1 15 0
+ 19860 0024 0EBD     		pop	{r1, r2, r3, pc}
+ 19861              	.L3:
+ 19862 0026 00BF     		.align	2
+ 19863              	.L2:
+ 19864 0028 00000000 		.word	RCC_APB2PeriphClockCmd
+ 19865 002c 00080140 		.word	1073809408
+ 19866 0030 00000000 		.word	GPIO_Init
+ 19867              		.cfi_endproc
+ 19868              	.LFE30:
+ 19870              		.section	.text.DebugLedToggleD10,"ax",%progbits
+ 19871              		.align	1
+ 19872              		.global	DebugLedToggleD10
+ 19873              		.thumb
+ 19874              		.thumb_func
+ 19876              	DebugLedToggleD10:
+ 19877              	.LFB31:
+  16:debug_led.c   **** //------------------------------------------------------------
+  17:debug_led.c   **** void DebugLedToggleD10()
+  18:debug_led.c   **** {
+ 19878              		.loc 1 18 0
+ 19879              		.cfi_startproc
+ 19880              		@ args = 0, pretend = 0, frame = 0
+ 19881              		@ frame_needed = 0, uses_anonymous_args = 0
+ 19882              		@ link register save eliminated.
+  19:debug_led.c   ****   if ( DEBUG_LED_PORT->IDR & DEBUG_LED_PIN_D10 )
+ 19883              		.loc 1 19 0
+ 19884 0000 044B     		ldr	r3, .L7
+ 19885 0002 4FF01002 		mov	r2, #16
+ 19886 0006 9868     		ldr	r0, [r3, #8]
+ 19887 0008 10F0100F 		tst	r0, #16
+  20:debug_led.c   ****     DEBUG_LED_PORT->BRR =  DEBUG_LED_PIN_D10 ;
+ 19888              		.loc 1 20 0
+ 19889 000c 14BF     		ite	ne
+ 19890 000e 5A61     		strne	r2, [r3, #20]
+  21:debug_led.c   ****   else
+  22:debug_led.c   ****     DEBUG_LED_PORT->BSRR = DEBUG_LED_PIN_D10 ;
+ 19891              		.loc 1 22 0
+ 19892 0010 1A61     		streq	r2, [r3, #16]
+ 19893 0012 7047     		bx	lr
+ 19894              	.L8:
+ 19895              		.align	2
+ 19896              	.L7:
+ 19897 0014 00080140 		.word	1073809408
+ 19898              		.cfi_endproc
+ 19899              	.LFE31:
+ 19901              		.section	.text.DebugLedToggleD11,"ax",%progbits
+ 19902              		.align	1
+ 19903              		.global	DebugLedToggleD11
+ 19904              		.thumb
+ 19905              		.thumb_func
+ 19907              	DebugLedToggleD11:
+ 19908              	.LFB32:
+  23:debug_led.c   **** }
+  24:debug_led.c   **** //------------------------------------------------------------
+  25:debug_led.c   **** void DebugLedToggleD11()
+  26:debug_led.c   **** {
+ 19909              		.loc 1 26 0
+ 19910              		.cfi_startproc
+ 19911              		@ args = 0, pretend = 0, frame = 0
+ 19912              		@ frame_needed = 0, uses_anonymous_args = 0
+ 19913              		@ link register save eliminated.
+  27:debug_led.c   ****   if ( DEBUG_LED_PORT->IDR & DEBUG_LED_PIN_D11 )
+ 19914              		.loc 1 27 0
+ 19915 0000 044B     		ldr	r3, .L12
+ 19916 0002 4FF02002 		mov	r2, #32
+ 19917 0006 9868     		ldr	r0, [r3, #8]
+ 19918 0008 10F0200F 		tst	r0, #32
+  28:debug_led.c   ****     DEBUG_LED_PORT->BRR =  DEBUG_LED_PIN_D11 ;
+ 19919              		.loc 1 28 0
+ 19920 000c 14BF     		ite	ne
+ 19921 000e 5A61     		strne	r2, [r3, #20]
+  29:debug_led.c   ****   else
+  30:debug_led.c   ****     DEBUG_LED_PORT->BSRR = DEBUG_LED_PIN_D11 ;
+ 19922              		.loc 1 30 0
+ 19923 0010 1A61     		streq	r2, [r3, #16]
+ 19924 0012 7047     		bx	lr
+ 19925              	.L13:
+ 19926              		.align	2
+ 19927              	.L12:
+ 19928 0014 00080140 		.word	1073809408
+ 19929              		.cfi_endproc
+ 19930              	.LFE32:
+ 19932              		.section	.text.DebugLedToggleD12,"ax",%progbits
+ 19933              		.align	1
+ 19934              		.global	DebugLedToggleD12
+ 19935              		.thumb
+ 19936              		.thumb_func
+ 19938              	DebugLedToggleD12:
+ 19939              	.LFB33:
+  31:debug_led.c   **** }
+  32:debug_led.c   **** //------------------------------------------------------------
+  33:debug_led.c   **** void DebugLedToggleD12()
+  34:debug_led.c   **** {
+ 19940              		.loc 1 34 0
+ 19941              		.cfi_startproc
+ 19942              		@ args = 0, pretend = 0, frame = 0
+ 19943              		@ frame_needed = 0, uses_anonymous_args = 0
+ 19944              		@ link register save eliminated.
+  35:debug_led.c   ****   if ( DEBUG_LED_PORT->IDR & DEBUG_LED_PIN_D12 )
+ 19945              		.loc 1 35 0
+ 19946 0000 044B     		ldr	r3, .L17
+ 19947 0002 4FF04002 		mov	r2, #64
+ 19948 0006 9868     		ldr	r0, [r3, #8]
+ 19949 0008 10F0400F 		tst	r0, #64
+  36:debug_led.c   ****     DEBUG_LED_PORT->BRR =  DEBUG_LED_PIN_D12 ;
+ 19950              		.loc 1 36 0
+ 19951 000c 14BF     		ite	ne
+ 19952 000e 5A61     		strne	r2, [r3, #20]
+  37:debug_led.c   ****   else
+  38:debug_led.c   ****     DEBUG_LED_PORT->BSRR = DEBUG_LED_PIN_D12 ;
+ 19953              		.loc 1 38 0
+ 19954 0010 1A61     		streq	r2, [r3, #16]
+ 19955 0012 7047     		bx	lr
+ 19956              	.L18:
+ 19957              		.align	2
+ 19958              	.L17:
+ 19959 0014 00080140 		.word	1073809408
+ 19960              		.cfi_endproc
+ 19961              	.LFE33:
+ 19963              		.section	.text.DebugLedInitIndication,"ax",%progbits
+ 19964              		.align	1
+ 19965              		.global	DebugLedInitIndication
+ 19966              		.thumb
+ 19967              		.thumb_func
+ 19969              	DebugLedInitIndication:
+ 19970              	.LFB34:
+  39:debug_led.c   **** }
+  40:debug_led.c   **** //------------------------------------------------------------
+  41:debug_led.c   **** 
+  42:debug_led.c   **** /* состояния индикации
+  43:debug_led.c   **** 0 - негорит
+  44:debug_led.c   **** 1 - горит
+  45:debug_led.c   **** х - моргает
+  46:debug_led.c   **** 
+  47:debug_led.c   **** state bits
+  48:debug_led.c   ****  CAN ADC SD
+  49:debug_led.c   ****   2   1   0
+  50:debug_led.c   **** 
+  51:debug_led.c   ****           state    D12    D11    D10
+  52:debug_led.c   **** ничего      0        0      0      x
+  53:debug_led.c   ****  SD         1        0      1      x
+  54:debug_led.c   ****  ADC        2        1      0      x
+  55:debug_led.c   ****  ADC+SD     3        1      1      x
+  56:debug_led.c   ****  CAN        4        0      x      x
+  57:debug_led.c   ****  CAN+SD     5        1      x      x
+  58:debug_led.c   ****  CAN+ADC    6        x      0      x
+  59:debug_led.c   **** CAN+SD+ADC  7        x      x      x
+  60:debug_led.c   **** */
+  61:debug_led.c   **** 
+  62:debug_led.c   **** 
+  63:debug_led.c   **** void DebugLedInitIndication( TestStatus can_state , TestStatus adc_state , TestStatus sd_state )
+  64:debug_led.c   **** {
+ 19971              		.loc 1 64 0
+ 19972              		.cfi_startproc
+ 19973              		@ args = 0, pretend = 0, frame = 0
+ 19974              		@ frame_needed = 0, uses_anonymous_args = 0
+ 19975              	.LVL0:
+ 19976 0000 10B5     		push	{r4, lr}
+ 19977              	.LCFI1:
+ 19978              		.cfi_def_cfa_offset 8
+ 19979              		.cfi_offset 14, -4
+ 19980              		.cfi_offset 4, -8
+  65:debug_led.c   **** 	uint8_t state = (can_state << 2) | (adc_state << 1) | sd_state ;
+  66:debug_led.c   **** 	debug_led_blink_bits = 0 ;
+ 19981              		.loc 1 66 0
+ 19982 0002 114C     		ldr	r4, .L33
+ 19983 0004 0023     		movs	r3, #0
+ 19984 0006 2370     		strb	r3, [r4, #0]
+  65:debug_led.c   **** 	uint8_t state = (can_state << 2) | (adc_state << 1) | sd_state ;
+ 19985              		.loc 1 65 0
+ 19986 0008 42EA8003 		orr	r3, r2, r0, lsl #2
+ 19987 000c 43EA4102 		orr	r2, r3, r1, lsl #1
+ 19988              	.LVL1:
+  67:debug_led.c   **** 	switch( state )
+ 19989              		.loc 1 67 0
+ 19990 0010 D0B2     		uxtb	r0, r2
+ 19991              	.LVL2:
+ 19992 0012 411E     		subs	r1, r0, #1
+ 19993              	.LVL3:
+ 19994 0014 0629     		cmp	r1, #6
+ 19995 0016 15D8     		bhi	.L19
+ 19996 0018 DFE801F0 		tbb	[pc, r1]
+ 19997              	.L28:
+ 19998 001c 04       		.byte	(.L21-.L28)/2
+ 19999 001d 08       		.byte	(.L31-.L28)/2
+ 20000 001e 06       		.byte	(.L23-.L28)/2
+ 20001 001f 0D       		.byte	(.L32-.L28)/2
+ 20002 0020 0B       		.byte	(.L25-.L28)/2
+ 20003 0021 0F       		.byte	(.L26-.L28)/2
+ 20004 0022 12       		.byte	(.L27-.L28)/2
+ 20005 0023 00       		.align	1
+ 20006              	.L21:
+  68:debug_led.c   **** 	{
+  69:debug_led.c   **** 	   case 1 :
+  70:debug_led.c   **** 		   DebugLedToggleD11();
+ 20007              		.loc 1 70 0
+ 20008 0024 094B     		ldr	r3, .L33+4
+ 20009 0026 02E0     		b	.L30
+ 20010              	.L23:
+  71:debug_led.c   **** 		   break ;
+  72:debug_led.c   **** 	   case 2 :
+  73:debug_led.c   **** 		   DebugLedToggleD12();
+  74:debug_led.c   **** 		   break ;
+  75:debug_led.c   **** 	   case 3 :
+  76:debug_led.c   **** 	   	   DebugLedToggleD11();
+ 20011              		.loc 1 76 0
+ 20012 0028 0849     		ldr	r1, .L33+4
+ 20013 002a 8847     		blx	r1
+ 20014              	.L31:
+  77:debug_led.c   **** 	   	   DebugLedToggleD12();
+ 20015              		.loc 1 77 0
+ 20016 002c 084B     		ldr	r3, .L33+8
+ 20017              	.L30:
+ 20018 002e 9847     		blx	r3
+  78:debug_led.c   **** 	   	   break ;
+ 20019              		.loc 1 78 0
+ 20020 0030 10BD     		pop	{r4, pc}
+ 20021              	.L25:
+  79:debug_led.c   **** 	   case 4 :
+  80:debug_led.c   **** 		   debug_led_blink_bits = 1 ;
+  81:debug_led.c   **** 	       break ;
+  82:debug_led.c   **** 	   case 5 :
+  83:debug_led.c   **** 		   DebugLedToggleD12();
+ 20022              		.loc 1 83 0
+ 20023 0032 0748     		ldr	r0, .L33+8
+ 20024 0034 8047     		blx	r0
+ 20025              	.L32:
+  84:debug_led.c   **** 		   debug_led_blink_bits = 1 ;
+ 20026              		.loc 1 84 0
+ 20027 0036 0123     		movs	r3, #1
+ 20028 0038 00E0     		b	.L29
+ 20029              	.L26:
+  85:debug_led.c   **** 		   break ;
+  86:debug_led.c   **** 	   case 6 :
+  87:debug_led.c   **** 		   debug_led_blink_bits = 2 ;
+ 20030              		.loc 1 87 0
+ 20031 003a 0223     		movs	r3, #2
+ 20032              	.L29:
+ 20033 003c 2370     		strb	r3, [r4, #0]
+  88:debug_led.c   **** 		   break ;
+ 20034              		.loc 1 88 0
+ 20035 003e 10BD     		pop	{r4, pc}
+ 20036              	.L27:
+  89:debug_led.c   **** 	   case 7 :
+  90:debug_led.c   **** 	   	   debug_led_blink_bits = 3 ;
+ 20037              		.loc 1 90 0
+ 20038 0040 0322     		movs	r2, #3
+ 20039 0042 2270     		strb	r2, [r4, #0]
+ 20040              	.L19:
+ 20041 0044 10BD     		pop	{r4, pc}
+ 20042              	.L34:
+ 20043 0046 00BF     		.align	2
+ 20044              	.L33:
+ 20045 0048 00000000 		.word	.LANCHOR0
+ 20046 004c 00000000 		.word	DebugLedToggleD11
+ 20047 0050 00000000 		.word	DebugLedToggleD12
+ 20048              		.cfi_endproc
+ 20049              	.LFE34:
+ 20051              		.section	.text.DebugLedsToggle,"ax",%progbits
+ 20052              		.align	1
+ 20053              		.global	DebugLedsToggle
+ 20054              		.thumb
+ 20055              		.thumb_func
+ 20057              	DebugLedsToggle:
+ 20058              	.LFB35:
+  91:debug_led.c   **** 		   break ;
+  92:debug_led.c   **** 	   default : break ;
+  93:debug_led.c   **** 	}
+  94:debug_led.c   **** }
+  95:debug_led.c   **** //------------------------------------------------------------
+  96:debug_led.c   **** void DebugLedsToggle( )
+  97:debug_led.c   **** {
+ 20059              		.loc 1 97 0
+ 20060              		.cfi_startproc
+ 20061              		@ args = 0, pretend = 0, frame = 0
+ 20062              		@ frame_needed = 0, uses_anonymous_args = 0
+ 20063 0000 10B5     		push	{r4, lr}
+ 20064              	.LCFI2:
+ 20065              		.cfi_def_cfa_offset 8
+ 20066              		.cfi_offset 14, -4
+ 20067              		.cfi_offset 4, -8
+  98:debug_led.c   ****   DebugLedToggleD10();
+ 20068              		.loc 1 98 0
+ 20069 0002 0648     		ldr	r0, .L38
+ 20070 0004 8047     		blx	r0
+  99:debug_led.c   ****   if ( debug_led_blink_bits & 0x1 ) DebugLedToggleD11();
+ 20071              		.loc 1 99 0
+ 20072 0006 064B     		ldr	r3, .L38+4
+ 20073 0008 1C78     		ldrb	r4, [r3, #0]	@ zero_extendqisi2
+ 20074 000a E207     		lsls	r2, r4, #31
+ 20075 000c 01D5     		bpl	.L36
+ 20076              		.loc 1 99 0 is_stmt 0 discriminator 1
+ 20077 000e 0549     		ldr	r1, .L38+8
+ 20078 0010 8847     		blx	r1
+ 20079              	.L36:
+ 100:debug_led.c   ****   if ( debug_led_blink_bits & 0x2 ) DebugLedToggleD12();
+ 20080              		.loc 1 100 0 is_stmt 1
+ 20081 0012 A307     		lsls	r3, r4, #30
+ 20082 0014 01D5     		bpl	.L35
+ 20083              		.loc 1 100 0 is_stmt 0 discriminator 1
+ 20084 0016 044A     		ldr	r2, .L38+12
+ 20085 0018 9047     		blx	r2
+ 20086              	.L35:
+ 20087 001a 10BD     		pop	{r4, pc}
+ 20088              	.L39:
+ 20089              		.align	2
+ 20090              	.L38:
+ 20091 001c 00000000 		.word	DebugLedToggleD10
+ 20092 0020 00000000 		.word	.LANCHOR0
+ 20093 0024 00000000 		.word	DebugLedToggleD11
+ 20094 0028 00000000 		.word	DebugLedToggleD12
+ 20095              		.cfi_endproc
+ 20096              	.LFE35:
+ 20098              		.section	.bss.debug_led_blink_bits,"aw",%nobits
+ 20099              		.set	.LANCHOR0,. + 0
+ 20102              	debug_led_blink_bits:
+ 20103 0000 00       		.space	1
+ 20104              		.text
+ 20105              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 debug_led.c
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccIDgwO8.s:19819  .fast:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccIDgwO8.s:19824  .fast:00000000 DebugLedInit
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccIDgwO8.s:19864  .fast:00000028 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccIDgwO8.s:19871  .text.DebugLedToggleD10:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccIDgwO8.s:19876  .text.DebugLedToggleD10:00000000 DebugLedToggleD10
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccIDgwO8.s:19897  .text.DebugLedToggleD10:00000014 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccIDgwO8.s:19902  .text.DebugLedToggleD11:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccIDgwO8.s:19907  .text.DebugLedToggleD11:00000000 DebugLedToggleD11
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccIDgwO8.s:19928  .text.DebugLedToggleD11:00000014 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccIDgwO8.s:19933  .text.DebugLedToggleD12:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccIDgwO8.s:19938  .text.DebugLedToggleD12:00000000 DebugLedToggleD12
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccIDgwO8.s:19959  .text.DebugLedToggleD12:00000014 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccIDgwO8.s:19964  .text.DebugLedInitIndication:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccIDgwO8.s:19969  .text.DebugLedInitIndication:00000000 DebugLedInitIndication
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccIDgwO8.s:19998  .text.DebugLedInitIndication:0000001c $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccIDgwO8.s:20045  .text.DebugLedInitIndication:00000048 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccIDgwO8.s:20052  .text.DebugLedsToggle:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccIDgwO8.s:20057  .text.DebugLedsToggle:00000000 DebugLedsToggle
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccIDgwO8.s:20091  .text.DebugLedsToggle:0000001c $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccIDgwO8.s:20102  .bss.debug_led_blink_bits:00000000 debug_led_blink_bits
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccIDgwO8.s:20103  .bss.debug_led_blink_bits:00000000 $d
+                     .debug_frame:00000010 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccIDgwO8.s:20005  .text.DebugLedInitIndication:00000023 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccIDgwO8.s:20005  .text.DebugLedInitIndication:00000024 $t
+
+UNDEFINED SYMBOLS
+RCC_APB2PeriphClockCmd
+GPIO_Init

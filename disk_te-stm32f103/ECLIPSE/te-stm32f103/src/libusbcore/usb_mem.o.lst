@@ -1,0 +1,207 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 18, 4
+  12              		.thumb
+  13              		.file	"usb_mem.c"
+  23              	.Ltext0:
+ 16563              		.align	1
+ 16564              		.global	UserToPMABufferCopy
+ 16565              		.thumb
+ 16566              		.thumb_func
+ 16568              	UserToPMABufferCopy:
+ 16569              	.LFB29:
+   1:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** /******************** (C) COPYRIGHT 2010 STMicroelectronics ********************
+   2:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** * File Name          : usb_mem.c
+   3:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** * Author             : MCD Application Team
+   4:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** * Version            : V3.2.1
+   5:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** * Date               : 07/05/2010
+   6:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** * Description        : Utility functions for memory transfers to/from PMA
+   7:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** ********************************************************************************
+   8:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+   9:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
+  10:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** * AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY DIRECT,
+  11:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** * INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING FROM THE
+  12:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** * CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE CODING
+  13:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** * INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  14:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** *******************************************************************************/
+  15:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** #ifndef STM32F10X_CL
+  16:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** 
+  17:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** /* Includes ------------------------------------------------------------------*/
+  18:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** #include "usb_lib.h"
+  19:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** 
+  20:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** /* Private typedef -----------------------------------------------------------*/
+  21:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** /* Private define ------------------------------------------------------------*/
+  22:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** /* Private macro -------------------------------------------------------------*/
+  23:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** /* Private variables ---------------------------------------------------------*/
+  24:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** /* Extern variables ----------------------------------------------------------*/
+  25:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** /* Private function prototypes -----------------------------------------------*/
+  26:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** /* Private functions ---------------------------------------------------------*/
+  27:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** /*******************************************************************************
+  28:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** * Function Name  : UserToPMABufferCopy
+  29:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** * Description    : Copy a buffer from user memory area to packet memory area (PMA)
+  30:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** * Input          : - pbUsrBuf: pointer to user memory area.
+  31:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** *                  - wPMABufAddr: address into PMA.
+  32:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** *                  - wNBytes: no. of bytes to be copied.
+  33:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** * Output         : None.
+  34:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** * Return         : None	.
+  35:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** *******************************************************************************/
+  36:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** void UserToPMABufferCopy(uint8_t *pbUsrBuf, uint16_t wPMABufAddr, uint16_t wNBytes)
+  37:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** {
+ 16570              		.loc 1 37 0
+ 16571              		.cfi_startproc
+ 16572              		@ args = 0, pretend = 0, frame = 0
+ 16573              		@ frame_needed = 0, uses_anonymous_args = 0
+ 16574              	.LVL0:
+  38:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****   uint32_t n = (wNBytes + 1) >> 1;   /* n = (wNBytes + 1) / 2 */
+  39:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****   uint32_t i, temp1, temp2;
+  40:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****   uint16_t *pdwVal;
+  41:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****   pdwVal = (uint16_t *)(wPMABufAddr * 2 + PMAAddr);
+ 16575              		.loc 1 41 0
+ 16576 0000 01F10053 		add	r3, r1, #536870912
+  38:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****   uint32_t n = (wNBytes + 1) >> 1;   /* n = (wNBytes + 1) / 2 */
+ 16577              		.loc 1 38 0
+ 16578 0004 0132     		adds	r2, r2, #1
+ 16579              	.LVL1:
+ 16580              		.loc 1 41 0
+ 16581 0006 03F54051 		add	r1, r3, #12288
+ 16582              	.LVL2:
+  37:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** {
+ 16583              		.loc 1 37 0
+ 16584 000a 10B5     		push	{r4, lr}
+ 16585              	.LCFI0:
+ 16586              		.cfi_def_cfa_offset 8
+ 16587              		.cfi_offset 14, -4
+ 16588              		.cfi_offset 4, -8
+ 16589              		.loc 1 41 0
+ 16590 000c 4900     		lsls	r1, r1, #1
+  42:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****   for (i = n; i != 0; i--)
+ 16591              		.loc 1 42 0
+ 16592 000e 5208     		lsrs	r2, r2, #1
+ 16593              	.LVL3:
+ 16594 0010 07E0     		b	.L2
+ 16595              	.LVL4:
+ 16596              	.L3:
+  43:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****   {
+  44:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****     temp1 = (uint16_t) * pbUsrBuf;
+  45:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****     pbUsrBuf++;
+  46:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****     temp2 = temp1 | (uint16_t) * pbUsrBuf << 8;
+ 16597              		.loc 1 46 0 discriminator 2
+ 16598 0012 4478     		ldrb	r4, [r0, #1]	@ zero_extendqisi2
+  44:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****     temp1 = (uint16_t) * pbUsrBuf;
+ 16599              		.loc 1 44 0 discriminator 2
+ 16600 0014 10F8023B 		ldrb	r3, [r0], #2	@ zero_extendqisi2
+ 16601              	.LVL5:
+  42:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****   for (i = n; i != 0; i--)
+ 16602              		.loc 1 42 0 discriminator 2
+ 16603 0018 013A     		subs	r2, r2, #1
+ 16604              	.LVL6:
+ 16605              		.loc 1 46 0 discriminator 2
+ 16606 001a 43EA042C 		orr	ip, r3, r4, lsl #8
+  47:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****     *pdwVal++ = temp2;
+ 16607              		.loc 1 47 0 discriminator 2
+ 16608 001e 21F804CC 		strh	ip, [r1, #-4]	@ movhi
+ 16609              	.LVL7:
+ 16610              	.L2:
+  42:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****   for (i = n; i != 0; i--)
+ 16611              		.loc 1 42 0 discriminator 1
+ 16612 0022 0431     		adds	r1, r1, #4
+ 16613              	.LVL8:
+ 16614 0024 002A     		cmp	r2, #0
+ 16615 0026 F4D1     		bne	.L3
+  48:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****     pdwVal++;
+  49:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****     pbUsrBuf++;
+  50:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****   }
+  51:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** }
+ 16616              		.loc 1 51 0
+ 16617 0028 10BD     		pop	{r4, pc}
+ 16618              		.cfi_endproc
+ 16619              	.LFE29:
+ 16621              		.section	.text.PMAToUserBufferCopy,"ax",%progbits
+ 16622              		.align	1
+ 16623              		.global	PMAToUserBufferCopy
+ 16624              		.thumb
+ 16625              		.thumb_func
+ 16627              	PMAToUserBufferCopy:
+ 16628              	.LFB30:
+  52:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** /*******************************************************************************
+  53:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** * Function Name  : PMAToUserBufferCopy
+  54:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** * Description    : Copy a buffer from user memory area to packet memory area (PMA)
+  55:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** * Input          : - pbUsrBuf    = pointer to user memory area.
+  56:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** *                  - wPMABufAddr = address into PMA.
+  57:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** *                  - wNBytes     = no. of bytes to be copied.
+  58:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** * Output         : None.
+  59:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** * Return         : None.
+  60:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** *******************************************************************************/
+  61:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** void PMAToUserBufferCopy(uint8_t *pbUsrBuf, uint16_t wPMABufAddr, uint16_t wNBytes)
+  62:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** {
+ 16629              		.loc 1 62 0
+ 16630              		.cfi_startproc
+ 16631              		@ args = 0, pretend = 0, frame = 0
+ 16632              		@ frame_needed = 0, uses_anonymous_args = 0
+ 16633              		@ link register save eliminated.
+ 16634              	.LVL9:
+  63:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****   uint32_t n = (wNBytes + 1) >> 1;/* /2*/
+  64:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****   uint32_t i;
+  65:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****   uint32_t *pdwVal;
+  66:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****   pdwVal = (uint32_t *)(wPMABufAddr * 2 + PMAAddr);
+ 16635              		.loc 1 66 0
+ 16636 0000 01F10053 		add	r3, r1, #536870912
+  63:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****   uint32_t n = (wNBytes + 1) >> 1;/* /2*/
+ 16637              		.loc 1 63 0
+ 16638 0004 0132     		adds	r2, r2, #1
+ 16639              	.LVL10:
+ 16640              		.loc 1 66 0
+ 16641 0006 03F54051 		add	r1, r3, #12288
+ 16642              	.LVL11:
+ 16643 000a 4900     		lsls	r1, r1, #1
+  67:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****   for (i = n; i != 0; i--)
+ 16644              		.loc 1 67 0
+ 16645 000c 5208     		lsrs	r2, r2, #1
+ 16646              	.LVL12:
+ 16647 000e 04E0     		b	.L5
+ 16648              	.LVL13:
+ 16649              	.L6:
+  68:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****   {
+  69:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****     *(uint16_t*)pbUsrBuf++ = *pdwVal++;
+ 16650              		.loc 1 69 0 discriminator 2
+ 16651 0010 51F8043B 		ldr	r3, [r1], #4
+  67:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****   for (i = n; i != 0; i--)
+ 16652              		.loc 1 67 0 discriminator 2
+ 16653 0014 013A     		subs	r2, r2, #1
+ 16654              	.LVL14:
+ 16655              		.loc 1 69 0 discriminator 2
+ 16656 0016 20F8023C 		strh	r3, [r0, #-2]	@ movhi
+ 16657              	.LVL15:
+ 16658              	.L5:
+  67:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****   for (i = n; i != 0; i--)
+ 16659              		.loc 1 67 0 discriminator 1
+ 16660 001a 0230     		adds	r0, r0, #2
+ 16661              	.LVL16:
+ 16662 001c 002A     		cmp	r2, #0
+ 16663 001e F7D1     		bne	.L6
+  70:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****     pbUsrBuf++;
+  71:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c ****   }
+  72:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_mem.c **** }
+ 16664              		.loc 1 72 0
+ 16665 0020 7047     		bx	lr
+ 16666              		.cfi_endproc
+ 16667              	.LFE30:
+ 16669              		.text
+ 16670              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 usb_mem.c
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccWExpqh.s:16563  .text.UserToPMABufferCopy:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccWExpqh.s:16568  .text.UserToPMABufferCopy:00000000 UserToPMABufferCopy
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccWExpqh.s:16622  .text.PMAToUserBufferCopy:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccWExpqh.s:16627  .text.PMAToUserBufferCopy:00000000 PMAToUserBufferCopy
+                     .debug_frame:00000010 $d
+
+NO UNDEFINED SYMBOLS

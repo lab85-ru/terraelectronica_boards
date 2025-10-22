@@ -1,0 +1,382 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 18, 4
+  12              		.thumb
+  13              		.file	"usb_startup.c"
+  23              	.Ltext0:
+ 17572              		.align	1
+ 17573              		.global	UsbBusConnect
+ 17574              		.thumb
+ 17575              		.thumb_func
+ 17577              	UsbBusConnect:
+ 17578              	.LFB30:
+   1:usb_startup.c **** #include "stm32f10x_rcc.h"
+   2:usb_startup.c **** #include "stm32f10x_gpio.h"
+   3:usb_startup.c **** #include "misc.h"
+   4:usb_startup.c **** 
+   5:usb_startup.c **** 
+   6:usb_startup.c **** #include "usb_startup.h"
+   7:usb_startup.c **** #include "usb_conf.h"
+   8:usb_startup.c **** #include "platform_config.h"
+   9:usb_startup.c **** #include "usb_lib.h"
+  10:usb_startup.c **** #include "usb_pwr.h"
+  11:usb_startup.c **** 
+  12:usb_startup.c **** 
+  13:usb_startup.c **** /*******************************************************************************
+  14:usb_startup.c **** * Function Name  : Set_USBClock.
+  15:usb_startup.c **** * Description    : Configures USB Clock input (48MHz).
+  16:usb_startup.c **** * Input          : None.
+  17:usb_startup.c **** * Output         : None.
+  18:usb_startup.c **** * Return         : None.
+  19:usb_startup.c **** *******************************************************************************/
+  20:usb_startup.c **** 
+  21:usb_startup.c **** static void UsbSetClock(void)
+  22:usb_startup.c **** {
+  23:usb_startup.c ****   RCC_USBCLKConfig(RCC_USBCLKSource_PLLCLK_1Div5);
+  24:usb_startup.c ****   /* Enable USB clock */
+  25:usb_startup.c ****   RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);
+  26:usb_startup.c **** }
+  27:usb_startup.c **** //--------------------------------------------------------------------
+  28:usb_startup.c **** 
+  29:usb_startup.c **** void UsbBusConnect (FunctionalState NewState)
+  30:usb_startup.c **** {
+ 17579              		.loc 1 30 0
+ 17580              		.cfi_startproc
+ 17581              		@ args = 0, pretend = 0, frame = 0
+ 17582              		@ frame_needed = 0, uses_anonymous_args = 0
+ 17583              	.LVL0:
+  31:usb_startup.c ****   if (NewState == ENABLE )
+ 17584              		.loc 1 31 0
+ 17585 0000 0128     		cmp	r0, #1
+  30:usb_startup.c **** {
+ 17586              		.loc 1 30 0
+ 17587 0002 08B5     		push	{r3, lr}
+ 17588              	.LCFI0:
+ 17589              		.cfi_def_cfa_offset 8
+ 17590              		.cfi_offset 14, -4
+ 17591              		.cfi_offset 3, -8
+ 17592              		.loc 1 31 0
+ 17593 0004 03D1     		bne	.L2
+  32:usb_startup.c ****   {
+  33:usb_startup.c ****     GPIO_ResetBits(USB_DISCONNECT_PORT, USB_DISCONNECT_PIN);
+ 17594              		.loc 1 33 0
+ 17595 0006 0448     		ldr	r0, .L5
+ 17596              	.LVL1:
+ 17597 0008 2021     		movs	r1, #32
+ 17598 000a 044B     		ldr	r3, .L5+4
+ 17599 000c 02E0     		b	.L4
+ 17600              	.LVL2:
+ 17601              	.L2:
+  34:usb_startup.c ****   }
+  35:usb_startup.c ****   else
+  36:usb_startup.c ****   {
+  37:usb_startup.c ****     GPIO_SetBits(USB_DISCONNECT_PORT, USB_DISCONNECT_PIN);
+ 17602              		.loc 1 37 0
+ 17603 000e 0248     		ldr	r0, .L5
+ 17604              	.LVL3:
+ 17605 0010 034B     		ldr	r3, .L5+8
+ 17606 0012 2021     		movs	r1, #32
+ 17607              	.L4:
+ 17608 0014 9847     		blx	r3
+ 17609 0016 08BD     		pop	{r3, pc}
+ 17610              	.L6:
+ 17611              		.align	2
+ 17612              	.L5:
+ 17613 0018 000C0140 		.word	1073810432
+ 17614 001c 00000000 		.word	GPIO_ResetBits
+ 17615 0020 00000000 		.word	GPIO_SetBits
+ 17616              		.cfi_endproc
+ 17617              	.LFE30:
+ 17619              		.section	.text.UsbEnterLowPowerMode,"ax",%progbits
+ 17620              		.align	1
+ 17621              		.global	UsbEnterLowPowerMode
+ 17622              		.thumb
+ 17623              		.thumb_func
+ 17625              	UsbEnterLowPowerMode:
+ 17626              	.LFB31:
+  38:usb_startup.c ****   }
+  39:usb_startup.c **** }
+  40:usb_startup.c **** 
+  41:usb_startup.c **** //--------------------------------------------------------------------
+  42:usb_startup.c **** /*******************************************************************************
+  43:usb_startup.c **** * Function Name  : Enter_LowPowerMode.
+  44:usb_startup.c **** * Description    : Power-off system clocks and power while entering suspend mode.
+  45:usb_startup.c **** * Input          : None.
+  46:usb_startup.c **** * Output         : None.
+  47:usb_startup.c **** * Return         : None.
+  48:usb_startup.c **** *******************************************************************************/
+  49:usb_startup.c **** void UsbEnterLowPowerMode(void)
+  50:usb_startup.c **** {
+ 17627              		.loc 1 50 0
+ 17628              		.cfi_startproc
+ 17629              		@ args = 0, pretend = 0, frame = 0
+ 17630              		@ frame_needed = 0, uses_anonymous_args = 0
+ 17631              		@ link register save eliminated.
+  51:usb_startup.c ****   /* Set the device state to suspend */
+  52:usb_startup.c ****   bDeviceState = SUSPENDED;
+ 17632              		.loc 1 52 0
+ 17633 0000 014B     		ldr	r3, .L8
+ 17634 0002 0322     		movs	r2, #3
+ 17635 0004 1A60     		str	r2, [r3, #0]
+  53:usb_startup.c **** }
+ 17636              		.loc 1 53 0
+ 17637 0006 7047     		bx	lr
+ 17638              	.L9:
+ 17639              		.align	2
+ 17640              	.L8:
+ 17641 0008 00000000 		.word	bDeviceState
+ 17642              		.cfi_endproc
+ 17643              	.LFE31:
+ 17645              		.section	.text.UsbLeaveLowPowerMode,"ax",%progbits
+ 17646              		.align	1
+ 17647              		.global	UsbLeaveLowPowerMode
+ 17648              		.thumb
+ 17649              		.thumb_func
+ 17651              	UsbLeaveLowPowerMode:
+ 17652              	.LFB32:
+  54:usb_startup.c **** 
+  55:usb_startup.c **** /*******************************************************************************
+  56:usb_startup.c **** * Function Name  : Leave_LowPowerMode.
+  57:usb_startup.c **** * Description    : Restores system clocks and power while exiting suspend mode.
+  58:usb_startup.c **** * Input          : None.
+  59:usb_startup.c **** * Output         : None.
+  60:usb_startup.c **** * Return         : None.
+  61:usb_startup.c **** *******************************************************************************/
+  62:usb_startup.c **** void UsbLeaveLowPowerMode(void)
+  63:usb_startup.c **** {
+ 17653              		.loc 1 63 0
+ 17654              		.cfi_startproc
+ 17655              		@ args = 0, pretend = 0, frame = 0
+ 17656              		@ frame_needed = 0, uses_anonymous_args = 0
+ 17657              		@ link register save eliminated.
+ 17658              	.LVL4:
+  64:usb_startup.c ****   DEVICE_INFO *pInfo = &Device_Info;
+  65:usb_startup.c **** 
+  66:usb_startup.c ****   /* Set the device state to the correct state */
+  67:usb_startup.c ****   if (pInfo->Current_Configuration != 0)
+ 17659              		.loc 1 67 0
+ 17660 0000 044B     		ldr	r3, .L14
+ 17661 0002 9A7A     		ldrb	r2, [r3, #10]	@ zero_extendqisi2
+ 17662 0004 044B     		ldr	r3, .L14+4
+ 17663 0006 0AB1     		cbz	r2, .L11
+  68:usb_startup.c ****   {
+  69:usb_startup.c ****     /* Device configured */
+  70:usb_startup.c ****     bDeviceState = CONFIGURED;
+ 17664              		.loc 1 70 0
+ 17665 0008 0522     		movs	r2, #5
+ 17666 000a 00E0     		b	.L13
+ 17667              	.L11:
+  71:usb_startup.c ****   }
+  72:usb_startup.c ****   else
+  73:usb_startup.c ****   {
+  74:usb_startup.c ****     bDeviceState = ATTACHED;
+ 17668              		.loc 1 74 0
+ 17669 000c 0122     		movs	r2, #1
+ 17670              	.L13:
+ 17671 000e 1A60     		str	r2, [r3, #0]
+ 17672 0010 7047     		bx	lr
+ 17673              	.L15:
+ 17674 0012 00BF     		.align	2
+ 17675              	.L14:
+ 17676 0014 00000000 		.word	Device_Info
+ 17677 0018 00000000 		.word	bDeviceState
+ 17678              		.cfi_endproc
+ 17679              	.LFE32:
+ 17681              		.section	.text.UsbStartup,"ax",%progbits
+ 17682              		.align	1
+ 17683              		.global	UsbStartup
+ 17684              		.thumb
+ 17685              		.thumb_func
+ 17687              	UsbStartup:
+ 17688              	.LFB34:
+  75:usb_startup.c ****   }
+  76:usb_startup.c **** }
+  77:usb_startup.c **** 
+  78:usb_startup.c **** //--------------------------------------------------------------------
+  79:usb_startup.c **** static  void UsbInterruptsConfig(void)
+  80:usb_startup.c **** {
+  81:usb_startup.c ****   /*
+  82:usb_startup.c ****     NVIC_InitTypeDef NVIC_InitStructure;
+  83:usb_startup.c ****   //Set the Vector Table base location at 0x08000000
+  84:usb_startup.c ****   //NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x0);
+  85:usb_startup.c **** 
+  86:usb_startup.c ****   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+  87:usb_startup.c ****   NVIC_InitStructure.NVIC_IRQChannel = USB_LP_CAN_RX0_IRQChannel;
+  88:usb_startup.c **** 
+  89:usb_startup.c ****   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+  90:usb_startup.c ****   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  91:usb_startup.c ****   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  92:usb_startup.c ****   NVIC_Init(&NVIC_InitStructure);
+  93:usb_startup.c ****   */
+  94:usb_startup.c **** 
+  95:usb_startup.c ****     NVIC_InitTypeDef NVIC_InitStructure;
+  96:usb_startup.c **** 
+  97:usb_startup.c ****     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+  98:usb_startup.c **** 
+  99:usb_startup.c ****     NVIC_InitStructure.NVIC_IRQChannel = USB_LP_CAN1_RX0_IRQn;
+ 100:usb_startup.c ****     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+ 101:usb_startup.c ****     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+ 102:usb_startup.c ****     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+ 103:usb_startup.c ****     NVIC_Init(&NVIC_InitStructure);
+ 104:usb_startup.c **** /*
+ 105:usb_startup.c ****     NVIC_InitStructure.NVIC_IRQChannel = USB_HP_CAN1_TX_IRQn;
+ 106:usb_startup.c ****     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+ 107:usb_startup.c ****     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+ 108:usb_startup.c ****     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+ 109:usb_startup.c ****     NVIC_Init(&NVIC_InitStructure);
+ 110:usb_startup.c ****  */
+ 111:usb_startup.c **** }
+ 112:usb_startup.c **** //-----------------------------------------------------------------------
+ 113:usb_startup.c **** void UsbStartup(void)
+ 114:usb_startup.c **** {
+ 17689              		.loc 1 114 0
+ 17690              		.cfi_startproc
+ 17691              		@ args = 0, pretend = 0, frame = 8
+ 17692              		@ frame_needed = 0, uses_anonymous_args = 0
+ 17693 0000 13B5     		push	{r0, r1, r4, lr}
+ 17694              	.LCFI1:
+ 17695              		.cfi_def_cfa_offset 16
+ 17696              		.cfi_offset 14, -4
+ 17697              		.cfi_offset 4, -8
+ 17698              		.cfi_offset 1, -12
+ 17699              		.cfi_offset 0, -16
+ 115:usb_startup.c ****   // включение тактирования порта С
+ 116:usb_startup.c ****   RCC_APB2PeriphClockCmd(USB_DISCONNECT_RCC_APB2Periph_GPIO, ENABLE);
+ 17700              		.loc 1 116 0
+ 17701 0002 164B     		ldr	r3, .L17
+ 17702 0004 0820     		movs	r0, #8
+ 17703 0006 0121     		movs	r1, #1
+ 117:usb_startup.c **** 
+ 118:usb_startup.c ****   GPIO_InitTypeDef GPIO_InitStructure;
+ 119:usb_startup.c ****   GPIO_InitStructure.GPIO_Pin = USB_DISCONNECT_PIN;
+ 120:usb_startup.c ****   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 17704              		.loc 1 120 0
+ 17705 0008 0324     		movs	r4, #3
+ 116:usb_startup.c ****   RCC_APB2PeriphClockCmd(USB_DISCONNECT_RCC_APB2Periph_GPIO, ENABLE);
+ 17706              		.loc 1 116 0
+ 17707 000a 9847     		blx	r3
+ 119:usb_startup.c ****   GPIO_InitStructure.GPIO_Pin = USB_DISCONNECT_PIN;
+ 17708              		.loc 1 119 0
+ 17709 000c 2020     		movs	r0, #32
+ 17710              		.loc 1 120 0
+ 17711 000e 8DF80240 		strb	r4, [sp, #2]
+ 121:usb_startup.c ****   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
+ 17712              		.loc 1 121 0
+ 17713 0012 1424     		movs	r4, #20
+ 122:usb_startup.c ****   GPIO_Init(USB_DISCONNECT_PORT, &GPIO_InitStructure);
+ 17714              		.loc 1 122 0
+ 17715 0014 124A     		ldr	r2, .L17+4
+ 119:usb_startup.c ****   GPIO_InitStructure.GPIO_Pin = USB_DISCONNECT_PIN;
+ 17716              		.loc 1 119 0
+ 17717 0016 ADF80000 		strh	r0, [sp, #0]	@ movhi
+ 17718              		.loc 1 122 0
+ 17719 001a 6946     		mov	r1, sp
+ 121:usb_startup.c ****   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
+ 17720              		.loc 1 121 0
+ 17721 001c 8DF80340 		strb	r4, [sp, #3]
+ 17722              		.loc 1 122 0
+ 17723 0020 1048     		ldr	r0, .L17+8
+ 17724 0022 9047     		blx	r2
+ 17725              	.LBB6:
+ 17726              	.LBB7:
+  23:usb_startup.c ****   RCC_USBCLKConfig(RCC_USBCLKSource_PLLCLK_1Div5);
+ 17727              		.loc 1 23 0
+ 17728 0024 0020     		movs	r0, #0
+ 17729 0026 1049     		ldr	r1, .L17+12
+ 17730 0028 8847     		blx	r1
+  25:usb_startup.c ****   RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);
+ 17731              		.loc 1 25 0
+ 17732 002a 0121     		movs	r1, #1
+ 17733 002c 0F4B     		ldr	r3, .L17+16
+ 17734 002e 4FF40000 		mov	r0, #8388608
+ 17735 0032 9847     		blx	r3
+ 17736              	.LBE7:
+ 17737              	.LBE6:
+ 17738              	.LBB8:
+ 17739              	.LBB9:
+  97:usb_startup.c ****     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+ 17740              		.loc 1 97 0
+ 17741 0034 0E4A     		ldr	r2, .L17+20
+ 17742 0036 4FF4C060 		mov	r0, #1536
+ 17743 003a 9047     		blx	r2
+ 100:usb_startup.c ****     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+ 17744              		.loc 1 100 0
+ 17745 003c 0120     		movs	r0, #1
+ 17746 003e 8DF80500 		strb	r0, [sp, #5]
+ 101:usb_startup.c ****     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+ 17747              		.loc 1 101 0
+ 17748 0042 8DF80600 		strb	r0, [sp, #6]
+ 102:usb_startup.c ****     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+ 17749              		.loc 1 102 0
+ 17750 0046 8DF80700 		strb	r0, [sp, #7]
+  99:usb_startup.c ****     NVIC_InitStructure.NVIC_IRQChannel = USB_LP_CAN1_RX0_IRQn;
+ 17751              		.loc 1 99 0
+ 17752 004a 8DF80440 		strb	r4, [sp, #4]
+ 103:usb_startup.c ****     NVIC_Init(&NVIC_InitStructure);
+ 17753              		.loc 1 103 0
+ 17754 004e 01A8     		add	r0, sp, #4
+ 17755 0050 0849     		ldr	r1, .L17+24
+ 17756 0052 8847     		blx	r1
+ 17757              	.LBE9:
+ 17758              	.LBE8:
+ 123:usb_startup.c **** 
+ 124:usb_startup.c ****   UsbSetClock();
+ 125:usb_startup.c ****   UsbInterruptsConfig();
+ 126:usb_startup.c ****   USB_Init();
+ 17759              		.loc 1 126 0
+ 17760 0054 084B     		ldr	r3, .L17+28
+ 17761 0056 9847     		blx	r3
+ 127:usb_startup.c **** }
+ 17762              		.loc 1 127 0
+ 17763 0058 1CBD     		pop	{r2, r3, r4, pc}
+ 17764              	.L18:
+ 17765 005a 00BF     		.align	2
+ 17766              	.L17:
+ 17767 005c 00000000 		.word	RCC_APB2PeriphClockCmd
+ 17768 0060 00000000 		.word	GPIO_Init
+ 17769 0064 000C0140 		.word	1073810432
+ 17770 0068 00000000 		.word	RCC_USBCLKConfig
+ 17771 006c 00000000 		.word	RCC_APB1PeriphClockCmd
+ 17772 0070 00000000 		.word	NVIC_PriorityGroupConfig
+ 17773 0074 00000000 		.word	NVIC_Init
+ 17774 0078 00000000 		.word	USB_Init
+ 17775              		.cfi_endproc
+ 17776              	.LFE34:
+ 17778              		.text
+ 17779              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 usb_startup.c
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cclMM2is.s:17572  .text.UsbBusConnect:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cclMM2is.s:17577  .text.UsbBusConnect:00000000 UsbBusConnect
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cclMM2is.s:17613  .text.UsbBusConnect:00000018 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cclMM2is.s:17620  .text.UsbEnterLowPowerMode:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cclMM2is.s:17625  .text.UsbEnterLowPowerMode:00000000 UsbEnterLowPowerMode
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cclMM2is.s:17641  .text.UsbEnterLowPowerMode:00000008 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cclMM2is.s:17646  .text.UsbLeaveLowPowerMode:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cclMM2is.s:17651  .text.UsbLeaveLowPowerMode:00000000 UsbLeaveLowPowerMode
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cclMM2is.s:17676  .text.UsbLeaveLowPowerMode:00000014 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cclMM2is.s:17682  .text.UsbStartup:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cclMM2is.s:17687  .text.UsbStartup:00000000 UsbStartup
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cclMM2is.s:17767  .text.UsbStartup:0000005c $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+GPIO_ResetBits
+GPIO_SetBits
+bDeviceState
+Device_Info
+RCC_APB2PeriphClockCmd
+GPIO_Init
+RCC_USBCLKConfig
+RCC_APB1PeriphClockCmd
+NVIC_PriorityGroupConfig
+NVIC_Init
+USB_Init

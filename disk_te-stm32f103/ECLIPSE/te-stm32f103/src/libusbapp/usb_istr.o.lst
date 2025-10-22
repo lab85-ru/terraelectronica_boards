@@ -1,0 +1,275 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 18, 4
+  12              		.thumb
+  13              		.file	"usb_istr.c"
+  23              	.Ltext0:
+ 16611              		.align	1
+ 16612              		.global	USB_Istr
+ 16613              		.thumb
+ 16614              		.thumb_func
+ 16616              	USB_Istr:
+ 16617              	.LFB29:
+   1:usb_istr.c    **** 
+   2:usb_istr.c    **** #include "usb_lib.h"
+   3:usb_istr.c    **** #include "usb_prop.h"
+   4:usb_istr.c    **** #include "usb_pwr.h"
+   5:usb_istr.c    **** #include "usb_istr.h"
+   6:usb_istr.c    **** 
+   7:usb_istr.c    **** 
+   8:usb_istr.c    **** volatile u16 wIstr;  /* ISTR register last read value */
+   9:usb_istr.c    **** volatile u8 bIntPackSOF = 0;  /* SOFs received between 2 consecutive packets */
+  10:usb_istr.c    **** 
+  11:usb_istr.c    **** 
+  12:usb_istr.c    **** /* function pointers to non-control endpoints service routines */
+  13:usb_istr.c    **** void (*pEpInt_IN[7])(void) =
+  14:usb_istr.c    ****   {
+  15:usb_istr.c    ****     EP1_IN_Callback,
+  16:usb_istr.c    ****     EP2_IN_Callback,
+  17:usb_istr.c    ****     EP3_IN_Callback,
+  18:usb_istr.c    ****     EP4_IN_Callback,
+  19:usb_istr.c    ****     EP5_IN_Callback,
+  20:usb_istr.c    ****     EP6_IN_Callback,
+  21:usb_istr.c    ****     EP7_IN_Callback,
+  22:usb_istr.c    ****   };
+  23:usb_istr.c    **** 
+  24:usb_istr.c    **** void (*pEpInt_OUT[7])(void) =
+  25:usb_istr.c    ****   {
+  26:usb_istr.c    ****     EP1_OUT_Callback,
+  27:usb_istr.c    ****     EP2_OUT_Callback,
+  28:usb_istr.c    ****     EP3_OUT_Callback,
+  29:usb_istr.c    ****     EP4_OUT_Callback,
+  30:usb_istr.c    ****     EP5_OUT_Callback,
+  31:usb_istr.c    ****     EP6_OUT_Callback,
+  32:usb_istr.c    ****     EP7_OUT_Callback,
+  33:usb_istr.c    ****   };
+  34:usb_istr.c    **** 
+  35:usb_istr.c    **** 
+  36:usb_istr.c    **** /*******************************************************************************
+  37:usb_istr.c    **** * Function Name  : USB_Istr.
+  38:usb_istr.c    **** * Description    : ISTR events interrupt service routine.
+  39:usb_istr.c    **** * Input          : None.
+  40:usb_istr.c    **** * Output         : None.
+  41:usb_istr.c    **** * Return         : None.
+  42:usb_istr.c    **** *******************************************************************************/
+  43:usb_istr.c    **** void USB_Istr(void)
+  44:usb_istr.c    **** {
+ 16618              		.loc 1 44 0
+ 16619              		.cfi_startproc
+ 16620              		@ args = 0, pretend = 0, frame = 0
+ 16621              		@ frame_needed = 0, uses_anonymous_args = 0
+  45:usb_istr.c    **** 
+  46:usb_istr.c    ****   wIstr = _GetISTR();
+ 16622              		.loc 1 46 0
+ 16623 0000 104A     		ldr	r2, .L4
+  47:usb_istr.c    **** 
+  48:usb_istr.c    **** #if (IMR_MSK & ISTR_RESET)
+  49:usb_istr.c    ****   if (wIstr & ISTR_RESET & wInterrupt_Mask)
+ 16624              		.loc 1 49 0
+ 16625 0002 1149     		ldr	r1, .L4+4
+  46:usb_istr.c    ****   wIstr = _GetISTR();
+ 16626              		.loc 1 46 0
+ 16627 0004 1368     		ldr	r3, [r2, #0]
+  44:usb_istr.c    **** {
+ 16628              		.loc 1 44 0
+ 16629 0006 10B5     		push	{r4, lr}
+ 16630              	.LCFI0:
+ 16631              		.cfi_def_cfa_offset 8
+ 16632              		.cfi_offset 14, -4
+ 16633              		.cfi_offset 4, -8
+  46:usb_istr.c    ****   wIstr = _GetISTR();
+ 16634              		.loc 1 46 0
+ 16635 0008 1FFA83FC 		uxth	ip, r3
+ 16636 000c 0F4B     		ldr	r3, .L4+8
+ 16637              		.loc 1 49 0
+ 16638 000e 0888     		ldrh	r0, [r1, #0]
+  46:usb_istr.c    ****   wIstr = _GetISTR();
+ 16639              		.loc 1 46 0
+ 16640 0010 A3F800C0 		strh	ip, [r3, #0]	@ movhi
+ 16641              		.loc 1 49 0
+ 16642 0014 1C88     		ldrh	r4, [r3, #0]
+ 16643 0016 00EA0401 		and	r1, r0, r4
+ 16644 001a 11F4806F 		tst	r1, #1024
+ 16645 001e 1C46     		mov	r4, r3
+ 16646 0020 05D0     		beq	.L2
+  50:usb_istr.c    ****   {
+  51:usb_istr.c    ****     _SetISTR((u16)CLR_RESET);
+  52:usb_istr.c    ****     Device_Property.Reset();
+ 16647              		.loc 1 52 0
+ 16648 0022 0B48     		ldr	r0, .L4+12
+  51:usb_istr.c    ****     _SetISTR((u16)CLR_RESET);
+ 16649              		.loc 1 51 0
+ 16650 0024 4FF6FF31 		movw	r1, #64511
+ 16651 0028 1160     		str	r1, [r2, #0]
+ 16652              		.loc 1 52 0
+ 16653 002a 4268     		ldr	r2, [r0, #4]
+ 16654 002c 9047     		blx	r2
+ 16655              	.L2:
+  53:usb_istr.c    **** #ifdef RESET_CALLBACK
+  54:usb_istr.c    ****     RESET_Callback();
+  55:usb_istr.c    **** #endif
+  56:usb_istr.c    ****   }
+  57:usb_istr.c    **** #endif
+  58:usb_istr.c    ****   /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+  59:usb_istr.c    **** #if (IMR_MSK & ISTR_DOVR)
+  60:usb_istr.c    ****   if (wIstr & ISTR_DOVR & wInterrupt_Mask)
+  61:usb_istr.c    ****   {
+  62:usb_istr.c    ****     _SetISTR((u16)CLR_DOVR);
+  63:usb_istr.c    **** #ifdef DOVR_CALLBACK
+  64:usb_istr.c    ****     DOVR_Callback();
+  65:usb_istr.c    **** #endif
+  66:usb_istr.c    ****   }
+  67:usb_istr.c    **** #endif
+  68:usb_istr.c    ****   /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+  69:usb_istr.c    **** #if (IMR_MSK & ISTR_ERR)
+  70:usb_istr.c    ****   if (wIstr & ISTR_ERR & wInterrupt_Mask)
+  71:usb_istr.c    ****   {
+  72:usb_istr.c    ****     _SetISTR((u16)CLR_ERR);
+  73:usb_istr.c    **** #ifdef ERR_CALLBACK
+  74:usb_istr.c    ****     ERR_Callback();
+  75:usb_istr.c    **** #endif
+  76:usb_istr.c    ****   }
+  77:usb_istr.c    **** #endif
+  78:usb_istr.c    ****   /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+  79:usb_istr.c    **** #if (IMR_MSK & ISTR_WKUP)
+  80:usb_istr.c    ****   if (wIstr & ISTR_WKUP & wInterrupt_Mask)
+  81:usb_istr.c    ****   {
+  82:usb_istr.c    ****     _SetISTR((u16)CLR_WKUP);
+  83:usb_istr.c    ****     Resume(RESUME_EXTERNAL);
+  84:usb_istr.c    **** #ifdef WKUP_CALLBACK
+  85:usb_istr.c    ****     WKUP_Callback();
+  86:usb_istr.c    **** #endif
+  87:usb_istr.c    ****   }
+  88:usb_istr.c    **** #endif
+  89:usb_istr.c    ****   /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+  90:usb_istr.c    **** #if (IMR_MSK & ISTR_SUSP)
+  91:usb_istr.c    ****   if (wIstr & ISTR_SUSP & wInterrupt_Mask)
+  92:usb_istr.c    ****   {
+  93:usb_istr.c    **** 
+  94:usb_istr.c    ****     /* check if SUSPEND is possible */
+  95:usb_istr.c    ****     if (fSuspendEnabled)
+  96:usb_istr.c    ****     {
+  97:usb_istr.c    ****       Suspend();
+  98:usb_istr.c    ****     }
+  99:usb_istr.c    ****     else
+ 100:usb_istr.c    ****     {
+ 101:usb_istr.c    ****       /* if not possible then resume after xx ms */
+ 102:usb_istr.c    ****       Resume(RESUME_LATER);
+ 103:usb_istr.c    ****     }
+ 104:usb_istr.c    ****     /* clear of the ISTR bit must be done after setting of CNTR_FSUSP */
+ 105:usb_istr.c    ****     _SetISTR((u16)CLR_SUSP);
+ 106:usb_istr.c    **** #ifdef SUSP_CALLBACK
+ 107:usb_istr.c    ****     SUSP_Callback();
+ 108:usb_istr.c    **** #endif
+ 109:usb_istr.c    ****   }
+ 110:usb_istr.c    **** #endif
+ 111:usb_istr.c    ****   /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+ 112:usb_istr.c    **** #if (IMR_MSK & ISTR_SOF)
+ 113:usb_istr.c    ****   if (wIstr & ISTR_SOF & wInterrupt_Mask)
+ 114:usb_istr.c    ****   {
+ 115:usb_istr.c    ****     _SetISTR((u16)CLR_SOF);
+ 116:usb_istr.c    ****     bIntPackSOF++;
+ 117:usb_istr.c    **** 
+ 118:usb_istr.c    **** #ifdef SOF_CALLBACK
+ 119:usb_istr.c    ****     SOF_Callback();
+ 120:usb_istr.c    **** #endif
+ 121:usb_istr.c    ****   }
+ 122:usb_istr.c    **** #endif
+ 123:usb_istr.c    ****   /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+ 124:usb_istr.c    **** #if (IMR_MSK & ISTR_ESOF)
+ 125:usb_istr.c    ****   if (wIstr & ISTR_ESOF & wInterrupt_Mask)
+ 126:usb_istr.c    ****   {
+ 127:usb_istr.c    ****     _SetISTR((u16)CLR_ESOF);
+ 128:usb_istr.c    ****     /* resume handling timing is made with ESOFs */
+ 129:usb_istr.c    ****     Resume(RESUME_ESOF); /* request without change of the machine state */
+ 130:usb_istr.c    **** 
+ 131:usb_istr.c    **** #ifdef ESOF_CALLBACK
+ 132:usb_istr.c    ****     ESOF_Callback();
+ 133:usb_istr.c    **** #endif
+ 134:usb_istr.c    ****   }
+ 135:usb_istr.c    **** #endif
+ 136:usb_istr.c    ****   /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+ 137:usb_istr.c    **** #if (IMR_MSK & ISTR_CTR)
+ 138:usb_istr.c    ****   if (wIstr & ISTR_CTR & wInterrupt_Mask)
+ 16656              		.loc 1 138 0
+ 16657 002e 0648     		ldr	r0, .L4+4
+ 16658 0030 2388     		ldrh	r3, [r4, #0]
+ 16659 0032 0288     		ldrh	r2, [r0, #0]
+ 16660 0034 02EA030C 		and	ip, r2, r3
+ 16661 0038 5FEA0C43 		lsls	r3, ip, #16
+ 16662 003c 01D5     		bpl	.L1
+ 139:usb_istr.c    ****   {
+ 140:usb_istr.c    ****     /* servicing of the endpoint correct transfer interrupt */
+ 141:usb_istr.c    ****     /* clear of the CTR flag into the sub */
+ 142:usb_istr.c    ****     CTR_LP();
+ 16663              		.loc 1 142 0
+ 16664 003e 0549     		ldr	r1, .L4+16
+ 16665 0040 8847     		blx	r1
+ 16666              	.L1:
+ 16667 0042 10BD     		pop	{r4, pc}
+ 16668              	.L5:
+ 16669              		.align	2
+ 16670              	.L4:
+ 16671 0044 445C0040 		.word	1073765444
+ 16672 0048 00000000 		.word	wInterrupt_Mask
+ 16673 004c 00000000 		.word	wIstr
+ 16674 0050 00000000 		.word	Device_Property
+ 16675 0054 00000000 		.word	CTR_LP
+ 16676              		.cfi_endproc
+ 16677              	.LFE29:
+ 16679              		.global	pEpInt_OUT
+ 16680              		.global	pEpInt_IN
+ 16681              		.global	bIntPackSOF
+ 16682              		.comm	wIstr,2,2
+ 16683              		.section	.data.pEpInt_IN,"aw",%progbits
+ 16684              		.align	2
+ 16687              	pEpInt_IN:
+ 16688 0000 00000000 		.word	NOP_Process
+ 16689 0004 00000000 		.word	NOP_Process
+ 16690 0008 00000000 		.word	NOP_Process
+ 16691 000c 00000000 		.word	NOP_Process
+ 16692 0010 00000000 		.word	NOP_Process
+ 16693 0014 00000000 		.word	NOP_Process
+ 16694 0018 00000000 		.word	NOP_Process
+ 16695              		.section	.bss.bIntPackSOF,"aw",%nobits
+ 16698              	bIntPackSOF:
+ 16699 0000 00       		.space	1
+ 16700              		.section	.data.pEpInt_OUT,"aw",%progbits
+ 16701              		.align	2
+ 16704              	pEpInt_OUT:
+ 16705 0000 00000000 		.word	NOP_Process
+ 16706 0004 00000000 		.word	NOP_Process
+ 16707 0008 00000000 		.word	NOP_Process
+ 16708 000c 00000000 		.word	NOP_Process
+ 16709 0010 00000000 		.word	NOP_Process
+ 16710 0014 00000000 		.word	NOP_Process
+ 16711 0018 00000000 		.word	NOP_Process
+ 16712              		.text
+ 16713              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 usb_istr.c
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccLluBa5.s:16611  .text.USB_Istr:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccLluBa5.s:16616  .text.USB_Istr:00000000 USB_Istr
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccLluBa5.s:16671  .text.USB_Istr:00000044 $d
+                            *COM*:00000002 wIstr
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccLluBa5.s:16704  .data.pEpInt_OUT:00000000 pEpInt_OUT
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccLluBa5.s:16687  .data.pEpInt_IN:00000000 pEpInt_IN
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccLluBa5.s:16698  .bss.bIntPackSOF:00000000 bIntPackSOF
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccLluBa5.s:16684  .data.pEpInt_IN:00000000 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccLluBa5.s:16699  .bss.bIntPackSOF:00000000 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccLluBa5.s:16701  .data.pEpInt_OUT:00000000 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+wInterrupt_Mask
+Device_Property
+CTR_LP
+NOP_Process

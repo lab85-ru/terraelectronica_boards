@@ -1,0 +1,550 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 18, 4
+  12              		.thumb
+  13              		.file	"can.c"
+  23              	.Ltext0:
+ 19819              		.align	1
+ 19820              		.global	can_get_test_result
+ 19821              		.thumb
+ 19822              		.thumb_func
+ 19824              	can_get_test_result:
+ 19825              	.LFB30:
+   1:can.c         **** #include "appdefs.h"
+   2:can.c         **** #include "can.h"
+   3:can.c         **** 
+   4:can.c         **** volatile TestStatus can_test_result  ;
+   5:can.c         **** volatile TCANGateType can_gate_type ;
+   6:can.c         **** 
+   7:can.c         **** TestStatus can_get_test_result()
+   8:can.c         **** {
+ 19826              		.loc 1 8 0
+ 19827              		.cfi_startproc
+ 19828              		@ args = 0, pretend = 0, frame = 0
+ 19829              		@ frame_needed = 0, uses_anonymous_args = 0
+ 19830              		@ link register save eliminated.
+   9:can.c         **** 	return can_test_result ;
+ 19831              		.loc 1 9 0
+ 19832 0000 014B     		ldr	r3, .L2
+ 19833 0002 1878     		ldrb	r0, [r3, #0]	@ zero_extendqisi2
+  10:can.c         **** }
+ 19834              		.loc 1 10 0
+ 19835 0004 7047     		bx	lr
+ 19836              	.L3:
+ 19837 0006 00BF     		.align	2
+ 19838              	.L2:
+ 19839 0008 00000000 		.word	can_test_result
+ 19840              		.cfi_endproc
+ 19841              	.LFE30:
+ 19843              		.section	.text.can_test,"ax",%progbits
+ 19844              		.align	1
+ 19845              		.global	can_test
+ 19846              		.thumb
+ 19847              		.thumb_func
+ 19849              	can_test:
+ 19850              	.LFB31:
+  11:can.c         **** 
+  12:can.c         **** void can_test( TCANGateType gate_type  )
+  13:can.c         ****   {
+ 19851              		.loc 1 13 0
+ 19852              		.cfi_startproc
+ 19853              		@ args = 0, pretend = 0, frame = 56
+ 19854              		@ frame_needed = 0, uses_anonymous_args = 0
+ 19855              	.LVL0:
+ 19856 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 19857              	.LCFI0:
+ 19858              		.cfi_def_cfa_offset 24
+ 19859              		.cfi_offset 14, -4
+ 19860              		.cfi_offset 8, -8
+ 19861              		.cfi_offset 7, -12
+ 19862              		.cfi_offset 6, -16
+ 19863              		.cfi_offset 5, -20
+ 19864              		.cfi_offset 4, -24
+  14:can.c         ****     CanTxMsg TxMessage;
+  15:can.c         ****     CAN_InitTypeDef        CAN_InitStructure;
+  16:can.c         ****     CAN_FilterInitTypeDef  CAN_FilterInitStructure;
+  17:can.c         ****     uint8_t TransmitMailbox = 0;
+  18:can.c         ****     // установка режима платы
+  19:can.c         ****     can_gate_type = gate_type ;
+ 19865              		.loc 1 19 0
+ 19866 0004 554E     		ldr	r6, .L12
+  20:can.c         ****     //сброс флага статуса теста
+  21:can.c         ****     can_test_result = FALSE ;
+ 19867              		.loc 1 21 0
+ 19868 0006 564C     		ldr	r4, .L12+4
+ 19869 0008 0027     		movs	r7, #0
+  13:can.c         ****   {
+ 19870              		.loc 1 13 0
+ 19871 000a 8EB0     		sub	sp, sp, #56
+ 19872              	.LCFI1:
+ 19873              		.cfi_def_cfa_offset 80
+  19:can.c         ****     can_gate_type = gate_type ;
+ 19874              		.loc 1 19 0
+ 19875 000c 3070     		strb	r0, [r6, #0]
+  22:can.c         **** 
+  23:can.c         ****     // активация портов GPIO связанных с CAN1
+  24:can.c         ****     RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO |CAN_RCC_APB2Periph_GPIO, ENABLE);
+ 19876              		.loc 1 24 0
+ 19877 000e 0121     		movs	r1, #1
+  21:can.c         ****     can_test_result = FALSE ;
+ 19878              		.loc 1 21 0
+ 19879 0010 2770     		strb	r7, [r4, #0]
+ 19880              		.loc 1 24 0
+ 19881 0012 0920     		movs	r0, #9
+ 19882              	.LVL1:
+ 19883 0014 534D     		ldr	r5, .L12+8
+ 19884 0016 A847     		blx	r5
+ 19885              	.LVL2:
+  25:can.c         **** 
+  26:can.c         ****     // активация модуля CAN1
+  27:can.c         ****     RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN1, ENABLE);
+ 19886              		.loc 1 27 0
+ 19887 0018 534A     		ldr	r2, .L12+12
+ 19888 001a 4FF00070 		mov	r0, #33554432
+ 19889 001e 0121     		movs	r1, #1
+ 19890 0020 9047     		blx	r2
+  28:can.c         **** 
+  29:can.c         ****     GPIO_InitTypeDef  GPIO_InitStructure;
+  30:can.c         ****     // конфигурация RX CAN вывода
+  31:can.c         ****     GPIO_InitStructure.GPIO_Pin = CAN_GPIO_RX_PIN;
+ 19891              		.loc 1 31 0
+ 19892 0022 4FF4807C 		mov	ip, #256	@ movhi
+  32:can.c         ****     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+ 19893              		.loc 1 32 0
+ 19894 0026 4821     		movs	r1, #72
+  31:can.c         ****     GPIO_InitStructure.GPIO_Pin = CAN_GPIO_RX_PIN;
+ 19895              		.loc 1 31 0
+ 19896 0028 ADF830C0 		strh	ip, [sp, #48]	@ movhi
+  33:can.c         ****     GPIO_Init(CAN_GPIO_PORT, &GPIO_InitStructure);
+ 19897              		.loc 1 33 0
+ 19898 002c 4F4C     		ldr	r4, .L12+16
+  32:can.c         ****     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+ 19899              		.loc 1 32 0
+ 19900 002e 8DF83310 		strb	r1, [sp, #51]
+ 19901              		.loc 1 33 0
+ 19902 0032 4F48     		ldr	r0, .L12+20
+ 19903 0034 0CA9     		add	r1, sp, #48
+ 19904 0036 A047     		blx	r4
+  34:can.c         ****     // конфигурация TX CAN вывода
+  35:can.c         ****     GPIO_InitStructure.GPIO_Pin = CAN_GPIO_TX_PIN;
+ 19905              		.loc 1 35 0
+ 19906 0038 4FF40078 		mov	r8, #512	@ movhi
+  36:can.c         ****     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+ 19907              		.loc 1 36 0
+ 19908 003c 1823     		movs	r3, #24
+  37:can.c         ****     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 19909              		.loc 1 37 0
+ 19910 003e 0320     		movs	r0, #3
+  36:can.c         ****     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+ 19911              		.loc 1 36 0
+ 19912 0040 8DF83330 		strb	r3, [sp, #51]
+  35:can.c         ****     GPIO_InitStructure.GPIO_Pin = CAN_GPIO_TX_PIN;
+ 19913              		.loc 1 35 0
+ 19914 0044 ADF83080 		strh	r8, [sp, #48]	@ movhi
+ 19915              		.loc 1 37 0
+ 19916 0048 8DF83200 		strb	r0, [sp, #50]
+  38:can.c         ****     GPIO_Init(CAN_GPIO_PORT, &GPIO_InitStructure);
+ 19917              		.loc 1 38 0
+ 19918 004c 0CA9     		add	r1, sp, #48
+ 19919 004e 4848     		ldr	r0, .L12+20
+ 19920 0050 A047     		blx	r4
+  39:can.c         **** 
+  40:can.c         ****     // отображение выводов на модуль CAN
+  41:can.c         ****     GPIO_PinRemapConfig(CAN_GPIO_Remap , ENABLE);
+ 19921              		.loc 1 41 0
+ 19922 0052 484D     		ldr	r5, .L12+24
+ 19923 0054 0121     		movs	r1, #1
+ 19924 0056 4FF4EA10 		mov	r0, #1916928
+ 19925 005a A847     		blx	r5
+  42:can.c         **** 
+  43:can.c         **** 
+  44:can.c         ****     NVIC_InitTypeDef  NVIC_InitStructure;
+  45:can.c         ****     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
+  46:can.c         **** 
+  47:can.c         ****     // установка канала USB_LP_CAN1_RX0_IRQn контроллера прервыаний NVIC
+  48:can.c         ****     NVIC_InitStructure.NVIC_IRQChannel = USB_LP_CAN1_RX0_IRQn;
+ 19926              		.loc 1 48 0
+ 19927 005c 1424     		movs	r4, #20
+  45:can.c         ****     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
+ 19928              		.loc 1 45 0
+ 19929 005e 464A     		ldr	r2, .L12+28
+ 19930 0060 4FF4E060 		mov	r0, #1792
+ 19931 0064 9047     		blx	r2
+ 19932              		.loc 1 48 0
+ 19933 0066 8DF83440 		strb	r4, [sp, #52]
+  49:can.c         ****     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x0;
+  50:can.c         ****     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x0;
+  51:can.c         ****     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+ 19934              		.loc 1 51 0
+ 19935 006a 0124     		movs	r4, #1
+  52:can.c         ****     NVIC_Init(&NVIC_InitStructure);
+ 19936              		.loc 1 52 0
+ 19937 006c 4349     		ldr	r1, .L12+32
+ 19938 006e 0DA8     		add	r0, sp, #52
+  49:can.c         ****     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x0;
+ 19939              		.loc 1 49 0
+ 19940 0070 8DF83570 		strb	r7, [sp, #53]
+  50:can.c         ****     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x0;
+ 19941              		.loc 1 50 0
+ 19942 0074 8DF83670 		strb	r7, [sp, #54]
+  51:can.c         ****     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+ 19943              		.loc 1 51 0
+ 19944 0078 8DF83740 		strb	r4, [sp, #55]
+ 19945              		.loc 1 52 0
+ 19946 007c 8847     		blx	r1
+  53:can.c         **** 
+  54:can.c         ****     // сброс регистров модуля CAN
+  55:can.c         ****     CAN_DeInit(CAN1);
+ 19947              		.loc 1 55 0
+ 19948 007e 404B     		ldr	r3, .L12+36
+ 19949 0080 4048     		ldr	r0, .L12+40
+ 19950 0082 9847     		blx	r3
+  56:can.c         ****     CAN_StructInit(&CAN_InitStructure);
+ 19951              		.loc 1 56 0
+ 19952 0084 404D     		ldr	r5, .L12+44
+ 19953 0086 09A8     		add	r0, sp, #36
+ 19954 0088 A847     		blx	r5
+  57:can.c         ****     // инициалищация модуля CAN
+  58:can.c         ****     CAN_InitStructure.CAN_TTCM = DISABLE;
+  59:can.c         ****     CAN_InitStructure.CAN_ABOM = DISABLE;
+  60:can.c         ****     CAN_InitStructure.CAN_AWUM = DISABLE;
+  61:can.c         ****     CAN_InitStructure.CAN_NART = DISABLE;
+  62:can.c         ****     CAN_InitStructure.CAN_RFLM = DISABLE;
+  63:can.c         ****     CAN_InitStructure.CAN_TXFP = DISABLE;
+  64:can.c         ****     CAN_InitStructure.CAN_Mode = CAN_Mode_Normal;
+  65:can.c         ****     CAN_InitStructure.CAN_SJW = CAN_SJW_1tq;
+  66:can.c         ****     CAN_InitStructure.CAN_BS1 = CAN_BS1_3tq;
+ 19955              		.loc 1 66 0
+ 19956 008a 4FF00208 		mov	r8, #2
+  67:can.c         ****     CAN_InitStructure.CAN_BS2 = CAN_BS2_5tq;
+ 19957              		.loc 1 67 0
+ 19958 008e 0420     		movs	r0, #4
+  68:can.c         ****     CAN_InitStructure.CAN_Prescaler = 4;//2
+  69:can.c         ****     CAN_Init(CAN1, &CAN_InitStructure);
+ 19959              		.loc 1 69 0
+ 19960 0090 3E4A     		ldr	r2, .L12+48
+  67:can.c         ****     CAN_InitStructure.CAN_BS2 = CAN_BS2_5tq;
+ 19961              		.loc 1 67 0
+ 19962 0092 8DF82900 		strb	r0, [sp, #41]
+  68:can.c         ****     CAN_InitStructure.CAN_Prescaler = 4;//2
+ 19963              		.loc 1 68 0
+ 19964 0096 ADF82400 		strh	r0, [sp, #36]	@ movhi
+ 19965              		.loc 1 69 0
+ 19966 009a 09A9     		add	r1, sp, #36
+  58:can.c         ****     CAN_InitStructure.CAN_TTCM = DISABLE;
+ 19967              		.loc 1 58 0
+ 19968 009c 8DF82A70 		strb	r7, [sp, #42]
+  59:can.c         ****     CAN_InitStructure.CAN_ABOM = DISABLE;
+ 19969              		.loc 1 59 0
+ 19970 00a0 8DF82B70 		strb	r7, [sp, #43]
+  60:can.c         ****     CAN_InitStructure.CAN_AWUM = DISABLE;
+ 19971              		.loc 1 60 0
+ 19972 00a4 8DF82C70 		strb	r7, [sp, #44]
+  61:can.c         ****     CAN_InitStructure.CAN_NART = DISABLE;
+ 19973              		.loc 1 61 0
+ 19974 00a8 8DF82D70 		strb	r7, [sp, #45]
+  62:can.c         ****     CAN_InitStructure.CAN_RFLM = DISABLE;
+ 19975              		.loc 1 62 0
+ 19976 00ac 8DF82E70 		strb	r7, [sp, #46]
+  63:can.c         ****     CAN_InitStructure.CAN_TXFP = DISABLE;
+ 19977              		.loc 1 63 0
+ 19978 00b0 8DF82F70 		strb	r7, [sp, #47]
+  64:can.c         ****     CAN_InitStructure.CAN_Mode = CAN_Mode_Normal;
+ 19979              		.loc 1 64 0
+ 19980 00b4 8DF82670 		strb	r7, [sp, #38]
+  65:can.c         ****     CAN_InitStructure.CAN_SJW = CAN_SJW_1tq;
+ 19981              		.loc 1 65 0
+ 19982 00b8 8DF82770 		strb	r7, [sp, #39]
+  66:can.c         ****     CAN_InitStructure.CAN_BS1 = CAN_BS1_3tq;
+ 19983              		.loc 1 66 0
+ 19984 00bc 8DF82880 		strb	r8, [sp, #40]
+ 19985              		.loc 1 69 0
+ 19986 00c0 3048     		ldr	r0, .L12+40
+ 19987 00c2 9047     		blx	r2
+  70:can.c         **** 
+  71:can.c         ****     // инициализация фильтра CAN
+  72:can.c         ****     CAN_FilterInitStructure.CAN_FilterNumber=0;
+  73:can.c         ****     CAN_FilterInitStructure.CAN_FilterMode=CAN_FilterMode_IdMask;
+  74:can.c         ****     CAN_FilterInitStructure.CAN_FilterScale=CAN_FilterScale_32bit;
+  75:can.c         ****     CAN_FilterInitStructure.CAN_FilterIdHigh=0x0000;
+  76:can.c         ****     CAN_FilterInitStructure.CAN_FilterIdLow=0x0000;
+  77:can.c         ****     CAN_FilterInitStructure.CAN_FilterMaskIdHigh=0x0000;
+  78:can.c         ****     CAN_FilterInitStructure.CAN_FilterMaskIdLow=0x0000;
+  79:can.c         ****     CAN_FilterInitStructure.CAN_FilterFIFOAssignment=0;
+  80:can.c         ****     CAN_FilterInitStructure.CAN_FilterActivation=ENABLE;
+  81:can.c         ****     CAN_FilterInit(&CAN_FilterInitStructure);
+ 19988              		.loc 1 81 0
+ 19989 00c4 05A8     		add	r0, sp, #20
+ 19990 00c6 3249     		ldr	r1, .L12+52
+  72:can.c         ****     CAN_FilterInitStructure.CAN_FilterNumber=0;
+ 19991              		.loc 1 72 0
+ 19992 00c8 8DF81E70 		strb	r7, [sp, #30]
+  73:can.c         ****     CAN_FilterInitStructure.CAN_FilterMode=CAN_FilterMode_IdMask;
+ 19993              		.loc 1 73 0
+ 19994 00cc 8DF81F70 		strb	r7, [sp, #31]
+  74:can.c         ****     CAN_FilterInitStructure.CAN_FilterScale=CAN_FilterScale_32bit;
+ 19995              		.loc 1 74 0
+ 19996 00d0 8DF82040 		strb	r4, [sp, #32]
+  75:can.c         ****     CAN_FilterInitStructure.CAN_FilterIdHigh=0x0000;
+ 19997              		.loc 1 75 0
+ 19998 00d4 ADF81470 		strh	r7, [sp, #20]	@ movhi
+  76:can.c         ****     CAN_FilterInitStructure.CAN_FilterIdLow=0x0000;
+ 19999              		.loc 1 76 0
+ 20000 00d8 ADF81670 		strh	r7, [sp, #22]	@ movhi
+  77:can.c         ****     CAN_FilterInitStructure.CAN_FilterMaskIdHigh=0x0000;
+ 20001              		.loc 1 77 0
+ 20002 00dc ADF81870 		strh	r7, [sp, #24]	@ movhi
+  78:can.c         ****     CAN_FilterInitStructure.CAN_FilterMaskIdLow=0x0000;
+ 20003              		.loc 1 78 0
+ 20004 00e0 ADF81A70 		strh	r7, [sp, #26]	@ movhi
+  79:can.c         ****     CAN_FilterInitStructure.CAN_FilterFIFOAssignment=0;
+ 20005              		.loc 1 79 0
+ 20006 00e4 ADF81C70 		strh	r7, [sp, #28]	@ movhi
+  80:can.c         ****     CAN_FilterInitStructure.CAN_FilterActivation=ENABLE;
+ 20007              		.loc 1 80 0
+ 20008 00e8 8DF82140 		strb	r4, [sp, #33]
+ 20009              		.loc 1 81 0
+ 20010 00ec 8847     		blx	r1
+  82:can.c         **** 
+  83:can.c         **** 
+  84:can.c         ****     // разрешение прерыания по приему сообщения в FIFO #0 модуля CAN1
+  85:can.c         ****     CAN_ITConfig(CAN1, CAN_IT_FMP0 , ENABLE);
+ 20011              		.loc 1 85 0
+ 20012 00ee 294B     		ldr	r3, .L12+56
+ 20013 00f0 2448     		ldr	r0, .L12+40
+ 20014 00f2 4146     		mov	r1, r8
+ 20015 00f4 2246     		mov	r2, r4
+ 20016 00f6 9847     		blx	r3
+  86:can.c         **** 
+  87:can.c         ****     if ( can_gate_type == cgtClient )
+ 20017              		.loc 1 87 0
+ 20018 00f8 3378     		ldrb	r3, [r6, #0]	@ zero_extendqisi2
+  75:can.c         ****     CAN_FilterInitStructure.CAN_FilterIdHigh=0x0000;
+ 20019              		.loc 1 75 0
+ 20020 00fa 3D46     		mov	r5, r7	@ movhi
+ 20021              		.loc 1 87 0
+ 20022 00fc 002B     		cmp	r3, #0
+ 20023 00fe 29D1     		bne	.L4
+ 20024              	.LBB5:
+  88:can.c         ****       {
+  89:can.c         ****         //подготовка пакета для передачи
+  90:can.c         ****         TxMessage.StdId = 0x321;
+ 20025              		.loc 1 90 0
+ 20026 0100 40F22133 		movw	r3, #801
+  91:can.c         ****         TxMessage.ExtId = 0x01;
+  92:can.c         ****         TxMessage.RTR = CAN_RTR_DATA;
+  93:can.c         ****         TxMessage.IDE = CAN_ID_STD;
+  94:can.c         ****         TxMessage.DLC = 1;
+  95:can.c         ****         TxMessage.Data[0] = 0x55 ;
+ 20027              		.loc 1 95 0
+ 20028 0104 5520     		movs	r0, #85
+  91:can.c         ****         TxMessage.ExtId = 0x01;
+ 20029              		.loc 1 91 0
+ 20030 0106 8DE81800 		stmia	sp, {r3, r4}
+  94:can.c         ****         TxMessage.DLC = 1;
+ 20031              		.loc 1 94 0
+ 20032 010a 8DF80A40 		strb	r4, [sp, #10]
+ 20033              		.loc 1 95 0
+ 20034 010e 8DF80B00 		strb	r0, [sp, #11]
+  96:can.c         **** 
+  97:can.c         ****         // передача пакета
+  98:can.c         ****         TransmitMailbox=CAN_Transmit(CAN1, &TxMessage);
+ 20035              		.loc 1 98 0
+ 20036 0112 214E     		ldr	r6, .L12+60
+  92:can.c         ****         TxMessage.RTR = CAN_RTR_DATA;
+ 20037              		.loc 1 92 0
+ 20038 0114 8DF80970 		strb	r7, [sp, #9]
+  93:can.c         ****         TxMessage.IDE = CAN_ID_STD;
+ 20039              		.loc 1 93 0
+ 20040 0118 8DF80870 		strb	r7, [sp, #8]
+ 20041              		.loc 1 98 0
+ 20042 011c 1948     		ldr	r0, .L12+40
+ 20043 011e 6946     		mov	r1, sp
+ 20044 0120 B047     		blx	r6
+  99:can.c         ****         uint32_t i = 0;  // таймер таймаута по завершении передачи
+ 100:can.c         ****         while((CAN_TransmitStatus(CAN1, TransmitMailbox) != CANTXOK) && (i != 0xFFFF))
+ 20045              		.loc 1 100 0
+ 20046 0122 1E4D     		ldr	r5, .L12+64
+  98:can.c         ****         TransmitMailbox=CAN_Transmit(CAN1, &TxMessage);
+ 20047              		.loc 1 98 0
+ 20048 0124 0646     		mov	r6, r0
+ 20049              	.LVL3:
+ 20050              		.loc 1 100 0
+ 20051 0126 4FF48034 		mov	r4, #65536
+ 20052              	.LVL4:
+ 20053              	.L7:
+ 20054              		.loc 1 100 0 is_stmt 0 discriminator 1
+ 20055 012a 1648     		ldr	r0, .L12+40
+ 20056 012c 3146     		mov	r1, r6
+ 20057 012e A847     		blx	r5
+ 20058 0130 0128     		cmp	r0, #1
+ 20059 0132 04D0     		beq	.L9
+ 20060              		.loc 1 100 0 discriminator 2
+ 20061 0134 013C     		subs	r4, r4, #1
+ 20062 0136 F8D1     		bne	.L7
+ 20063 0138 01E0     		b	.L9
+ 20064              	.L8:
+ 20065              	.LBB6:
+ 20066              	.LBB7:
+   1:./../include/appdefs.h **** #ifndef __APPDEFS_H__
+   2:./../include/appdefs.h **** #define __APPDEFS_H__
+   3:./../include/appdefs.h **** 
+   4:./../include/appdefs.h **** #include <stdint.h>
+   5:./../include/appdefs.h **** #include <string.h>
+   6:./../include/appdefs.h **** 
+   7:./../include/appdefs.h **** #define _BV(val) (1<<val)
+   8:./../include/appdefs.h **** 
+   9:./../include/appdefs.h **** typedef enum {FAILED = 0, PASSED = !FAILED} TestStatus;
+  10:./../include/appdefs.h **** 
+  11:./../include/appdefs.h **** typedef enum
+  12:./../include/appdefs.h **** {
+  13:./../include/appdefs.h ****   stsSocketEmpty       ,
+  14:./../include/appdefs.h ****   stsCardInSocket      ,
+  15:./../include/appdefs.h ****   stsSDItitialize      ,
+  16:./../include/appdefs.h ****   stsCardInfo          ,
+  17:./../include/appdefs.h ****   stsSDSelectDeselect  ,
+  18:./../include/appdefs.h ****   stsSDEnableWideBusOperation  ,
+  19:./../include/appdefs.h ****   stsSDSetDeviceMode   ,
+  20:./../include/appdefs.h ****   stsFaFsMount         ,
+  21:./../include/appdefs.h ****   stsFatFsOpen         ,
+  22:./../include/appdefs.h ****   stsFatFsWrite        ,
+  23:./../include/appdefs.h ****   stsFatFsClose
+  24:./../include/appdefs.h **** 
+  25:./../include/appdefs.h **** } TSdioTestStage ;
+  26:./../include/appdefs.h **** 
+  27:./../include/appdefs.h **** typedef enum
+  28:./../include/appdefs.h **** { vridMemoryAccess = 0  ,  // чтение/запись данных по физическому адресу
+  29:./../include/appdefs.h ****   vridLibVersion        ,  // чтение версий компонент
+  30:./../include/appdefs.h ****   //-------------------------------------------------------
+  31:./../include/appdefs.h ****   vridGetTestSDIO       ,  // чтение результата тестирования SDIO
+  32:./../include/appdefs.h ****   vridGetTestADC        ,  // чтение результата тестирования ADC
+  33:./../include/appdefs.h ****   vridGetTestCAN        ,  // чтение результата тестирования CAN
+  34:./../include/appdefs.h ****   vridGetCpuClock        ,
+  35:./../include/appdefs.h ****   //-------------------------------------------------------
+  36:./../include/appdefs.h ****   vridRequestCount
+  37:./../include/appdefs.h **** } VendorRequestId ;
+  38:./../include/appdefs.h **** 
+  39:./../include/appdefs.h **** #ifdef __arm__
+  40:./../include/appdefs.h **** 
+  41:./../include/appdefs.h ****   #include "platform_config.h"
+  42:./../include/appdefs.h ****   #include "stm32f10x_conf.h"
+  43:./../include/appdefs.h ****   #include "stm32f10x.h"
+  44:./../include/appdefs.h **** 
+  45:./../include/appdefs.h ****   #define  NOP()   asm volatile ("nop")
+  46:./../include/appdefs.h ****   #define  NULL    (void*)0
+  47:./../include/appdefs.h ****   #define __RAM__  __attribute__ ((section(".fast")))
+  48:./../include/appdefs.h **** 
+  49:./../include/appdefs.h ****   inline void Delay(uint32_t msec)
+  50:./../include/appdefs.h ****   {
+  51:./../include/appdefs.h ****     uint32_t tmp = 7000 * msec  ;
+  52:./../include/appdefs.h ****     while( tmp-- )
+  53:./../include/appdefs.h ****      {
+  54:./../include/appdefs.h ****        NOP();
+ 20067              		.loc 2 54 0 is_stmt 1
+ 20068              	@ 54 "./../include/appdefs.h" 1
+ 20069 013a 00BF     		nop
+ 20070              	@ 0 "" 2
+ 20071              		.thumb
+ 20072 013c 00E0     		b	.L11
+ 20073              	.L9:
+ 20074              	.LBE7:
+ 20075              	.LBE6:
+ 20076              		.loc 1 100 0
+ 20077 013e 184C     		ldr	r4, .L12+68
+ 20078              	.L11:
+ 20079              	.LBB9:
+ 20080              	.LBB8:
+  52:./../include/appdefs.h ****     while( tmp-- )
+ 20081              		.loc 2 52 0
+ 20082 0140 013C     		subs	r4, r4, #1
+ 20083 0142 FAD1     		bne	.L8
+ 20084              	.LBE8:
+ 20085              	.LBE9:
+ 101:can.c         ****          {
+ 102:can.c         ****            i++;
+ 103:can.c         ****          }
+ 104:can.c         **** 
+ 105:can.c         ****         Delay(100);
+ 106:can.c         **** 
+ 107:can.c         ****        // деинициализация и выключение CAN модуля (необходимо для запуска USB модуля)
+ 108:can.c         ****        CAN_DeInit(CAN1);
+ 20086              		.loc 1 108 0
+ 20087 0144 0F48     		ldr	r0, .L12+40
+ 20088 0146 0E49     		ldr	r1, .L12+36
+ 20089 0148 8847     		blx	r1
+ 109:can.c         ****        RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN1, DISABLE );
+ 20090              		.loc 1 109 0
+ 20091 014a 4FF00070 		mov	r0, #33554432
+ 20092 014e 2146     		mov	r1, r4
+ 20093 0150 054B     		ldr	r3, .L12+12
+ 20094 0152 9847     		blx	r3
+ 20095              	.LVL5:
+ 20096              	.L4:
+ 20097              	.LBE5:
+ 110:can.c         ****      }
+ 111:can.c         **** 
+ 112:can.c         ****   }
+ 20098              		.loc 1 112 0
+ 20099 0154 0EB0     		add	sp, sp, #56
+ 20100 0156 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 20101              	.L13:
+ 20102 015a 00BF     		.align	2
+ 20103              	.L12:
+ 20104 015c 00000000 		.word	can_gate_type
+ 20105 0160 00000000 		.word	can_test_result
+ 20106 0164 00000000 		.word	RCC_APB2PeriphClockCmd
+ 20107 0168 00000000 		.word	RCC_APB1PeriphClockCmd
+ 20108 016c 00000000 		.word	GPIO_Init
+ 20109 0170 000C0140 		.word	1073810432
+ 20110 0174 00000000 		.word	GPIO_PinRemapConfig
+ 20111 0178 00000000 		.word	NVIC_PriorityGroupConfig
+ 20112 017c 00000000 		.word	NVIC_Init
+ 20113 0180 00000000 		.word	CAN_DeInit
+ 20114 0184 00640040 		.word	1073767424
+ 20115 0188 00000000 		.word	CAN_StructInit
+ 20116 018c 00000000 		.word	CAN_Init
+ 20117 0190 00000000 		.word	CAN_FilterInit
+ 20118 0194 00000000 		.word	CAN_ITConfig
+ 20119 0198 00000000 		.word	CAN_Transmit
+ 20120 019c 00000000 		.word	CAN_TransmitStatus
+ 20121 01a0 61AE0A00 		.word	700001
+ 20122              		.cfi_endproc
+ 20123              	.LFE31:
+ 20125              		.comm	can_gate_type,1,1
+ 20126              		.comm	can_test_result,1,1
+ 20127              		.text
+ 20128              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 can.c
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cctFjhDP.s:19819  .text.can_get_test_result:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cctFjhDP.s:19824  .text.can_get_test_result:00000000 can_get_test_result
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cctFjhDP.s:19839  .text.can_get_test_result:00000008 $d
+                            *COM*:00000001 can_test_result
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cctFjhDP.s:19844  .text.can_test:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cctFjhDP.s:19849  .text.can_test:00000000 can_test
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cctFjhDP.s:20104  .text.can_test:0000015c $d
+                            *COM*:00000001 can_gate_type
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+RCC_APB2PeriphClockCmd
+RCC_APB1PeriphClockCmd
+GPIO_Init
+GPIO_PinRemapConfig
+NVIC_PriorityGroupConfig
+NVIC_Init
+CAN_DeInit
+CAN_StructInit
+CAN_Init
+CAN_FilterInit
+CAN_ITConfig
+CAN_Transmit
+CAN_TransmitStatus

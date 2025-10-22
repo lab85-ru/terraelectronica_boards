@@ -1,0 +1,721 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 18, 4
+  12              		.thumb
+  13              		.file	"usb_request_handlers.c"
+  23              	.Ltext0:
+ 21505              		.align	1
+ 21506              		.global	GetLibVersion
+ 21507              		.thumb
+ 21508              		.thumb_func
+ 21510              	GetLibVersion:
+ 21511              	.LFB31:
+   1:usb_request_handlers.c **** #include "appdefs.h"
+   2:usb_request_handlers.c **** 
+   3:usb_request_handlers.c **** #include "usb_lib.h"
+   4:usb_request_handlers.c **** 
+   5:usb_request_handlers.c **** #include "hw_config.h"
+   6:usb_request_handlers.c **** #include "usb_request_handlers.h"
+   7:usb_request_handlers.c **** 
+   8:usb_request_handlers.c **** #include "sdio.h"
+   9:usb_request_handlers.c **** #include "adc.h"
+  10:usb_request_handlers.c **** #include "can.h"
+  11:usb_request_handlers.c **** 
+  12:usb_request_handlers.c **** #include "ff.h"
+  13:usb_request_handlers.c **** #include "sdcard.h"
+  14:usb_request_handlers.c **** 
+  15:usb_request_handlers.c **** #include <stdio.h>
+  16:usb_request_handlers.c **** #include <string.h>
+  17:usb_request_handlers.c **** 
+  18:usb_request_handlers.c **** 
+  19:usb_request_handlers.c **** //-----------------------------------------------------------------------
+  20:usb_request_handlers.c **** uint8_t* MemoryAccess(uint16_t length)
+  21:usb_request_handlers.c ****   {
+  22:usb_request_handlers.c ****     // фзический адрес обмена
+  23:usb_request_handlers.c ****     static uint8_t* addr = 0 ;
+  24:usb_request_handlers.c ****     if (length == 0)
+  25:usb_request_handlers.c ****       {
+  26:usb_request_handlers.c ****         // запись размера пакета
+  27:usb_request_handlers.c ****         pInformation->Ctrl_Info.Usb_wLength = pInformation->USBwLengths.w ;
+  28:usb_request_handlers.c ****         // запись физического адреса
+  29:usb_request_handlers.c ****         addr = (uint8_t*)(( pInformation->USBwIndexs.w  << 16 ) | pInformation->USBwValues.w ) ;
+  30:usb_request_handlers.c ****         return NULL;
+  31:usb_request_handlers.c ****       }
+  32:usb_request_handlers.c ****     else
+  33:usb_request_handlers.c ****         return addr + pInformation->Ctrl_Info.Usb_wOffset ;
+  34:usb_request_handlers.c ****   }
+  35:usb_request_handlers.c **** //-----------------------------------------------------------------------
+  36:usb_request_handlers.c **** uint8_t* GetLibVersion (uint16_t length)  // чтение версии FreeRTOS
+  37:usb_request_handlers.c ****   {
+ 21512              		.loc 1 37 0
+ 21513              		.cfi_startproc
+ 21514              		@ args = 0, pretend = 0, frame = 128
+ 21515              		@ frame_needed = 0, uses_anonymous_args = 0
+ 21516              	.LVL0:
+ 21517 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 21518              	.LCFI0:
+ 21519              		.cfi_def_cfa_offset 20
+ 21520              		.cfi_offset 14, -4
+ 21521              		.cfi_offset 7, -8
+ 21522              		.cfi_offset 6, -12
+ 21523              		.cfi_offset 5, -16
+ 21524              		.cfi_offset 4, -20
+  38:usb_request_handlers.c ****     // фзический адрес обмена
+  39:usb_request_handlers.c ****     static char lib_ver[512] = {0} ;
+  40:usb_request_handlers.c ****     char buff[128];
+  41:usb_request_handlers.c ****     sprintf(lib_ver , "Stm32 FWlib\tv%i.%i.%i\r\n" , __STM32F10X_STDPERIPH_VERSION_MAIN , __STM32F1
+ 21525              		.loc 1 41 0
+ 21526 0002 1D4C     		ldr	r4, .L4
+  37:usb_request_handlers.c ****   {
+ 21527              		.loc 1 37 0
+ 21528 0004 A3B0     		sub	sp, sp, #140
+ 21529              	.LCFI1:
+ 21530              		.cfi_def_cfa_offset 160
+ 21531              		.loc 1 41 0
+ 21532 0006 0322     		movs	r2, #3
+  37:usb_request_handlers.c ****   {
+ 21533              		.loc 1 37 0
+ 21534 0008 0746     		mov	r7, r0
+ 21535              		.loc 1 41 0
+ 21536 000a 0020     		movs	r0, #0
+ 21537              	.LVL1:
+ 21538 000c 1B4D     		ldr	r5, .L4+4
+ 21539 000e 1346     		mov	r3, r2
+ 21540 0010 0090     		str	r0, [sp, #0]
+ 21541 0012 1B49     		ldr	r1, .L4+8
+ 21542 0014 2046     		mov	r0, r4
+ 21543 0016 A847     		blx	r5
+  42:usb_request_handlers.c ****     sprintf(buff , "CMSIS\t\t\tv%i.%i\n\r" , __CM3_CMSIS_VERSION_MAIN , __CM3_CMSIS_VERSION_SUB ) ;
+ 21544              		.loc 1 42 0
+ 21545 0018 0122     		movs	r2, #1
+ 21546 001a 3023     		movs	r3, #48
+ 21547 001c 1949     		ldr	r1, .L4+12
+ 21548 001e 02A8     		add	r0, sp, #8
+ 21549 0020 A847     		blx	r5
+  43:usb_request_handlers.c ****     strcat(lib_ver,buff);
+ 21550              		.loc 1 43 0
+ 21551 0022 194E     		ldr	r6, .L4+16
+ 21552 0024 02A9     		add	r1, sp, #8
+ 21553 0026 2046     		mov	r0, r4
+ 21554 0028 B047     		blx	r6
+  44:usb_request_handlers.c ****     sprintf(buff , "Stm32 USB FS\tv%i.%i.%i\r\n" , __STM32F10X_USB_FS_VERSION_MAIN , __STM32F10X_US
+ 21555              		.loc 1 44 0
+ 21556 002a 0123     		movs	r3, #1
+ 21557 002c 0322     		movs	r2, #3
+ 21558 002e 0093     		str	r3, [sp, #0]
+ 21559 0030 1649     		ldr	r1, .L4+20
+ 21560 0032 0223     		movs	r3, #2
+ 21561 0034 02A8     		add	r0, sp, #8
+ 21562 0036 A847     		blx	r5
+  45:usb_request_handlers.c ****     strcat(lib_ver,buff);
+ 21563              		.loc 1 45 0
+ 21564 0038 02A9     		add	r1, sp, #8
+ 21565 003a 2046     		mov	r0, r4
+ 21566 003c B047     		blx	r6
+  46:usb_request_handlers.c ****     sprintf(buff , "Stm32 SDCard\tv%s\n\r" , __STM32F10X_SDCARD_LAYER_VESION_SRING );
+ 21567              		.loc 1 46 0
+ 21568 003e 144A     		ldr	r2, .L4+24
+ 21569 0040 1449     		ldr	r1, .L4+28
+ 21570 0042 02A8     		add	r0, sp, #8
+ 21571 0044 A847     		blx	r5
+  47:usb_request_handlers.c ****     strcat(lib_ver,buff);
+ 21572              		.loc 1 47 0
+ 21573 0046 02A9     		add	r1, sp, #8
+ 21574 0048 2046     		mov	r0, r4
+ 21575 004a B047     		blx	r6
+  48:usb_request_handlers.c ****     sprintf(buff , "Chan FatFS\t%s\n\r" , FATFS_VERSION_STRING ) ;
+ 21576              		.loc 1 48 0
+ 21577 004c 1249     		ldr	r1, .L4+32
+ 21578 004e 134A     		ldr	r2, .L4+36
+ 21579 0050 02A8     		add	r0, sp, #8
+ 21580 0052 A847     		blx	r5
+  49:usb_request_handlers.c ****     strcat(lib_ver,buff);
+ 21581              		.loc 1 49 0
+ 21582 0054 2046     		mov	r0, r4
+ 21583 0056 02A9     		add	r1, sp, #8
+ 21584 0058 B047     		blx	r6
+ 21585 005a 114B     		ldr	r3, .L4+40
+  50:usb_request_handlers.c **** 
+  51:usb_request_handlers.c **** 
+  52:usb_request_handlers.c ****     if (length == 0)
+ 21586              		.loc 1 52 0
+ 21587 005c 27B9     		cbnz	r7, .L2
+  53:usb_request_handlers.c ****       {
+  54:usb_request_handlers.c ****        // запись размера пакета
+  55:usb_request_handlers.c ****        pInformation->Ctrl_Info.Usb_wLength = pInformation->USBwLengths.w ; // lолжно быть 512
+ 21588              		.loc 1 55 0
+ 21589 005e 1968     		ldr	r1, [r3, #0]
+  56:usb_request_handlers.c ****        // запись физического адреса
+  57:usb_request_handlers.c ****        return NULL;
+ 21590              		.loc 1 57 0
+ 21591 0060 3846     		mov	r0, r7
+  55:usb_request_handlers.c ****        pInformation->Ctrl_Info.Usb_wLength = pInformation->USBwLengths.w ; // lолжно быть 512
+ 21592              		.loc 1 55 0
+ 21593 0062 CA88     		ldrh	r2, [r1, #6]
+ 21594 0064 0A82     		strh	r2, [r1, #16]	@ movhi
+ 21595              		.loc 1 57 0
+ 21596 0066 04E0     		b	.L3
+ 21597              	.L2:
+  58:usb_request_handlers.c ****       }
+  59:usb_request_handlers.c ****     else
+  60:usb_request_handlers.c ****        return (uint8_t*)lib_ver + pInformation->Ctrl_Info.Usb_wOffset ;
+ 21598              		.loc 1 60 0
+ 21599 0068 1B68     		ldr	r3, [r3, #0]
+ 21600 006a B3F812C0 		ldrh	ip, [r3, #18]
+ 21601 006e 04EB0C00 		add	r0, r4, ip
+ 21602              	.L3:
+  61:usb_request_handlers.c ****   }
+ 21603              		.loc 1 61 0
+ 21604 0072 23B0     		add	sp, sp, #140
+ 21605 0074 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 21606              	.L5:
+ 21607 0076 00BF     		.align	2
+ 21608              	.L4:
+ 21609 0078 00000000 		.word	.LANCHOR0
+ 21610 007c 00000000 		.word	sprintf
+ 21611 0080 00000000 		.word	.LC0
+ 21612 0084 18000000 		.word	.LC1
+ 21613 0088 00000000 		.word	strcat
+ 21614 008c 29000000 		.word	.LC2
+ 21615 0090 55000000 		.word	.LC4
+ 21616 0094 42000000 		.word	.LC3
+ 21617 0098 5B000000 		.word	.LC5
+ 21618 009c 6B000000 		.word	.LC6
+ 21619 00a0 00000000 		.word	pInformation
+ 21620              		.cfi_endproc
+ 21621              	.LFE31:
+ 21623              		.section	.text.MemoryAccess,"ax",%progbits
+ 21624              		.align	1
+ 21625              		.global	MemoryAccess
+ 21626              		.thumb
+ 21627              		.thumb_func
+ 21629              	MemoryAccess:
+ 21630              	.LFB30:
+  21:usb_request_handlers.c ****   {
+ 21631              		.loc 1 21 0
+ 21632              		.cfi_startproc
+ 21633              		@ args = 0, pretend = 0, frame = 0
+ 21634              		@ frame_needed = 0, uses_anonymous_args = 0
+ 21635              		@ link register save eliminated.
+ 21636              	.LVL2:
+ 21637 0000 094B     		ldr	r3, .L9
+ 21638 0002 0A4A     		ldr	r2, .L9+4
+  24:usb_request_handlers.c ****     if (length == 0)
+ 21639              		.loc 1 24 0
+ 21640 0004 58B9     		cbnz	r0, .L7
+ 21641              	.LBB5:
+ 21642              	.LBB6:
+  27:usb_request_handlers.c ****         pInformation->Ctrl_Info.Usb_wLength = pInformation->USBwLengths.w ;
+ 21643              		.loc 1 27 0
+ 21644 0006 1B68     		ldr	r3, [r3, #0]
+ 21645 0008 B3F806C0 		ldrh	ip, [r3, #6]
+  29:usb_request_handlers.c ****         addr = (uint8_t*)(( pInformation->USBwIndexs.w  << 16 ) | pInformation->USBwValues.w ) ;
+ 21646              		.loc 1 29 0
+ 21647 000c 9988     		ldrh	r1, [r3, #4]
+  27:usb_request_handlers.c ****         pInformation->Ctrl_Info.Usb_wLength = pInformation->USBwLengths.w ;
+ 21648              		.loc 1 27 0
+ 21649 000e A3F810C0 		strh	ip, [r3, #16]	@ movhi
+  29:usb_request_handlers.c ****         addr = (uint8_t*)(( pInformation->USBwIndexs.w  << 16 ) | pInformation->USBwValues.w ) ;
+ 21650              		.loc 1 29 0
+ 21651 0012 B3F802C0 		ldrh	ip, [r3, #2]
+ 21652 0016 4CEA0143 		orr	r3, ip, r1, lsl #16
+ 21653 001a 1360     		str	r3, [r2, #0]
+ 21654 001c 7047     		bx	lr
+ 21655              	.L7:
+ 21656              	.LBE6:
+ 21657              	.LBE5:
+  33:usb_request_handlers.c ****         return addr + pInformation->Ctrl_Info.Usb_wOffset ;
+ 21658              		.loc 1 33 0
+ 21659 001e 1B68     		ldr	r3, [r3, #0]
+ 21660 0020 1068     		ldr	r0, [r2, #0]
+ 21661              	.LVL3:
+ 21662 0022 598A     		ldrh	r1, [r3, #18]
+ 21663 0024 4018     		adds	r0, r0, r1
+  34:usb_request_handlers.c ****   }
+ 21664              		.loc 1 34 0
+ 21665 0026 7047     		bx	lr
+ 21666              	.L10:
+ 21667              		.align	2
+ 21668              	.L9:
+ 21669 0028 00000000 		.word	pInformation
+ 21670 002c 00000000 		.word	.LANCHOR1
+ 21671              		.cfi_endproc
+ 21672              	.LFE30:
+ 21674              		.section	.text.GetTestCpuClock,"ax",%progbits
+ 21675              		.align	1
+ 21676              		.global	GetTestCpuClock
+ 21677              		.thumb
+ 21678              		.thumb_func
+ 21680              	GetTestCpuClock:
+ 21681              	.LFB35:
+  62:usb_request_handlers.c **** //-----------------------------------------------------------------------
+  63:usb_request_handlers.c **** uint8_t* GetTestSDIO (uint16_t length)  //
+  64:usb_request_handlers.c ****   {
+  65:usb_request_handlers.c **** 
+  66:usb_request_handlers.c **** 	// фзический адрес обмена
+  67:usb_request_handlers.c ****       static uint32_t sdio_test_result[4]  ;
+  68:usb_request_handlers.c **** 
+  69:usb_request_handlers.c ****       if (length == 0)
+  70:usb_request_handlers.c ****         {
+  71:usb_request_handlers.c ****           // запись размера пакета
+  72:usb_request_handlers.c ****           pInformation->Ctrl_Info.Usb_wLength = pInformation->USBwLengths.w ; // должно быть sizeof
+  73:usb_request_handlers.c ****           SD_CardInfo* disk_sd_get_card_info ();
+  74:usb_request_handlers.c ****           SD_CardInfo* info = disk_sd_get_card_info ();
+  75:usb_request_handlers.c ****           sdio_test_result[0] = sdio_get_test_result() ;
+  76:usb_request_handlers.c ****           sdio_test_result[1] = info->CardBlockSize ;
+  77:usb_request_handlers.c ****           sdio_test_result[2] = info->CardCapacity ;
+  78:usb_request_handlers.c ****           sdio_test_result[3] = info->CardType ;
+  79:usb_request_handlers.c ****           return NULL;
+  80:usb_request_handlers.c ****         }
+  81:usb_request_handlers.c ****       else
+  82:usb_request_handlers.c ****           return  ((uint8_t*)sdio_test_result) + pInformation->Ctrl_Info.Usb_wOffset ;
+  83:usb_request_handlers.c ****   }
+  84:usb_request_handlers.c **** //-----------------------------------------------------------------------
+  85:usb_request_handlers.c **** uint8_t* GetTestADC (uint16_t length)  //
+  86:usb_request_handlers.c ****   {
+  87:usb_request_handlers.c ****       if (length == 0)
+  88:usb_request_handlers.c ****         {
+  89:usb_request_handlers.c ****           // запись размера пакета
+  90:usb_request_handlers.c ****           pInformation->Ctrl_Info.Usb_wLength = pInformation->USBwLengths.w ; // должно быть 8
+  91:usb_request_handlers.c ****           return NULL;
+  92:usb_request_handlers.c ****         }
+  93:usb_request_handlers.c ****       else
+  94:usb_request_handlers.c ****           return  ((uint8_t*)adc_get_test_result()) + pInformation->Ctrl_Info.Usb_wOffset ;
+  95:usb_request_handlers.c ****   }
+  96:usb_request_handlers.c **** //-----------------------------------------------------------------------
+  97:usb_request_handlers.c **** uint8_t* GetTestCAN (uint16_t length)  //
+  98:usb_request_handlers.c ****   {
+  99:usb_request_handlers.c ****       // фзический адрес обмена
+ 100:usb_request_handlers.c **** 	  static uint32_t tmp ;
+ 101:usb_request_handlers.c ****       if (length == 0)
+ 102:usb_request_handlers.c ****         {
+ 103:usb_request_handlers.c ****           // запись размера пакета
+ 104:usb_request_handlers.c ****           pInformation->Ctrl_Info.Usb_wLength = pInformation->USBwLengths.w ; // должно быть sizeof
+ 105:usb_request_handlers.c ****           tmp = can_get_test_result();
+ 106:usb_request_handlers.c ****           return NULL;
+ 107:usb_request_handlers.c ****         }
+ 108:usb_request_handlers.c ****       else
+ 109:usb_request_handlers.c ****           return  ((uint8_t*)&tmp) + pInformation->Ctrl_Info.Usb_wOffset ;
+ 110:usb_request_handlers.c ****   }
+ 111:usb_request_handlers.c **** //----------------------------------------------------------------------
+ 112:usb_request_handlers.c **** uint8_t* GetTestCpuClock (uint16_t length)  //
+ 113:usb_request_handlers.c ****   {
+ 21682              		.loc 1 113 0
+ 21683              		.cfi_startproc
+ 21684              		@ args = 0, pretend = 0, frame = 0
+ 21685              		@ frame_needed = 0, uses_anonymous_args = 0
+ 21686              	.LVL4:
+ 21687 0000 38B5     		push	{r3, r4, r5, lr}
+ 21688              	.LCFI2:
+ 21689              		.cfi_def_cfa_offset 16
+ 21690              		.cfi_offset 14, -4
+ 21691              		.cfi_offset 5, -8
+ 21692              		.cfi_offset 4, -12
+ 21693              		.cfi_offset 3, -16
+ 21694              		.loc 1 113 0
+ 21695 0002 0546     		mov	r5, r0
+ 21696 0004 074B     		ldr	r3, .L14
+ 21697 0006 084C     		ldr	r4, .L14+4
+ 114:usb_request_handlers.c ****       // фзический адрес обмена
+ 115:usb_request_handlers.c **** 	  static uint32_t cpu_clock ;
+ 116:usb_request_handlers.c **** 	  if (length == 0)
+ 21698              		.loc 1 116 0
+ 21699 0008 38B9     		cbnz	r0, .L12
+ 21700              	.LBB9:
+ 21701              	.LBB10:
+ 117:usb_request_handlers.c ****         {
+ 118:usb_request_handlers.c ****           // запись размера пакета
+ 119:usb_request_handlers.c ****           pInformation->Ctrl_Info.Usb_wLength = pInformation->USBwLengths.w ; // должно быть sizeof
+ 21702              		.loc 1 119 0
+ 21703 000a 1868     		ldr	r0, [r3, #0]
+ 21704              	.LVL5:
+ 120:usb_request_handlers.c ****           cpu_clock = GetCpuClock();
+ 21705              		.loc 1 120 0
+ 21706 000c 074B     		ldr	r3, .L14+8
+ 119:usb_request_handlers.c ****           pInformation->Ctrl_Info.Usb_wLength = pInformation->USBwLengths.w ; // должно быть sizeof
+ 21707              		.loc 1 119 0
+ 21708 000e C288     		ldrh	r2, [r0, #6]
+ 21709 0010 0282     		strh	r2, [r0, #16]	@ movhi
+ 21710              		.loc 1 120 0
+ 21711 0012 9847     		blx	r3
+ 21712 0014 2060     		str	r0, [r4, #0]
+ 21713 0016 2846     		mov	r0, r5
+ 21714 0018 38BD     		pop	{r3, r4, r5, pc}
+ 21715              	.LVL6:
+ 21716              	.L12:
+ 21717              	.LBE10:
+ 21718              	.LBE9:
+ 121:usb_request_handlers.c ****           return NULL;
+ 122:usb_request_handlers.c ****         }
+ 123:usb_request_handlers.c ****       else
+ 124:usb_request_handlers.c ****           return  ((uint8_t*)&cpu_clock) + pInformation->Ctrl_Info.Usb_wOffset ;
+ 21719              		.loc 1 124 0
+ 21720 001a 1B68     		ldr	r3, [r3, #0]
+ 21721 001c 598A     		ldrh	r1, [r3, #18]
+ 21722 001e 6018     		adds	r0, r4, r1
+ 21723              	.LVL7:
+ 125:usb_request_handlers.c ****   }
+ 21724              		.loc 1 125 0
+ 21725 0020 38BD     		pop	{r3, r4, r5, pc}
+ 21726              	.L15:
+ 21727 0022 00BF     		.align	2
+ 21728              	.L14:
+ 21729 0024 00000000 		.word	pInformation
+ 21730 0028 00000000 		.word	.LANCHOR2
+ 21731 002c 00000000 		.word	GetCpuClock
+ 21732              		.cfi_endproc
+ 21733              	.LFE35:
+ 21735              		.section	.text.GetTestCAN,"ax",%progbits
+ 21736              		.align	1
+ 21737              		.global	GetTestCAN
+ 21738              		.thumb
+ 21739              		.thumb_func
+ 21741              	GetTestCAN:
+ 21742              	.LFB34:
+  98:usb_request_handlers.c ****   {
+ 21743              		.loc 1 98 0
+ 21744              		.cfi_startproc
+ 21745              		@ args = 0, pretend = 0, frame = 0
+ 21746              		@ frame_needed = 0, uses_anonymous_args = 0
+ 21747              	.LVL8:
+ 21748 0000 38B5     		push	{r3, r4, r5, lr}
+ 21749              	.LCFI3:
+ 21750              		.cfi_def_cfa_offset 16
+ 21751              		.cfi_offset 14, -4
+ 21752              		.cfi_offset 5, -8
+ 21753              		.cfi_offset 4, -12
+ 21754              		.cfi_offset 3, -16
+  98:usb_request_handlers.c ****   {
+ 21755              		.loc 1 98 0
+ 21756 0002 0546     		mov	r5, r0
+ 21757 0004 074B     		ldr	r3, .L19
+ 21758 0006 084C     		ldr	r4, .L19+4
+ 101:usb_request_handlers.c ****       if (length == 0)
+ 21759              		.loc 1 101 0
+ 21760 0008 38B9     		cbnz	r0, .L17
+ 21761              	.LBB13:
+ 21762              	.LBB14:
+ 104:usb_request_handlers.c ****           pInformation->Ctrl_Info.Usb_wLength = pInformation->USBwLengths.w ; // должно быть sizeof
+ 21763              		.loc 1 104 0
+ 21764 000a 1868     		ldr	r0, [r3, #0]
+ 21765              	.LVL9:
+ 105:usb_request_handlers.c ****           tmp = can_get_test_result();
+ 21766              		.loc 1 105 0
+ 21767 000c 074B     		ldr	r3, .L19+8
+ 104:usb_request_handlers.c ****           pInformation->Ctrl_Info.Usb_wLength = pInformation->USBwLengths.w ; // должно быть sizeof
+ 21768              		.loc 1 104 0
+ 21769 000e C288     		ldrh	r2, [r0, #6]
+ 21770 0010 0282     		strh	r2, [r0, #16]	@ movhi
+ 105:usb_request_handlers.c ****           tmp = can_get_test_result();
+ 21771              		.loc 1 105 0
+ 21772 0012 9847     		blx	r3
+ 21773 0014 2060     		str	r0, [r4, #0]
+ 21774 0016 2846     		mov	r0, r5
+ 21775 0018 38BD     		pop	{r3, r4, r5, pc}
+ 21776              	.LVL10:
+ 21777              	.L17:
+ 21778              	.LBE14:
+ 21779              	.LBE13:
+ 109:usb_request_handlers.c ****           return  ((uint8_t*)&tmp) + pInformation->Ctrl_Info.Usb_wOffset ;
+ 21780              		.loc 1 109 0
+ 21781 001a 1B68     		ldr	r3, [r3, #0]
+ 21782 001c 598A     		ldrh	r1, [r3, #18]
+ 21783 001e 6018     		adds	r0, r4, r1
+ 21784              	.LVL11:
+ 110:usb_request_handlers.c ****   }
+ 21785              		.loc 1 110 0
+ 21786 0020 38BD     		pop	{r3, r4, r5, pc}
+ 21787              	.L20:
+ 21788 0022 00BF     		.align	2
+ 21789              	.L19:
+ 21790 0024 00000000 		.word	pInformation
+ 21791 0028 00000000 		.word	.LANCHOR3
+ 21792 002c 00000000 		.word	can_get_test_result
+ 21793              		.cfi_endproc
+ 21794              	.LFE34:
+ 21796              		.section	.text.GetTestADC,"ax",%progbits
+ 21797              		.align	1
+ 21798              		.global	GetTestADC
+ 21799              		.thumb
+ 21800              		.thumb_func
+ 21802              	GetTestADC:
+ 21803              	.LFB33:
+  86:usb_request_handlers.c ****   {
+ 21804              		.loc 1 86 0
+ 21805              		.cfi_startproc
+ 21806              		@ args = 0, pretend = 0, frame = 0
+ 21807              		@ frame_needed = 0, uses_anonymous_args = 0
+ 21808              	.LVL12:
+ 21809 0000 10B5     		push	{r4, lr}
+ 21810              	.LCFI4:
+ 21811              		.cfi_def_cfa_offset 8
+ 21812              		.cfi_offset 14, -4
+ 21813              		.cfi_offset 4, -8
+ 21814 0002 064C     		ldr	r4, .L24
+  87:usb_request_handlers.c ****       if (length == 0)
+ 21815              		.loc 1 87 0
+ 21816 0004 18B9     		cbnz	r0, .L22
+ 21817              	.LBB17:
+ 21818              	.LBB18:
+  90:usb_request_handlers.c ****           pInformation->Ctrl_Info.Usb_wLength = pInformation->USBwLengths.w ; // должно быть 8
+ 21819              		.loc 1 90 0
+ 21820 0006 2368     		ldr	r3, [r4, #0]
+ 21821 0008 DA88     		ldrh	r2, [r3, #6]
+ 21822 000a 1A82     		strh	r2, [r3, #16]	@ movhi
+ 21823 000c 10BD     		pop	{r4, pc}
+ 21824              	.L22:
+ 21825              	.LBE18:
+ 21826              	.LBE17:
+  94:usb_request_handlers.c ****           return  ((uint8_t*)adc_get_test_result()) + pInformation->Ctrl_Info.Usb_wOffset ;
+ 21827              		.loc 1 94 0
+ 21828 000e 0448     		ldr	r0, .L24+4
+ 21829              	.LVL13:
+ 21830 0010 8047     		blx	r0
+ 21831 0012 2268     		ldr	r2, [r4, #0]
+ 21832 0014 518A     		ldrh	r1, [r2, #18]
+ 21833 0016 4018     		adds	r0, r0, r1
+  95:usb_request_handlers.c ****   }
+ 21834              		.loc 1 95 0
+ 21835 0018 10BD     		pop	{r4, pc}
+ 21836              	.L25:
+ 21837 001a 00BF     		.align	2
+ 21838              	.L24:
+ 21839 001c 00000000 		.word	pInformation
+ 21840 0020 00000000 		.word	adc_get_test_result
+ 21841              		.cfi_endproc
+ 21842              	.LFE33:
+ 21844              		.section	.text.GetTestSDIO,"ax",%progbits
+ 21845              		.align	1
+ 21846              		.global	GetTestSDIO
+ 21847              		.thumb
+ 21848              		.thumb_func
+ 21850              	GetTestSDIO:
+ 21851              	.LFB32:
+  64:usb_request_handlers.c ****   {
+ 21852              		.loc 1 64 0
+ 21853              		.cfi_startproc
+ 21854              		@ args = 0, pretend = 0, frame = 0
+ 21855              		@ frame_needed = 0, uses_anonymous_args = 0
+ 21856              	.LVL14:
+ 21857 0000 38B5     		push	{r3, r4, r5, lr}
+ 21858              	.LCFI5:
+ 21859              		.cfi_def_cfa_offset 16
+ 21860              		.cfi_offset 14, -4
+ 21861              		.cfi_offset 5, -8
+ 21862              		.cfi_offset 4, -12
+ 21863              		.cfi_offset 3, -16
+  64:usb_request_handlers.c ****   {
+ 21864              		.loc 1 64 0
+ 21865 0002 0546     		mov	r5, r0
+ 21866 0004 0D4B     		ldr	r3, .L29
+  69:usb_request_handlers.c ****       if (length == 0)
+ 21867              		.loc 1 69 0
+ 21868 0006 A0B9     		cbnz	r0, .L27
+ 21869              	.LBB23:
+ 21870              	.LBB24:
+ 21871              	.LBB25:
+  72:usb_request_handlers.c ****           pInformation->Ctrl_Info.Usb_wLength = pInformation->USBwLengths.w ; // должно быть sizeof
+ 21872              		.loc 1 72 0
+ 21873 0008 1B68     		ldr	r3, [r3, #0]
+  74:usb_request_handlers.c ****           SD_CardInfo* info = disk_sd_get_card_info ();
+ 21874              		.loc 1 74 0
+ 21875 000a 0D4C     		ldr	r4, .L29+4
+  72:usb_request_handlers.c ****           pInformation->Ctrl_Info.Usb_wLength = pInformation->USBwLengths.w ; // должно быть sizeof
+ 21876              		.loc 1 72 0
+ 21877 000c B3F806C0 		ldrh	ip, [r3, #6]
+ 21878 0010 A3F810C0 		strh	ip, [r3, #16]	@ movhi
+  74:usb_request_handlers.c ****           SD_CardInfo* info = disk_sd_get_card_info ();
+ 21879              		.loc 1 74 0
+ 21880 0014 A047     		blx	r4
+ 21881              	.LVL15:
+  75:usb_request_handlers.c ****           sdio_test_result[0] = sdio_get_test_result() ;
+ 21882              		.loc 1 75 0
+ 21883 0016 0B4A     		ldr	r2, .L29+8
+  74:usb_request_handlers.c ****           SD_CardInfo* info = disk_sd_get_card_info ();
+ 21884              		.loc 1 74 0
+ 21885 0018 0446     		mov	r4, r0
+ 21886              	.LVL16:
+  75:usb_request_handlers.c ****           sdio_test_result[0] = sdio_get_test_result() ;
+ 21887              		.loc 1 75 0
+ 21888 001a 9047     		blx	r2
+ 21889              	.LVL17:
+ 21890 001c 0A4B     		ldr	r3, .L29+12
+  76:usb_request_handlers.c ****           sdio_test_result[1] = info->CardBlockSize ;
+ 21891              		.loc 1 76 0
+ 21892 001e A16C     		ldr	r1, [r4, #72]
+  75:usb_request_handlers.c ****           sdio_test_result[0] = sdio_get_test_result() ;
+ 21893              		.loc 1 75 0
+ 21894 0020 1860     		str	r0, [r3, #0]
+  78:usb_request_handlers.c ****           sdio_test_result[3] = info->CardType ;
+ 21895              		.loc 1 78 0
+ 21896 0022 94F84E20 		ldrb	r2, [r4, #78]	@ zero_extendqisi2
+  77:usb_request_handlers.c ****           sdio_test_result[2] = info->CardCapacity ;
+ 21897              		.loc 1 77 0
+ 21898 0026 606C     		ldr	r0, [r4, #68]
+  76:usb_request_handlers.c ****           sdio_test_result[1] = info->CardBlockSize ;
+ 21899              		.loc 1 76 0
+ 21900 0028 5960     		str	r1, [r3, #4]
+  77:usb_request_handlers.c ****           sdio_test_result[2] = info->CardCapacity ;
+ 21901              		.loc 1 77 0
+ 21902 002a 9860     		str	r0, [r3, #8]
+  78:usb_request_handlers.c ****           sdio_test_result[3] = info->CardType ;
+ 21903              		.loc 1 78 0
+ 21904 002c DA60     		str	r2, [r3, #12]
+ 21905 002e 2846     		mov	r0, r5
+ 21906 0030 38BD     		pop	{r3, r4, r5, pc}
+ 21907              	.LVL18:
+ 21908              	.L27:
+ 21909              	.LBE25:
+ 21910              	.LBE24:
+ 21911              	.LBE23:
+  82:usb_request_handlers.c ****           return  ((uint8_t*)sdio_test_result) + pInformation->Ctrl_Info.Usb_wOffset ;
+ 21912              		.loc 1 82 0
+ 21913 0032 1A68     		ldr	r2, [r3, #0]
+ 21914 0034 0448     		ldr	r0, .L29+12
+ 21915              	.LVL19:
+ 21916 0036 518A     		ldrh	r1, [r2, #18]
+ 21917 0038 4018     		adds	r0, r0, r1
+  83:usb_request_handlers.c ****   }
+ 21918              		.loc 1 83 0
+ 21919 003a 38BD     		pop	{r3, r4, r5, pc}
+ 21920              	.L30:
+ 21921              		.align	2
+ 21922              	.L29:
+ 21923 003c 00000000 		.word	pInformation
+ 21924 0040 00000000 		.word	disk_sd_get_card_info
+ 21925 0044 00000000 		.word	sdio_get_test_result
+ 21926 0048 00000000 		.word	.LANCHOR4
+ 21927              		.cfi_endproc
+ 21928              	.LFE32:
+ 21930              		.global	CopyRoutineTable
+ 21931              		.section	.data.CopyRoutineTable,"aw",%progbits
+ 21932              		.align	2
+ 21935              	CopyRoutineTable:
+ 21936 0000 00000000 		.word	MemoryAccess
+ 21937 0004 00000000 		.word	GetLibVersion
+ 21938 0008 00000000 		.word	GetTestSDIO
+ 21939 000c 00000000 		.word	GetTestADC
+ 21940 0010 00000000 		.word	GetTestCAN
+ 21941 0014 00000000 		.word	GetTestCpuClock
+ 21942              		.section	.bss.lib_ver.4620,"aw",%nobits
+ 21943              		.set	.LANCHOR0,. + 0
+ 21946              	lib_ver.4620:
+ 21947 0000 00000000 		.space	512
+ 21947      00000000 
+ 21947      00000000 
+ 21947      00000000 
+ 21947      00000000 
+ 21948              		.section	.rodata.str1.1,"aMS",%progbits,1
+ 21949              	.LC0:
+ 21950 0000 53746D33 		.ascii	"Stm32 FWlib\011v%i.%i.%i\015\012\000"
+ 21950      32204657 
+ 21950      6C696209 
+ 21950      7625692E 
+ 21950      25692E25 
+ 21951              	.LC1:
+ 21952 0018 434D5349 		.ascii	"CMSIS\011\011\011v%i.%i\012\015\000"
+ 21952      53090909 
+ 21952      7625692E 
+ 21952      25690A0D 
+ 21952      00
+ 21953              	.LC2:
+ 21954 0029 53746D33 		.ascii	"Stm32 USB FS\011v%i.%i.%i\015\012\000"
+ 21954      32205553 
+ 21954      42204653 
+ 21954      09762569 
+ 21954      2E25692E 
+ 21955              	.LC3:
+ 21956 0042 53746D33 		.ascii	"Stm32 SDCard\011v%s\012\015\000"
+ 21956      32205344 
+ 21956      43617264 
+ 21956      09762573 
+ 21956      0A0D00
+ 21957              	.LC4:
+ 21958 0055 332E312E 		.ascii	"3.1.0\000"
+ 21958      3000
+ 21959              	.LC5:
+ 21960 005b 4368616E 		.ascii	"Chan FatFS\011%s\012\015\000"
+ 21960      20466174 
+ 21960      46530925 
+ 21960      730A0D00 
+ 21961              	.LC6:
+ 21962 006b 52302E30 		.ascii	"R0.08a (C)ChaN\000"
+ 21962      38612028 
+ 21962      43294368 
+ 21962      614E00
+ 21963              		.section	.bss.tmp.4635,"aw",%nobits
+ 21964              		.align	2
+ 21965              		.set	.LANCHOR3,. + 0
+ 21968              	tmp.4635:
+ 21969 0000 00000000 		.space	4
+ 21970              		.section	.bss.addr.4616,"aw",%nobits
+ 21971              		.align	2
+ 21972              		.set	.LANCHOR1,. + 0
+ 21975              	addr.4616:
+ 21976 0000 00000000 		.space	4
+ 21977              		.section	.bss.cpu_clock.4639,"aw",%nobits
+ 21978              		.align	2
+ 21979              		.set	.LANCHOR2,. + 0
+ 21982              	cpu_clock.4639:
+ 21983 0000 00000000 		.space	4
+ 21984              		.section	.bss.sdio_test_result.4625,"aw",%nobits
+ 21985              		.align	2
+ 21986              		.set	.LANCHOR4,. + 0
+ 21989              	sdio_test_result.4625:
+ 21990 0000 00000000 		.space	16
+ 21990      00000000 
+ 21990      00000000 
+ 21990      00000000 
+ 21991              		.text
+ 21992              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 usb_request_handlers.c
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21505  .text.GetLibVersion:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21510  .text.GetLibVersion:00000000 GetLibVersion
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21609  .text.GetLibVersion:00000078 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21624  .text.MemoryAccess:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21629  .text.MemoryAccess:00000000 MemoryAccess
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21669  .text.MemoryAccess:00000028 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21675  .text.GetTestCpuClock:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21680  .text.GetTestCpuClock:00000000 GetTestCpuClock
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21729  .text.GetTestCpuClock:00000024 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21736  .text.GetTestCAN:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21741  .text.GetTestCAN:00000000 GetTestCAN
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21790  .text.GetTestCAN:00000024 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21797  .text.GetTestADC:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21802  .text.GetTestADC:00000000 GetTestADC
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21839  .text.GetTestADC:0000001c $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21845  .text.GetTestSDIO:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21850  .text.GetTestSDIO:00000000 GetTestSDIO
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21923  .text.GetTestSDIO:0000003c $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21935  .data.CopyRoutineTable:00000000 CopyRoutineTable
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21932  .data.CopyRoutineTable:00000000 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21946  .bss.lib_ver.4620:00000000 lib_ver.4620
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21947  .bss.lib_ver.4620:00000000 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21964  .bss.tmp.4635:00000000 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21968  .bss.tmp.4635:00000000 tmp.4635
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21971  .bss.addr.4616:00000000 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21975  .bss.addr.4616:00000000 addr.4616
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21978  .bss.cpu_clock.4639:00000000 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21982  .bss.cpu_clock.4639:00000000 cpu_clock.4639
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21985  .bss.sdio_test_result.4625:00000000 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccvAkHSh.s:21989  .bss.sdio_test_result.4625:00000000 sdio_test_result.4625
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+sprintf
+strcat
+pInformation
+GetCpuClock
+can_get_test_result
+adc_get_test_result
+disk_sd_get_card_info
+sdio_get_test_result

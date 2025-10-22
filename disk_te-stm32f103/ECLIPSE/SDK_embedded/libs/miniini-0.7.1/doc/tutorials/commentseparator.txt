@@ -1,0 +1,35 @@
+Changing comment and/or tag=value separator character
+
+
+== Enabling MiniINI logging ==
+
+MiniINI can only handle one comment character, but not all ini files use
+semicolon (';') for their comments. Indeed, on Linux/Unix it is common to use
+the '#' character for this purpose. Fortunately, it is possible to set which
+character is used as the comment character.
+
+To change the comment character, we use the **INISetComment** function. This
+function takes one argument, the character to use as the comment character.
+INISetComment returns bool that will be true if the character can be used and
+was set as the comment character, or false if the character could not be set as
+the comment character. (Other characters that have special meanings in an ini
+file, such as '[' or '\n' can not be used as the comment character)
+
+Similarly, you can change the character that separates tag names and values in
+ini files ('=' by default). You can do this using the **INISetSeparator**
+function. This function works in the same way as INISetComment: takes a
+character to use as separator, returns true if it was set successfully, or false
+if it could not be set.
+
+**NOTE:** INISetComment and INISetSeparator will only affect files opened
+**after** they were called!
+
+Example:
+```
+    INISetComment('#');
+    INISetSeparator(':');
+```
+
+This will make MiniINI parse anything after a '#' character to the end of line
+as a comment (i.e. ignore it) and parse ':' character as a separator between tag
+names and values.

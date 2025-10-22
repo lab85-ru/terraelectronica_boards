@@ -1,0 +1,260 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 18, 4
+  12              		.thumb
+  13              		.file	"stm32f10x_dbgmcu.c"
+  23              	.Ltext0:
+ 15884              		.align	1
+ 15885              		.global	DBGMCU_GetREVID
+ 15886              		.thumb
+ 15887              		.thumb_func
+ 15889              	DBGMCU_GetREVID:
+ 15890              	.LFB29:
+   1:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** /**
+   2:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   ******************************************************************************
+   3:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @file    stm32f10x_dbgmcu.c
+   4:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @author  MCD Application Team
+   5:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @version V3.3.0
+   6:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @date    04/16/2010
+   7:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @brief   This file provides all the DBGMCU firmware functions.
+   8:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   ******************************************************************************
+   9:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @copy
+  10:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *
+  11:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+  12:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+  13:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+  14:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+  15:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+  16:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  17:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *
+  18:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * <h2><center>&copy; COPYRIGHT 2010 STMicroelectronics</center></h2>
+  19:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   */ 
+  20:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** 
+  21:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** /* Includes ------------------------------------------------------------------*/
+  22:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** #include "stm32f10x_dbgmcu.h"
+  23:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** 
+  24:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** /** @addtogroup STM32F10x_StdPeriph_Driver
+  25:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @{
+  26:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   */
+  27:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** 
+  28:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** /** @defgroup DBGMCU 
+  29:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @brief DBGMCU driver modules
+  30:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @{
+  31:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   */ 
+  32:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** 
+  33:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** /** @defgroup DBGMCU_Private_TypesDefinitions
+  34:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @{
+  35:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   */
+  36:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** 
+  37:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** /**
+  38:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @}
+  39:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   */
+  40:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** 
+  41:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** /** @defgroup DBGMCU_Private_Defines
+  42:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @{
+  43:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   */
+  44:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** 
+  45:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** #define IDCODE_DEVID_Mask    ((uint32_t)0x00000FFF)
+  46:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** /**
+  47:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @}
+  48:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   */
+  49:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** 
+  50:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** /** @defgroup DBGMCU_Private_Macros
+  51:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @{
+  52:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   */
+  53:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** 
+  54:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** /**
+  55:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @}
+  56:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   */
+  57:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** 
+  58:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** /** @defgroup DBGMCU_Private_Variables
+  59:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @{
+  60:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   */
+  61:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** 
+  62:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** /**
+  63:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @}
+  64:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   */
+  65:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** 
+  66:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** /** @defgroup DBGMCU_Private_FunctionPrototypes
+  67:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @{
+  68:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   */
+  69:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** 
+  70:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** /**
+  71:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @}
+  72:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   */
+  73:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** 
+  74:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** /** @defgroup DBGMCU_Private_Functions
+  75:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @{
+  76:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   */
+  77:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** 
+  78:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** /**
+  79:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @brief  Returns the device revision identifier.
+  80:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @param  None
+  81:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @retval Device revision identifier
+  82:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   */
+  83:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** uint32_t DBGMCU_GetREVID(void)
+  84:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** {
+ 15891              		.loc 1 84 0
+ 15892              		.cfi_startproc
+ 15893              		@ args = 0, pretend = 0, frame = 0
+ 15894              		@ frame_needed = 0, uses_anonymous_args = 0
+ 15895              		@ link register save eliminated.
+  85:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****    return(DBGMCU->IDCODE >> 16);
+ 15896              		.loc 1 85 0
+ 15897 0000 014B     		ldr	r3, .L2
+ 15898 0002 1868     		ldr	r0, [r3, #0]
+ 15899 0004 000C     		lsrs	r0, r0, #16
+  86:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** }
+ 15900              		.loc 1 86 0
+ 15901 0006 7047     		bx	lr
+ 15902              	.L3:
+ 15903              		.align	2
+ 15904              	.L2:
+ 15905 0008 002004E0 		.word	-536600576
+ 15906              		.cfi_endproc
+ 15907              	.LFE29:
+ 15909              		.section	.text.DBGMCU_GetDEVID,"ax",%progbits
+ 15910              		.align	1
+ 15911              		.global	DBGMCU_GetDEVID
+ 15912              		.thumb
+ 15913              		.thumb_func
+ 15915              	DBGMCU_GetDEVID:
+ 15916              	.LFB30:
+  87:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** 
+  88:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** /**
+  89:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @brief  Returns the device identifier.
+  90:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @param  None
+  91:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @retval Device identifier
+  92:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   */
+  93:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** uint32_t DBGMCU_GetDEVID(void)
+  94:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** {
+ 15917              		.loc 1 94 0
+ 15918              		.cfi_startproc
+ 15919              		@ args = 0, pretend = 0, frame = 0
+ 15920              		@ frame_needed = 0, uses_anonymous_args = 0
+ 15921              		@ link register save eliminated.
+  95:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****    return(DBGMCU->IDCODE & IDCODE_DEVID_Mask);
+ 15922              		.loc 1 95 0
+ 15923 0000 024B     		ldr	r3, .L5
+ 15924 0002 1968     		ldr	r1, [r3, #0]
+ 15925 0004 0805     		lsls	r0, r1, #20
+ 15926 0006 000D     		lsrs	r0, r0, #20
+  96:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** }
+ 15927              		.loc 1 96 0
+ 15928 0008 7047     		bx	lr
+ 15929              	.L6:
+ 15930 000a 00BF     		.align	2
+ 15931              	.L5:
+ 15932 000c 002004E0 		.word	-536600576
+ 15933              		.cfi_endproc
+ 15934              	.LFE30:
+ 15936              		.section	.text.DBGMCU_Config,"ax",%progbits
+ 15937              		.align	1
+ 15938              		.global	DBGMCU_Config
+ 15939              		.thumb
+ 15940              		.thumb_func
+ 15942              	DBGMCU_Config:
+ 15943              	.LFB31:
+  97:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** 
+  98:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** /**
+  99:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @brief  Configures the specified peripheral and low power mode behavior
+ 100:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *   when the MCU under Debug mode.
+ 101:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @param  DBGMCU_Periph: specifies the peripheral and low power mode.
+ 102:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *   This parameter can be any combination of the following values:
+ 103:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_SLEEP: Keep debugger connection during SLEEP mode              
+ 104:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_STOP: Keep debugger connection during STOP mode               
+ 105:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_STANDBY: Keep debugger connection during STANDBY mode            
+ 106:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_IWDG_STOP: Debug IWDG stopped when Core is halted          
+ 107:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_WWDG_STOP: Debug WWDG stopped when Core is halted          
+ 108:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_TIM1_STOP: TIM1 counter stopped when Core is halted          
+ 109:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_TIM2_STOP: TIM2 counter stopped when Core is halted          
+ 110:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_TIM3_STOP: TIM3 counter stopped when Core is halted          
+ 111:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_TIM4_STOP: TIM4 counter stopped when Core is halted          
+ 112:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_CAN1_STOP: Debug CAN2 stopped when Core is halted           
+ 113:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_I2C1_SMBUS_TIMEOUT: I2C1 SMBUS timeout mode stopped when Core is halted
+ 114:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_I2C2_SMBUS_TIMEOUT: I2C2 SMBUS timeout mode stopped when Core is halted
+ 115:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_TIM5_STOP: TIM5 counter stopped when Core is halted          
+ 116:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_TIM6_STOP: TIM6 counter stopped when Core is halted          
+ 117:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_TIM7_STOP: TIM7 counter stopped when Core is halted          
+ 118:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_TIM8_STOP: TIM8 counter stopped when Core is halted
+ 119:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_CAN2_STOP: Debug CAN2 stopped when Core is halted 
+ 120:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_TIM15_STOP: TIM15 counter stopped when Core is halted
+ 121:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_TIM16_STOP: TIM16 counter stopped when Core is halted
+ 122:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_TIM17_STOP: TIM17 counter stopped when Core is halted                
+ 123:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_TIM9_STOP: TIM9 counter stopped when Core is halted
+ 124:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_TIM10_STOP: TIM10 counter stopped when Core is halted
+ 125:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_TIM11_STOP: TIM11 counter stopped when Core is halted
+ 126:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_TIM12_STOP: TIM12 counter stopped when Core is halted
+ 127:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_TIM13_STOP: TIM13 counter stopped when Core is halted
+ 128:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *     @arg DBGMCU_TIM14_STOP: TIM14 counter stopped when Core is halted
+ 129:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @param  NewState: new state of the specified peripheral in Debug mode.
+ 130:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   *   This parameter can be: ENABLE or DISABLE.
+ 131:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   * @retval None
+ 132:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   */
+ 133:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** void DBGMCU_Config(uint32_t DBGMCU_Periph, FunctionalState NewState)
+ 134:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** {
+ 15944              		.loc 1 134 0
+ 15945              		.cfi_startproc
+ 15946              		@ args = 0, pretend = 0, frame = 0
+ 15947              		@ frame_needed = 0, uses_anonymous_args = 0
+ 15948              		@ link register save eliminated.
+ 15949              	.LVL0:
+ 15950 0000 044B     		ldr	r3, .L11
+ 135:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   /* Check the parameters */
+ 136:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   assert_param(IS_DBGMCU_PERIPH(DBGMCU_Periph));
+ 137:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
+ 138:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c **** 
+ 139:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   if (NewState != DISABLE)
+ 15951              		.loc 1 139 0
+ 15952 0002 11B1     		cbz	r1, .L8
+ 140:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   {
+ 141:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****     DBGMCU->CR |= DBGMCU_Periph;
+ 15953              		.loc 1 141 0
+ 15954 0004 5A68     		ldr	r2, [r3, #4]
+ 15955 0006 1043     		orrs	r0, r0, r2
+ 15956              	.LVL1:
+ 15957 0008 02E0     		b	.L10
+ 15958              	.LVL2:
+ 15959              	.L8:
+ 142:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   }
+ 143:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   else
+ 144:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****   {
+ 145:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_dbgmcu.c ****     DBGMCU->CR &= ~DBGMCU_Periph;
+ 15960              		.loc 1 145 0
+ 15961 000a 5968     		ldr	r1, [r3, #4]
+ 15962              	.LVL3:
+ 15963 000c 21EA0000 		bic	r0, r1, r0
+ 15964              	.LVL4:
+ 15965              	.L10:
+ 15966 0010 5860     		str	r0, [r3, #4]
+ 15967 0012 7047     		bx	lr
+ 15968              	.L12:
+ 15969              		.align	2
+ 15970              	.L11:
+ 15971 0014 002004E0 		.word	-536600576
+ 15972              		.cfi_endproc
+ 15973              	.LFE31:
+ 15975              		.text
+ 15976              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32f10x_dbgmcu.c
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccMiRY3i.s:15884  .text.DBGMCU_GetREVID:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccMiRY3i.s:15889  .text.DBGMCU_GetREVID:00000000 DBGMCU_GetREVID
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccMiRY3i.s:15905  .text.DBGMCU_GetREVID:00000008 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccMiRY3i.s:15910  .text.DBGMCU_GetDEVID:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccMiRY3i.s:15915  .text.DBGMCU_GetDEVID:00000000 DBGMCU_GetDEVID
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccMiRY3i.s:15932  .text.DBGMCU_GetDEVID:0000000c $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccMiRY3i.s:15937  .text.DBGMCU_Config:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccMiRY3i.s:15942  .text.DBGMCU_Config:00000000 DBGMCU_Config
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccMiRY3i.s:15971  .text.DBGMCU_Config:00000014 $d
+                     .debug_frame:00000010 $d
+
+NO UNDEFINED SYMBOLS

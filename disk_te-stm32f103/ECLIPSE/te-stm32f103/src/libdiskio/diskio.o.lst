@@ -1,0 +1,1006 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 18, 4
+  12              		.thumb
+  13              		.file	"diskio.c"
+  23              	.Ltext0:
+ 19698              		.align	1
+ 19699              		.global	disk_sd_init_status
+ 19700              		.thumb
+ 19701              		.thumb_func
+ 19703              	disk_sd_init_status:
+ 19704              	.LFB29:
+   1:diskio.c      **** #include "sdcard.h"
+   2:diskio.c      **** #include "ff.h"
+   3:diskio.c      **** #include "diskio.h"
+   4:diskio.c      **** #include "platform_config.h"
+   5:diskio.c      **** 
+   6:diskio.c      **** 
+   7:diskio.c      **** #include "stm32f10x.h"
+   8:diskio.c      **** 
+   9:diskio.c      **** //---------------------------------------------------------------------------------------------
+  10:diskio.c      **** static uint32_t disc_status[_VOLUMES] ;
+  11:diskio.c      **** SD_CardInfo disc_sd_card_info ;
+  12:diskio.c      **** 
+  13:diskio.c      **** void __attribute__((constructor)) disk_sd_init_status()
+  14:diskio.c      **** {
+ 19705              		.loc 1 14 0
+ 19706              		.cfi_startproc
+ 19707              		@ args = 0, pretend = 0, frame = 0
+ 19708              		@ frame_needed = 0, uses_anonymous_args = 0
+ 19709              		@ link register save eliminated.
+ 19710              	.LVL0:
+ 19711              	.LBB2:
+  15:diskio.c      ****   for ( uint8_t drive = 0 ; drive < _VOLUMES ; drive++ )
+  16:diskio.c      **** 	  disc_status[drive] = STA_NODISK ;
+ 19712              		.loc 1 16 0
+ 19713 0000 014B     		ldr	r3, .L2
+ 19714 0002 0222     		movs	r2, #2
+ 19715 0004 1A60     		str	r2, [r3, #0]
+ 19716              	.LVL1:
+ 19717              	.LBE2:
+  17:diskio.c      **** }
+ 19718              		.loc 1 17 0
+ 19719 0006 7047     		bx	lr
+ 19720              	.L3:
+ 19721              		.align	2
+ 19722              	.L2:
+ 19723 0008 00000000 		.word	.LANCHOR0
+ 19724              		.cfi_endproc
+ 19725              	.LFE29:
+ 19727              		.section	.init_array,"aw",%init_array
+ 19728              		.align	2
+ 19729 0000 00000000 		.word	disk_sd_init_status(target1)
+ 19730              		.section	.text.disk_sd_init_power_detect_pins,"ax",%progbits
+ 19731              		.align	1
+ 19732              		.global	disk_sd_init_power_detect_pins
+ 19733              		.thumb
+ 19734              		.thumb_func
+ 19736              	disk_sd_init_power_detect_pins:
+ 19737              	.LFB30:
+  18:diskio.c      **** //---------------------------------------------------------------------------------------------
+  19:diskio.c      **** void disk_sd_init_power_detect_pins()
+  20:diskio.c      **** {
+ 19738              		.loc 1 20 0
+ 19739              		.cfi_startproc
+ 19740              		@ args = 0, pretend = 0, frame = 8
+ 19741              		@ frame_needed = 0, uses_anonymous_args = 0
+ 19742 0000 F7B5     		push	{r0, r1, r2, r4, r5, r6, r7, lr}
+ 19743              	.LCFI0:
+ 19744              		.cfi_def_cfa_offset 32
+ 19745              		.cfi_offset 14, -4
+ 19746              		.cfi_offset 7, -8
+ 19747              		.cfi_offset 6, -12
+ 19748              		.cfi_offset 5, -16
+ 19749              		.cfi_offset 4, -20
+ 19750              		.cfi_offset 2, -24
+ 19751              		.cfi_offset 1, -28
+ 19752              		.cfi_offset 0, -32
+  21:diskio.c      ****   static bool is_initialized = FALSE ;
+  22:diskio.c      ****   if (is_initialized == TRUE ) return ;
+ 19753              		.loc 1 22 0
+ 19754 0002 114D     		ldr	r5, .L6
+ 19755 0004 2B78     		ldrb	r3, [r5, #0]	@ zero_extendqisi2
+ 19756 0006 012B     		cmp	r3, #1
+ 19757 0008 1DD0     		beq	.L4
+ 19758              	.LBB5:
+ 19759              	.LBB6:
+  23:diskio.c      **** 
+  24:diskio.c      ****   RCC_APB2PeriphClockCmd(SDIO_CARD_POWER_DETECT_APB2Periph_GPIO , ENABLE);
+ 19760              		.loc 1 24 0
+ 19761 000a 0820     		movs	r0, #8
+ 19762 000c 0121     		movs	r1, #1
+ 19763 000e 0F4F     		ldr	r7, .L6+4
+  25:diskio.c      ****   GPIO_InitTypeDef  GPIO_InitStructure;
+  26:diskio.c      ****   GPIO_InitStructure.GPIO_Pin = SDIO_CARD_DETECT_PIN ;
+  27:diskio.c      ****   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 19764              		.loc 1 27 0
+ 19765 0010 0324     		movs	r4, #3
+  24:diskio.c      ****   RCC_APB2PeriphClockCmd(SDIO_CARD_POWER_DETECT_APB2Periph_GPIO , ENABLE);
+ 19766              		.loc 1 24 0
+ 19767 0012 B847     		blx	r7
+ 19768              		.loc 1 27 0
+ 19769 0014 8DF80640 		strb	r4, [sp, #6]
+  28:diskio.c      ****   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU ;
+  29:diskio.c      ****   GPIO_Init(SDIO_CARD_POWER_DETECT_PORT, &GPIO_InitStructure);
+ 19770              		.loc 1 29 0
+ 19771 0018 0D4C     		ldr	r4, .L6+8
+  28:diskio.c      ****   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU ;
+ 19772              		.loc 1 28 0
+ 19773 001a 4822     		movs	r2, #72
+  26:diskio.c      ****   GPIO_InitStructure.GPIO_Pin = SDIO_CARD_DETECT_PIN ;
+ 19774              		.loc 1 26 0
+ 19775 001c 0226     		movs	r6, #2
+ 19776 001e ADF80460 		strh	r6, [sp, #4]	@ movhi
+  28:diskio.c      ****   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU ;
+ 19777              		.loc 1 28 0
+ 19778 0022 8DF80720 		strb	r2, [sp, #7]
+ 19779              		.loc 1 29 0
+ 19780 0026 2046     		mov	r0, r4
+ 19781 0028 01A9     		add	r1, sp, #4
+ 19782 002a 0A4E     		ldr	r6, .L6+12
+ 19783 002c B047     		blx	r6
+  30:diskio.c      **** 
+  31:diskio.c      ****   SDIO_CARD_POWER_DETECT_PORT->BSRR = SDIO_CARD_POWER_PIN ;
+ 19784              		.loc 1 31 0
+ 19785 002e 0121     		movs	r1, #1
+  32:diskio.c      **** 
+  33:diskio.c      ****   GPIO_InitStructure.GPIO_Pin = SDIO_CARD_POWER_PIN ;
+  34:diskio.c      ****   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+ 19786              		.loc 1 34 0
+ 19787 0030 1020     		movs	r0, #16
+  31:diskio.c      ****   SDIO_CARD_POWER_DETECT_PORT->BSRR = SDIO_CARD_POWER_PIN ;
+ 19788              		.loc 1 31 0
+ 19789 0032 2161     		str	r1, [r4, #16]
+  33:diskio.c      ****   GPIO_InitStructure.GPIO_Pin = SDIO_CARD_POWER_PIN ;
+ 19790              		.loc 1 33 0
+ 19791 0034 0F46     		mov	r7, r1	@ movhi
+ 19792 0036 ADF80410 		strh	r1, [sp, #4]	@ movhi
+ 19793              		.loc 1 34 0
+ 19794 003a 8DF80700 		strb	r0, [sp, #7]
+  35:diskio.c      ****   GPIO_Init(SDIO_CARD_POWER_DETECT_PORT, &GPIO_InitStructure);
+ 19795              		.loc 1 35 0
+ 19796 003e 01A9     		add	r1, sp, #4
+ 19797 0040 2046     		mov	r0, r4
+ 19798 0042 B047     		blx	r6
+  36:diskio.c      **** 
+  37:diskio.c      ****   is_initialized = TRUE ;
+ 19799              		.loc 1 37 0
+ 19800 0044 2F70     		strb	r7, [r5, #0]
+ 19801              	.L4:
+ 19802              	.LBE6:
+ 19803              	.LBE5:
+  38:diskio.c      **** }
+ 19804              		.loc 1 38 0
+ 19805 0046 FEBD     		pop	{r1, r2, r3, r4, r5, r6, r7, pc}
+ 19806              	.L7:
+ 19807              		.align	2
+ 19808              	.L6:
+ 19809 0048 00000000 		.word	.LANCHOR1
+ 19810 004c 00000000 		.word	RCC_APB2PeriphClockCmd
+ 19811 0050 000C0140 		.word	1073810432
+ 19812 0054 00000000 		.word	GPIO_Init
+ 19813              		.cfi_endproc
+ 19814              	.LFE30:
+ 19816              		.section	.text.disk_sd_present,"ax",%progbits
+ 19817              		.align	1
+ 19818              		.global	disk_sd_present
+ 19819              		.thumb
+ 19820              		.thumb_func
+ 19822              	disk_sd_present:
+ 19823              	.LFB31:
+  39:diskio.c      **** //---------------------------------------------------------------------------------------------
+  40:diskio.c      **** bool disk_sd_present()
+  41:diskio.c      **** {
+ 19824              		.loc 1 41 0
+ 19825              		.cfi_startproc
+ 19826              		@ args = 0, pretend = 0, frame = 0
+ 19827              		@ frame_needed = 0, uses_anonymous_args = 0
+ 19828 0000 08B5     		push	{r3, lr}
+ 19829              	.LCFI1:
+ 19830              		.cfi_def_cfa_offset 8
+ 19831              		.cfi_offset 14, -4
+ 19832              		.cfi_offset 3, -8
+  42:diskio.c      **** 	disk_sd_init_power_detect_pins();
+ 19833              		.loc 1 42 0
+ 19834 0002 0549     		ldr	r1, .L9
+ 19835 0004 8847     		blx	r1
+  43:diskio.c      **** 	return !(SDIO_CARD_POWER_DETECT_PORT->IDR & SDIO_CARD_DETECT_PIN) ;
+ 19836              		.loc 1 43 0
+ 19837 0006 0548     		ldr	r0, .L9+4
+ 19838 0008 8368     		ldr	r3, [r0, #8]
+ 19839 000a 13F0020F 		tst	r3, #2
+ 19840 000e 14BF     		ite	ne
+ 19841 0010 0020     		movne	r0, #0
+ 19842 0012 0120     		moveq	r0, #1
+  44:diskio.c      **** }
+ 19843              		.loc 1 44 0
+ 19844 0014 08BD     		pop	{r3, pc}
+ 19845              	.L10:
+ 19846 0016 00BF     		.align	2
+ 19847              	.L9:
+ 19848 0018 00000000 		.word	disk_sd_init_power_detect_pins
+ 19849 001c 000C0140 		.word	1073810432
+ 19850              		.cfi_endproc
+ 19851              	.LFE31:
+ 19853              		.section	.text.disk_sd_set_power,"ax",%progbits
+ 19854              		.align	1
+ 19855              		.global	disk_sd_set_power
+ 19856              		.thumb
+ 19857              		.thumb_func
+ 19859              	disk_sd_set_power:
+ 19860              	.LFB32:
+  45:diskio.c      **** //---------------------------------------------------------------------------------------------
+  46:diskio.c      **** void disk_sd_set_power ( FunctionalState NewState )
+  47:diskio.c      **** {
+ 19861              		.loc 1 47 0
+ 19862              		.cfi_startproc
+ 19863              		@ args = 0, pretend = 0, frame = 0
+ 19864              		@ frame_needed = 0, uses_anonymous_args = 0
+ 19865              	.LVL2:
+ 19866 0000 10B5     		push	{r4, lr}
+ 19867              	.LCFI2:
+ 19868              		.cfi_def_cfa_offset 8
+ 19869              		.cfi_offset 14, -4
+ 19870              		.cfi_offset 4, -8
+  48:diskio.c      **** 	disk_sd_init_power_detect_pins();
+ 19871              		.loc 1 48 0
+ 19872 0002 054B     		ldr	r3, .L14
+  47:diskio.c      **** {
+ 19873              		.loc 1 47 0
+ 19874 0004 0446     		mov	r4, r0
+ 19875              		.loc 1 48 0
+ 19876 0006 9847     		blx	r3
+ 19877              	.LVL3:
+  49:diskio.c      **** 	if ( NewState == ENABLE )
+ 19878              		.loc 1 49 0
+ 19879 0008 012C     		cmp	r4, #1
+ 19880 000a 044B     		ldr	r3, .L14+4
+ 19881 000c 01D1     		bne	.L12
+  50:diskio.c      **** 		SDIO_CARD_POWER_DETECT_PORT->BRR = SDIO_CARD_POWER_PIN ;
+ 19882              		.loc 1 50 0
+ 19883 000e 5C61     		str	r4, [r3, #20]
+ 19884 0010 10BD     		pop	{r4, pc}
+ 19885              	.L12:
+  51:diskio.c      **** 	else
+  52:diskio.c      **** 		SDIO_CARD_POWER_DETECT_PORT->BSRR = SDIO_CARD_POWER_PIN ;
+ 19886              		.loc 1 52 0
+ 19887 0012 0122     		movs	r2, #1
+ 19888 0014 1A61     		str	r2, [r3, #16]
+ 19889 0016 10BD     		pop	{r4, pc}
+ 19890              	.L15:
+ 19891              		.align	2
+ 19892              	.L14:
+ 19893 0018 00000000 		.word	disk_sd_init_power_detect_pins
+ 19894 001c 000C0140 		.word	1073810432
+ 19895              		.cfi_endproc
+ 19896              	.LFE32:
+ 19898              		.section	.text.disk_sd_get_card_info,"ax",%progbits
+ 19899              		.align	1
+ 19900              		.global	disk_sd_get_card_info
+ 19901              		.thumb
+ 19902              		.thumb_func
+ 19904              	disk_sd_get_card_info:
+ 19905              	.LFB33:
+  53:diskio.c      **** }
+  54:diskio.c      **** //---------------------------------------------------------------------------------------------
+  55:diskio.c      **** SD_CardInfo* disk_sd_get_card_info ( )
+  56:diskio.c      **** {
+ 19906              		.loc 1 56 0
+ 19907              		.cfi_startproc
+ 19908              		@ args = 0, pretend = 0, frame = 0
+ 19909              		@ frame_needed = 0, uses_anonymous_args = 0
+ 19910              		@ link register save eliminated.
+  57:diskio.c      **** 	return &disc_sd_card_info ;
+  58:diskio.c      **** }
+ 19911              		.loc 1 58 0
+ 19912 0000 0048     		ldr	r0, .L17
+ 19913 0002 7047     		bx	lr
+ 19914              	.L18:
+ 19915              		.align	2
+ 19916              	.L17:
+ 19917 0004 00000000 		.word	disc_sd_card_info
+ 19918              		.cfi_endproc
+ 19919              	.LFE33:
+ 19921              		.section	.text.disk_read,"ax",%progbits
+ 19922              		.align	1
+ 19923              		.global	disk_read
+ 19924              		.thumb
+ 19925              		.thumb_func
+ 19927              	disk_read:
+ 19928              	.LFB34:
+  59:diskio.c      **** //---------------------------------------------------------------------------------------------
+  60:diskio.c      **** DRESULT disk_read(uint8_t drive, uint8_t *buffer, uint32_t sector, uint8_t count)
+  61:diskio.c      **** {
+ 19929              		.loc 1 61 0
+ 19930              		.cfi_startproc
+ 19931              		@ args = 0, pretend = 0, frame = 0
+ 19932              		@ frame_needed = 0, uses_anonymous_args = 0
+ 19933              	.LVL4:
+ 19934 0000 10B5     		push	{r4, lr}
+ 19935              	.LCFI3:
+ 19936              		.cfi_def_cfa_offset 8
+ 19937              		.cfi_offset 14, -4
+ 19938              		.cfi_offset 4, -8
+  62:diskio.c      ****     switch ( drive )
+ 19939              		.loc 1 62 0
+ 19940 0002 88B9     		cbnz	r0, .L27
+ 19941              	.LVL5:
+ 19942              	.LBB7:
+  63:diskio.c      ****     {
+  64:diskio.c      ****       case 0: // SDIO  интерфейс
+  65:diskio.c      ****         {
+  66:diskio.c      ****     	  SD_Error Status = SD_OK;
+  67:diskio.c      ****     	  u32 *buffer32;
+  68:diskio.c      ****     	  buffer32 = (u32*)buffer;
+  69:diskio.c      ****     	  switch (count)
+ 19943              		.loc 1 69 0
+ 19944 0004 93B1     		cbz	r3, .L26
+ 19945              	.LVL6:
+ 19946 0006 012B     		cmp	r3, #1
+ 19947 0008 4FEA4220 		lsl	r0, r2, #9
+ 19948              	.LVL7:
+ 19949 000c 04D1     		bne	.L28
+  70:diskio.c      ****     	  {
+  71:diskio.c      ****     	    case 0 : return RES_PARERR ;
+  72:diskio.c      ****     	    case 1 :
+  73:diskio.c      ****         	  Status = SD_ReadBlock( sector << 9, buffer32 ,  _MAX_SS);
+ 19950              		.loc 1 73 0
+ 19951 000e 4FF40072 		mov	r2, #512
+ 19952              	.LVL8:
+ 19953 0012 074B     		ldr	r3, .L29
+ 19954              	.LVL9:
+ 19955 0014 9847     		blx	r3
+ 19956              	.LVL10:
+  74:diskio.c      ****         	  break ;
+ 19957              		.loc 1 74 0
+ 19958 0016 03E0     		b	.L24
+ 19959              	.LVL11:
+ 19960              	.L28:
+  75:diskio.c      ****     	    default:
+  76:diskio.c      ****         	  Status = SD_ReadMultiBlocks( sector << 9 , buffer32,  _MAX_SS , count);
+ 19961              		.loc 1 76 0
+ 19962 0018 4FF40072 		mov	r2, #512
+ 19963              	.LVL12:
+ 19964 001c 054C     		ldr	r4, .L29+4
+ 19965 001e A047     		blx	r4
+ 19966              	.LVL13:
+ 19967              	.L24:
+  71:diskio.c      ****     	    case 0 : return RES_PARERR ;
+ 19968              		.loc 1 71 0
+ 19969 0020 2A38     		subs	r0, r0, #42
+ 19970              	.LVL14:
+ 19971 0022 18BF     		it	ne
+ 19972 0024 0120     		movne	r0, #1
+ 19973              	.LVL15:
+ 19974 0026 10BD     		pop	{r4, pc}
+ 19975              	.LVL16:
+ 19976              	.L27:
+ 19977              	.LBE7:
+  77:diskio.c      ****     	  }
+  78:diskio.c      ****          if (Status == SD_OK)
+  79:diskio.c      ****              return RES_OK ;
+  80:diskio.c      ****          else
+  81:diskio.c      ****              return RES_ERROR;
+  82:diskio.c      ****         }
+  83:diskio.c      ****       default:   // другие интерфейсы накопителей не реализованы
+  84:diskio.c      ****     	  return RES_NOTRDY ;
+ 19978              		.loc 1 84 0
+ 19979 0028 0320     		movs	r0, #3
+ 19980              	.LVL17:
+ 19981 002a 10BD     		pop	{r4, pc}
+ 19982              	.LVL18:
+ 19983              	.L26:
+ 19984              	.LBB8:
+  71:diskio.c      ****     	    case 0 : return RES_PARERR ;
+ 19985              		.loc 1 71 0
+ 19986 002c 0420     		movs	r0, #4
+ 19987              	.LVL19:
+ 19988              	.LBE8:
+  85:diskio.c      ****     }
+  86:diskio.c      **** }
+ 19989              		.loc 1 86 0
+ 19990 002e 10BD     		pop	{r4, pc}
+ 19991              	.L30:
+ 19992              		.align	2
+ 19993              	.L29:
+ 19994 0030 00000000 		.word	SD_ReadBlock
+ 19995 0034 00000000 		.word	SD_ReadMultiBlocks
+ 19996              		.cfi_endproc
+ 19997              	.LFE34:
+ 19999              		.section	.text.disk_write,"ax",%progbits
+ 20000              		.align	1
+ 20001              		.global	disk_write
+ 20002              		.thumb
+ 20003              		.thumb_func
+ 20005              	disk_write:
+ 20006              	.LFB35:
+  87:diskio.c      **** //----------------------------------------------------------------------------------------------
+  88:diskio.c      **** DRESULT disk_write(uint8_t drive, const uint8_t *buffer, uint32_t sector, uint8_t count)
+  89:diskio.c      **** {
+ 20007              		.loc 1 89 0
+ 20008              		.cfi_startproc
+ 20009              		@ args = 0, pretend = 0, frame = 0
+ 20010              		@ frame_needed = 0, uses_anonymous_args = 0
+ 20011              	.LVL20:
+ 20012 0000 10B5     		push	{r4, lr}
+ 20013              	.LCFI4:
+ 20014              		.cfi_def_cfa_offset 8
+ 20015              		.cfi_offset 14, -4
+ 20016              		.cfi_offset 4, -8
+  90:diskio.c      ****     switch ( drive )
+ 20017              		.loc 1 90 0
+ 20018 0002 88B9     		cbnz	r0, .L39
+ 20019              	.LVL21:
+ 20020              	.LBB9:
+  91:diskio.c      ****     {
+  92:diskio.c      ****       case 0: // SDIO  интерфейс
+  93:diskio.c      ****        {
+  94:diskio.c      ****     	  SD_Error Status = SD_OK;
+  95:diskio.c      ****     	  u32 *buffer32;
+  96:diskio.c      ****     	  buffer32 = (u32*)buffer;
+  97:diskio.c      ****     	  switch (count)
+ 20021              		.loc 1 97 0
+ 20022 0004 93B1     		cbz	r3, .L38
+ 20023              	.LVL22:
+ 20024 0006 012B     		cmp	r3, #1
+ 20025 0008 4FEA4220 		lsl	r0, r2, #9
+ 20026              	.LVL23:
+ 20027 000c 04D1     		bne	.L40
+  98:diskio.c      ****     	  {
+  99:diskio.c      ****     	    case 0 : return RES_PARERR ;
+ 100:diskio.c      ****     	    case 1 :
+ 101:diskio.c      ****         	  Status = SD_WriteBlock(  sector << 9 , buffer32,  _MAX_SS);
+ 20028              		.loc 1 101 0
+ 20029 000e 4FF40072 		mov	r2, #512
+ 20030              	.LVL24:
+ 20031 0012 074B     		ldr	r3, .L41
+ 20032              	.LVL25:
+ 20033 0014 9847     		blx	r3
+ 20034              	.LVL26:
+ 102:diskio.c      ****         	  break ;
+ 20035              		.loc 1 102 0
+ 20036 0016 03E0     		b	.L36
+ 20037              	.LVL27:
+ 20038              	.L40:
+ 103:diskio.c      ****     	    default:
+ 104:diskio.c      ****         	  Status = SD_WriteMultiBlocks( sector << 9 , buffer32, _MAX_SS , count);
+ 20039              		.loc 1 104 0
+ 20040 0018 4FF40072 		mov	r2, #512
+ 20041              	.LVL28:
+ 20042 001c 054C     		ldr	r4, .L41+4
+ 20043 001e A047     		blx	r4
+ 20044              	.LVL29:
+ 20045              	.L36:
+  99:diskio.c      ****     	    case 0 : return RES_PARERR ;
+ 20046              		.loc 1 99 0
+ 20047 0020 2A38     		subs	r0, r0, #42
+ 20048              	.LVL30:
+ 20049 0022 18BF     		it	ne
+ 20050 0024 0120     		movne	r0, #1
+ 20051              	.LVL31:
+ 20052 0026 10BD     		pop	{r4, pc}
+ 20053              	.LVL32:
+ 20054              	.L39:
+ 20055              	.LBE9:
+ 105:diskio.c      ****     	  }
+ 106:diskio.c      ****          if (Status == SD_OK)
+ 107:diskio.c      ****              return RES_OK ;
+ 108:diskio.c      ****          else
+ 109:diskio.c      ****              return RES_ERROR;
+ 110:diskio.c      ****         }
+ 111:diskio.c      ****       default:   // другие интерфейсы накопителей не реализованы
+ 112:diskio.c      ****     	  return RES_NOTRDY ;
+ 20056              		.loc 1 112 0
+ 20057 0028 0320     		movs	r0, #3
+ 20058              	.LVL33:
+ 20059 002a 10BD     		pop	{r4, pc}
+ 20060              	.LVL34:
+ 20061              	.L38:
+ 20062              	.LBB10:
+  99:diskio.c      ****     	    case 0 : return RES_PARERR ;
+ 20063              		.loc 1 99 0
+ 20064 002c 0420     		movs	r0, #4
+ 20065              	.LVL35:
+ 20066              	.LBE10:
+ 113:diskio.c      ****     }
+ 114:diskio.c      **** }
+ 20067              		.loc 1 114 0
+ 20068 002e 10BD     		pop	{r4, pc}
+ 20069              	.L42:
+ 20070              		.align	2
+ 20071              	.L41:
+ 20072 0030 00000000 		.word	SD_WriteBlock
+ 20073 0034 00000000 		.word	SD_WriteMultiBlocks
+ 20074              		.cfi_endproc
+ 20075              	.LFE35:
+ 20077              		.section	.text.get_fattime,"ax",%progbits
+ 20078              		.align	1
+ 20079              		.global	get_fattime
+ 20080              		.thumb
+ 20081              		.thumb_func
+ 20083              	get_fattime:
+ 20084              	.LFB36:
+ 115:diskio.c      **** //----------------------------------------------------------------------------------------------
+ 116:diskio.c      **** uint32_t get_fattime (void)
+ 117:diskio.c      **** {
+ 20085              		.loc 1 117 0
+ 20086              		.cfi_startproc
+ 20087              		@ args = 0, pretend = 0, frame = 0
+ 20088              		@ frame_needed = 0, uses_anonymous_args = 0
+ 20089              		@ link register save eliminated.
+ 118:diskio.c      ****    return 0 ;
+ 119:diskio.c      **** }
+ 20090              		.loc 1 119 0
+ 20091 0000 0020     		movs	r0, #0
+ 20092 0002 7047     		bx	lr
+ 20093              		.cfi_endproc
+ 20094              	.LFE36:
+ 20096              		.section	.text.disk_initialize,"ax",%progbits
+ 20097              		.align	1
+ 20098              		.global	disk_initialize
+ 20099              		.thumb
+ 20100              		.thumb_func
+ 20102              	disk_initialize:
+ 20103              	.LFB37:
+ 120:diskio.c      **** //----------------------------------------------------------------------------------------------
+ 121:diskio.c      **** 
+ 122:diskio.c      **** DSTATUS disk_initialize ( uint8_t drive)
+ 123:diskio.c      **** {
+ 20104              		.loc 1 123 0
+ 20105              		.cfi_startproc
+ 20106              		@ args = 0, pretend = 0, frame = 8
+ 20107              		@ frame_needed = 0, uses_anonymous_args = 0
+ 20108              	.LVL36:
+ 20109 0000 73B5     		push	{r0, r1, r4, r5, r6, lr}
+ 20110              	.LCFI5:
+ 20111              		.cfi_def_cfa_offset 24
+ 20112              		.cfi_offset 14, -4
+ 20113              		.cfi_offset 6, -8
+ 20114              		.cfi_offset 5, -12
+ 20115              		.cfi_offset 4, -16
+ 20116              		.cfi_offset 1, -20
+ 20117              		.cfi_offset 0, -24
+ 20118              		.loc 1 123 0
+ 20119 0002 0446     		mov	r4, r0
+ 124:diskio.c      **** 	switch ( drive )
+ 20120              		.loc 1 124 0
+ 20121 0004 0028     		cmp	r0, #0
+ 20122 0006 3BD1     		bne	.L45
+ 20123              	.LBB11:
+ 125:diskio.c      **** 	{
+ 126:diskio.c      **** 	  case 0: // SDIO  интерфейс
+ 127:diskio.c      **** 	   {
+ 128:diskio.c      **** 	    NVIC_InitTypeDef NVIC_InitStructure;
+ 129:diskio.c      **** 		NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+ 20124              		.loc 1 129 0
+ 20125 0008 1F4A     		ldr	r2, .L52
+ 20126 000a 4FF4C060 		mov	r0, #1536
+ 20127              	.LVL37:
+ 20128 000e 9047     		blx	r2
+ 130:diskio.c      **** 		NVIC_InitStructure.NVIC_IRQChannel = SDIO_IRQn;
+ 131:diskio.c      **** 		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+ 132:diskio.c      **** 		NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+ 133:diskio.c      **** 		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+ 20129              		.loc 1 133 0
+ 20130 0010 0126     		movs	r6, #1
+ 130:diskio.c      **** 		NVIC_InitStructure.NVIC_IRQChannel = SDIO_IRQn;
+ 20131              		.loc 1 130 0
+ 20132 0012 3120     		movs	r0, #49
+ 20133 0014 8DF80400 		strb	r0, [sp, #4]
+ 134:diskio.c      **** 		NVIC_Init(&NVIC_InitStructure);
+ 20134              		.loc 1 134 0
+ 20135 0018 1C49     		ldr	r1, .L52+4
+ 20136 001a 01A8     		add	r0, sp, #4
+ 131:diskio.c      **** 		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+ 20137              		.loc 1 131 0
+ 20138 001c 8DF80540 		strb	r4, [sp, #5]
+ 132:diskio.c      **** 		NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+ 20139              		.loc 1 132 0
+ 20140 0020 8DF80640 		strb	r4, [sp, #6]
+ 133:diskio.c      **** 		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+ 20141              		.loc 1 133 0
+ 20142 0024 8DF80760 		strb	r6, [sp, #7]
+ 20143              		.loc 1 134 0
+ 20144 0028 8847     		blx	r1
+ 135:diskio.c      **** 
+ 136:diskio.c      **** 	    // проверяем наличие накопителя в сокете
+ 137:diskio.c      **** 		if ( !disk_sd_present() )
+ 20145              		.loc 1 137 0
+ 20146 002a 194B     		ldr	r3, .L52+8
+ 20147 002c 9847     		blx	r3
+ 20148 002e 194D     		ldr	r5, .L52+12
+ 20149 0030 10B9     		cbnz	r0, .L47
+ 138:diskio.c      **** 		{
+ 139:diskio.c      **** 			disc_status[drive] = STA_NODISK ;
+ 20150              		.loc 1 139 0
+ 20151 0032 0220     		movs	r0, #2
+ 20152 0034 2860     		str	r0, [r5, #0]
+ 140:diskio.c      **** 		    return disc_status[drive] ;
+ 20153              		.loc 1 140 0
+ 20154 0036 26E0     		b	.L48
+ 20155              	.L47:
+ 141:diskio.c      **** 		}
+ 142:diskio.c      **** 		disc_status[0] = STA_NOINIT ;
+ 143:diskio.c      **** 
+ 144:diskio.c      **** 		SD_Error Status = SD_OK;
+ 145:diskio.c      **** 		// подключение питания к сокету
+ 146:diskio.c      **** 		disk_sd_set_power(ENABLE);
+ 20156              		.loc 1 146 0
+ 20157 0038 3046     		mov	r0, r6
+ 20158 003a 1749     		ldr	r1, .L52+16
+ 142:diskio.c      **** 		disc_status[0] = STA_NOINIT ;
+ 20159              		.loc 1 142 0
+ 20160 003c 2E60     		str	r6, [r5, #0]
+ 20161              	.LVL38:
+ 20162              		.loc 1 146 0
+ 20163 003e 8847     		blx	r1
+ 147:diskio.c      **** 		Status = SD_Init();
+ 20164              		.loc 1 147 0
+ 20165 0040 164B     		ldr	r3, .L52+20
+ 20166 0042 9847     		blx	r3
+ 20167              	.LVL39:
+ 148:diskio.c      **** 		if (Status == SD_OK)// Read CSD/CID MSD registers
+ 20168              		.loc 1 148 0
+ 20169 0044 2A28     		cmp	r0, #42
+ 20170 0046 1BD1     		bne	.L45
+ 149:diskio.c      ****    		   Status = SD_GetCardInfo(&disc_sd_card_info);
+ 20171              		.loc 1 149 0
+ 20172 0048 154E     		ldr	r6, .L52+24
+ 20173 004a 164A     		ldr	r2, .L52+28
+ 20174 004c 3046     		mov	r0, r6
+ 20175              	.LVL40:
+ 20176 004e 9047     		blx	r2
+ 20177              	.LVL41:
+ 150:diskio.c      **** 
+ 151:diskio.c      ****         if (Status == SD_OK)// Select Card
+ 20178              		.loc 1 151 0
+ 20179 0050 2A28     		cmp	r0, #42
+ 20180 0052 15D1     		bne	.L45
+ 152:diskio.c      **** 		   Status = SD_SelectDeselect((u32) (disc_sd_card_info.RCA << 16));
+ 20181              		.loc 1 152 0
+ 20182 0054 B6F84C00 		ldrh	r0, [r6, #76]
+ 20183              	.LVL42:
+ 20184 0058 134B     		ldr	r3, .L52+32
+ 20185 005a 0004     		lsls	r0, r0, #16
+ 20186 005c 9847     		blx	r3
+ 20187              	.LVL43:
+ 153:diskio.c      **** 
+ 154:diskio.c      ****         if (Status == SD_OK)
+ 20188              		.loc 1 154 0
+ 20189 005e 2A28     		cmp	r0, #42
+ 20190 0060 0ED1     		bne	.L45
+ 155:diskio.c      **** 		   Status = SD_EnableWideBusOperation(SDIO_BusWide_4b);
+ 20191              		.loc 1 155 0
+ 20192 0062 4FF40060 		mov	r0, #2048
+ 20193              	.LVL44:
+ 20194 0066 1149     		ldr	r1, .L52+36
+ 20195 0068 8847     		blx	r1
+ 20196              	.LVL45:
+ 156:diskio.c      **** 
+ 157:diskio.c      **** 		if (Status == SD_OK) // Set Device Transfer Mode to DMA
+ 20197              		.loc 1 157 0
+ 20198 006a 2A28     		cmp	r0, #42
+ 20199 006c 08D1     		bne	.L45
+ 158:diskio.c      **** 		   Status = SD_SetDeviceMode(SD_DMA_MODE);
+ 20200              		.loc 1 158 0
+ 20201 006e 2046     		mov	r0, r4
+ 20202              	.LVL46:
+ 20203 0070 0F4B     		ldr	r3, .L52+40
+ 20204 0072 9847     		blx	r3
+ 20205              	.LVL47:
+ 159:diskio.c      **** 
+ 160:diskio.c      ****         if ( Status == SD_OK )
+ 20206              		.loc 1 160 0
+ 20207 0074 2A28     		cmp	r0, #42
+ 161:diskio.c      **** 		   disc_status[0] &= ~STA_NOINIT ;
+ 20208              		.loc 1 161 0
+ 20209 0076 02BF     		ittt	eq
+ 20210 0078 2A68     		ldreq	r2, [r5, #0]
+ 20211 007a 22F00102 		biceq	r2, r2, #1
+ 20212 007e 2A60     		streq	r2, [r5, #0]
+ 20213              	.LVL48:
+ 20214              	.L45:
+ 20215              	.LBE11:
+ 162:diskio.c      ****         break ;
+ 163:diskio.c      **** 	    }
+ 164:diskio.c      **** 	  default: // другие интерфейсы накопителей не реализованы
+ 165:diskio.c      **** 		break ;
+ 166:diskio.c      **** 	 }
+ 167:diskio.c      ****   return disc_status[drive] ;
+ 20216              		.loc 1 167 0
+ 20217 0080 0448     		ldr	r0, .L52+12
+ 20218 0082 10F82400 		ldrb	r0, [r0, r4, lsl #2]	@ zero_extendqisi2
+ 20219              	.L48:
+ 168:diskio.c      **** }
+ 20220              		.loc 1 168 0
+ 20221 0086 7CBD     		pop	{r2, r3, r4, r5, r6, pc}
+ 20222              	.L53:
+ 20223              		.align	2
+ 20224              	.L52:
+ 20225 0088 00000000 		.word	NVIC_PriorityGroupConfig
+ 20226 008c 00000000 		.word	NVIC_Init
+ 20227 0090 00000000 		.word	disk_sd_present
+ 20228 0094 00000000 		.word	.LANCHOR0
+ 20229 0098 00000000 		.word	disk_sd_set_power
+ 20230 009c 00000000 		.word	SD_Init
+ 20231 00a0 00000000 		.word	disc_sd_card_info
+ 20232 00a4 00000000 		.word	SD_GetCardInfo
+ 20233 00a8 00000000 		.word	SD_SelectDeselect
+ 20234 00ac 00000000 		.word	SD_EnableWideBusOperation
+ 20235 00b0 00000000 		.word	SD_SetDeviceMode
+ 20236              		.cfi_endproc
+ 20237              	.LFE37:
+ 20239              		.section	.text.disk_deinitialize,"ax",%progbits
+ 20240              		.align	1
+ 20241              		.global	disk_deinitialize
+ 20242              		.thumb
+ 20243              		.thumb_func
+ 20245              	disk_deinitialize:
+ 20246              	.LFB38:
+ 169:diskio.c      **** //----------------------------------------------------------------------------------------------
+ 170:diskio.c      **** DSTATUS disk_deinitialize (uint8_t drive)
+ 171:diskio.c      **** {
+ 20247              		.loc 1 171 0
+ 20248              		.cfi_startproc
+ 20249              		@ args = 0, pretend = 0, frame = 8
+ 20250              		@ frame_needed = 0, uses_anonymous_args = 0
+ 20251              	.LVL49:
+ 20252 0000 13B5     		push	{r0, r1, r4, lr}
+ 20253              	.LCFI6:
+ 20254              		.cfi_def_cfa_offset 16
+ 20255              		.cfi_offset 14, -4
+ 20256              		.cfi_offset 4, -8
+ 20257              		.cfi_offset 1, -12
+ 20258              		.cfi_offset 0, -16
+ 20259              		.loc 1 171 0
+ 20260 0002 0446     		mov	r4, r0
+ 172:diskio.c      **** 	switch ( drive )
+ 20261              		.loc 1 172 0
+ 20262 0004 B8B9     		cbnz	r0, .L55
+ 20263              	.LBB12:
+ 173:diskio.c      **** 	{
+ 174:diskio.c      **** 	  case 0: // SDIO  интерфейс
+ 175:diskio.c      **** 		  disc_status[drive] = STA_NOINIT ;
+ 20264              		.loc 1 175 0
+ 20265 0006 0E49     		ldr	r1, .L57
+ 20266 0008 0120     		movs	r0, #1
+ 20267              	.LVL50:
+ 20268 000a 0860     		str	r0, [r1, #0]
+ 176:diskio.c      **** 	      SDIO_DeInit();
+ 20269              		.loc 1 176 0
+ 20270 000c 0D4B     		ldr	r3, .L57+4
+ 20271 000e 9847     		blx	r3
+ 177:diskio.c      **** 	      // отключение питания от сокета
+ 178:diskio.c      **** 	      disk_sd_set_power(DISABLE);
+ 20272              		.loc 1 178 0
+ 20273 0010 2046     		mov	r0, r4
+ 20274 0012 0D4A     		ldr	r2, .L57+8
+ 20275 0014 9047     		blx	r2
+ 179:diskio.c      **** 	      NVIC_InitTypeDef NVIC_InitStructure;
+ 180:diskio.c      **** 	      NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+ 20276              		.loc 1 180 0
+ 20277 0016 4FF4C060 		mov	r0, #1536
+ 20278 001a 0C49     		ldr	r1, .L57+12
+ 20279 001c 8847     		blx	r1
+ 181:diskio.c      **** 	      NVIC_InitStructure.NVIC_IRQChannel = SDIO_IRQn;
+ 20280              		.loc 1 181 0
+ 20281 001e 3120     		movs	r0, #49
+ 20282 0020 8DF80400 		strb	r0, [sp, #4]
+ 182:diskio.c      **** 	      NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+ 20283              		.loc 1 182 0
+ 20284 0024 8DF80540 		strb	r4, [sp, #5]
+ 183:diskio.c      **** 	      NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+ 20285              		.loc 1 183 0
+ 20286 0028 8DF80640 		strb	r4, [sp, #6]
+ 184:diskio.c      **** 	      NVIC_InitStructure.NVIC_IRQChannelCmd = DISABLE;
+ 20287              		.loc 1 184 0
+ 20288 002c 8DF80740 		strb	r4, [sp, #7]
+ 185:diskio.c      **** 	      NVIC_Init(&NVIC_InitStructure);
+ 20289              		.loc 1 185 0
+ 20290 0030 01A8     		add	r0, sp, #4
+ 20291 0032 074B     		ldr	r3, .L57+16
+ 20292 0034 9847     		blx	r3
+ 20293              	.L55:
+ 186:diskio.c      **** 	      break ;
+ 20294              		.loc 1 186 0
+ 20295 0036 024A     		ldr	r2, .L57
+ 20296 0038 12F82400 		ldrb	r0, [r2, r4, lsl #2]	@ zero_extendqisi2
+ 20297              	.LBE12:
+ 187:diskio.c      **** 	  default: // другие интерфейсы накопителей не реализованы
+ 188:diskio.c      **** 		  break ;
+ 189:diskio.c      **** 	}
+ 190:diskio.c      **** 	return disc_status[drive] ;
+ 191:diskio.c      **** }
+ 20298              		.loc 1 191 0
+ 20299 003c 1CBD     		pop	{r2, r3, r4, pc}
+ 20300              	.L58:
+ 20301 003e 00BF     		.align	2
+ 20302              	.L57:
+ 20303 0040 00000000 		.word	.LANCHOR0
+ 20304 0044 00000000 		.word	SDIO_DeInit
+ 20305 0048 00000000 		.word	disk_sd_set_power
+ 20306 004c 00000000 		.word	NVIC_PriorityGroupConfig
+ 20307 0050 00000000 		.word	NVIC_Init
+ 20308              		.cfi_endproc
+ 20309              	.LFE38:
+ 20311              		.section	.text.disk_status,"ax",%progbits
+ 20312              		.align	1
+ 20313              		.global	disk_status
+ 20314              		.thumb
+ 20315              		.thumb_func
+ 20317              	disk_status:
+ 20318              	.LFB39:
+ 192:diskio.c      **** //----------------------------------------------------------------------------------------------
+ 193:diskio.c      **** DSTATUS disk_status (uint8_t drive)
+ 194:diskio.c      **** {
+ 20319              		.loc 1 194 0
+ 20320              		.cfi_startproc
+ 20321              		@ args = 0, pretend = 0, frame = 0
+ 20322              		@ frame_needed = 0, uses_anonymous_args = 0
+ 20323              		@ link register save eliminated.
+ 20324              	.LVL51:
+ 20325              		.loc 1 194 0
+ 20326 0000 014B     		ldr	r3, .L60
+ 20327 0002 13F82000 		ldrb	r0, [r3, r0, lsl #2]	@ zero_extendqisi2
+ 20328              	.LVL52:
+ 195:diskio.c      ****    return disc_status[drive] ;
+ 196:diskio.c      **** }
+ 20329              		.loc 1 196 0
+ 20330 0006 7047     		bx	lr
+ 20331              	.L61:
+ 20332              		.align	2
+ 20333              	.L60:
+ 20334 0008 00000000 		.word	.LANCHOR0
+ 20335              		.cfi_endproc
+ 20336              	.LFE39:
+ 20338              		.section	.text.disk_ioctl,"ax",%progbits
+ 20339              		.align	1
+ 20340              		.global	disk_ioctl
+ 20341              		.thumb
+ 20342              		.thumb_func
+ 20344              	disk_ioctl:
+ 20345              	.LFB40:
+ 197:diskio.c      **** //----------------------------------------------------------------------------------------------
+ 198:diskio.c      **** DRESULT disk_ioctl ( uint8_t drive,   uint8_t ctrl, void* buff)
+ 199:diskio.c      **** {
+ 20346              		.loc 1 199 0
+ 20347              		.cfi_startproc
+ 20348              		@ args = 0, pretend = 0, frame = 0
+ 20349              		@ frame_needed = 0, uses_anonymous_args = 0
+ 20350              		@ link register save eliminated.
+ 20351              	.LVL53:
+ 200:diskio.c      **** 	 switch(drive)
+ 20352              		.loc 1 200 0
+ 20353 0000 60B9     		cbnz	r0, .L72
+ 201:diskio.c      **** 	   {
+ 202:diskio.c      **** 	      case 0 : // SDIO  интерфейс
+ 203:diskio.c      **** 	    	  switch(ctrl)
+ 20354              		.loc 1 203 0
+ 20355 0002 0329     		cmp	r1, #3
+ 20356 0004 0CD8     		bhi	.L71
+ 20357 0006 DFE801F0 		tbb	[pc, r1]
+ 20358              	.L69:
+ 20359 000a 07       		.byte	(.L73-.L69)/2
+ 20360 000b 02       		.byte	(.L66-.L69)/2
+ 20361 000c 02       		.byte	(.L66-.L69)/2
+ 20362 000d 05       		.byte	(.L68-.L69)/2
+ 20363              		.align	1
+ 20364              	.L66:
+ 204:diskio.c      **** 	    		       {
+ 205:diskio.c      **** 	    		        case CTRL_SYNC:
+ 206:diskio.c      **** 	    		        	return RES_OK;
+ 207:diskio.c      **** 	    		        case GET_SECTOR_SIZE:
+ 208:diskio.c      **** 	    		          {
+ 209:diskio.c      **** 	    		        	*(uint32_t*)buff = 0 ;
+ 210:diskio.c      **** 	    		        	return RES_OK;
+ 211:diskio.c      **** 	    		          }
+ 212:diskio.c      **** 	    		        case GET_SECTOR_COUNT:
+ 213:diskio.c      **** 	    		          {
+ 214:diskio.c      **** 	    		        	*(uint32_t*)buff = 0 ;
+ 20365              		.loc 1 214 0
+ 20366 000e 0020     		movs	r0, #0
+ 20367              	.LVL54:
+ 20368 0010 1060     		str	r0, [r2, #0]
+ 215:diskio.c      **** 	    		        	return RES_OK;
+ 20369              		.loc 1 215 0
+ 20370 0012 7047     		bx	lr
+ 20371              	.LVL55:
+ 20372              	.L68:
+ 216:diskio.c      **** 	    		          }
+ 217:diskio.c      **** 	    		        case GET_BLOCK_SIZE:
+ 218:diskio.c      **** 	    		            *(uint32_t*)buff = 1 ;
+ 20373              		.loc 1 218 0
+ 20374 0014 0123     		movs	r3, #1
+ 20375 0016 1360     		str	r3, [r2, #0]
+ 20376              	.L73:
+ 219:diskio.c      **** 	    		            return RES_OK;
+ 20377              		.loc 1 219 0
+ 20378 0018 0020     		movs	r0, #0
+ 20379              	.LVL56:
+ 20380 001a 7047     		bx	lr
+ 20381              	.LVL57:
+ 20382              	.L72:
+ 220:diskio.c      **** 	    		        default:
+ 221:diskio.c      **** 	    		            return RES_PARERR;
+ 222:diskio.c      **** 	    		        }
+ 223:diskio.c      **** 	    	  break ;
+ 224:diskio.c      **** 	      default :  // другие интерфейсы накопителей не реализованы
+ 225:diskio.c      **** 	    	  return RES_NOTRDY ;
+ 20383              		.loc 1 225 0
+ 20384 001c 0320     		movs	r0, #3
+ 20385              	.LVL58:
+ 20386 001e 7047     		bx	lr
+ 20387              	.LVL59:
+ 20388              	.L71:
+ 221:diskio.c      **** 	    		            return RES_PARERR;
+ 20389              		.loc 1 221 0
+ 20390 0020 0420     		movs	r0, #4
+ 20391              	.LVL60:
+ 226:diskio.c      **** 	   }
+ 227:diskio.c      **** }
+ 20392              		.loc 1 227 0
+ 20393 0022 7047     		bx	lr
+ 20394              		.cfi_endproc
+ 20395              	.LFE40:
+ 20397              		.comm	disc_sd_card_info,80,4
+ 20398              		.section	.bss.disc_status,"aw",%nobits
+ 20399              		.align	2
+ 20400              		.set	.LANCHOR0,. + 0
+ 20403              	disc_status:
+ 20404 0000 00000000 		.space	4
+ 20405              		.section	.bss.is_initialized.3183,"aw",%nobits
+ 20406              		.set	.LANCHOR1,. + 0
+ 20409              	is_initialized.3183:
+ 20410 0000 00       		.space	1
+ 20411              		.text
+ 20412              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 diskio.c
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:19698  .text.disk_sd_init_status:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:19703  .text.disk_sd_init_status:00000000 disk_sd_init_status
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:19723  .text.disk_sd_init_status:00000008 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:19728  .init_array:00000000 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:19731  .text.disk_sd_init_power_detect_pins:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:19736  .text.disk_sd_init_power_detect_pins:00000000 disk_sd_init_power_detect_pins
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:19809  .text.disk_sd_init_power_detect_pins:00000048 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:19817  .text.disk_sd_present:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:19822  .text.disk_sd_present:00000000 disk_sd_present
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:19848  .text.disk_sd_present:00000018 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:19854  .text.disk_sd_set_power:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:19859  .text.disk_sd_set_power:00000000 disk_sd_set_power
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:19893  .text.disk_sd_set_power:00000018 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:19899  .text.disk_sd_get_card_info:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:19904  .text.disk_sd_get_card_info:00000000 disk_sd_get_card_info
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:19917  .text.disk_sd_get_card_info:00000004 $d
+                            *COM*:00000050 disc_sd_card_info
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:19922  .text.disk_read:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:19927  .text.disk_read:00000000 disk_read
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:19994  .text.disk_read:00000030 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:20000  .text.disk_write:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:20005  .text.disk_write:00000000 disk_write
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:20072  .text.disk_write:00000030 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:20078  .text.get_fattime:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:20083  .text.get_fattime:00000000 get_fattime
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:20097  .text.disk_initialize:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:20102  .text.disk_initialize:00000000 disk_initialize
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:20225  .text.disk_initialize:00000088 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:20240  .text.disk_deinitialize:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:20245  .text.disk_deinitialize:00000000 disk_deinitialize
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:20303  .text.disk_deinitialize:00000040 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:20312  .text.disk_status:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:20317  .text.disk_status:00000000 disk_status
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:20334  .text.disk_status:00000008 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:20339  .text.disk_ioctl:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:20344  .text.disk_ioctl:00000000 disk_ioctl
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:20359  .text.disk_ioctl:0000000a $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:20363  .text.disk_ioctl:0000000e $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:20399  .bss.disc_status:00000000 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:20403  .bss.disc_status:00000000 disc_status
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:20409  .bss.is_initialized.3183:00000000 is_initialized.3183
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccclQeQ0.s:20410  .bss.is_initialized.3183:00000000 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+RCC_APB2PeriphClockCmd
+GPIO_Init
+SD_ReadBlock
+SD_ReadMultiBlocks
+SD_WriteBlock
+SD_WriteMultiBlocks
+NVIC_PriorityGroupConfig
+NVIC_Init
+SD_Init
+SD_GetCardInfo
+SD_SelectDeselect
+SD_EnableWideBusOperation
+SD_SetDeviceMode
+SDIO_DeInit

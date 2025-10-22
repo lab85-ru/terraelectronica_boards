@@ -1,0 +1,1882 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 18, 4
+  12              		.thumb
+  13              		.file	"stm32f10x_pwr.c"
+  23              	.Ltext0:
+ 16407              		.align	1
+ 16408              		.global	PWR_DeInit
+ 16409              		.thumb
+ 16410              		.thumb_func
+ 16412              	PWR_DeInit:
+ 16413              	.LFB29:
+   1:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /**
+   2:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   ******************************************************************************
+   3:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @file    stm32f10x_pwr.c
+   4:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @author  MCD Application Team
+   5:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @version V3.3.0
+   6:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @date    04/16/2010
+   7:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @brief   This file provides all the PWR firmware functions.
+   8:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   ******************************************************************************
+   9:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @copy
+  10:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *
+  11:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+  12:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+  13:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+  14:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+  15:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+  16:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  17:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *
+  18:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * <h2><center>&copy; COPYRIGHT 2010 STMicroelectronics</center></h2>
+  19:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   */ 
+  20:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+  21:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /* Includes ------------------------------------------------------------------*/
+  22:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** #include "stm32f10x_pwr.h"
+  23:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** #include "stm32f10x_rcc.h"
+  24:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+  25:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /** @addtogroup STM32F10x_StdPeriph_Driver
+  26:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @{
+  27:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   */
+  28:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+  29:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /** @defgroup PWR 
+  30:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @brief PWR driver modules
+  31:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @{
+  32:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   */ 
+  33:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+  34:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /** @defgroup PWR_Private_TypesDefinitions
+  35:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @{
+  36:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   */
+  37:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+  38:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /**
+  39:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @}
+  40:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   */
+  41:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+  42:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /** @defgroup PWR_Private_Defines
+  43:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @{
+  44:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   */
+  45:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+  46:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /* --------- PWR registers bit address in the alias region ---------- */
+  47:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** #define PWR_OFFSET               (PWR_BASE - PERIPH_BASE)
+  48:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+  49:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /* --- CR Register ---*/
+  50:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+  51:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /* Alias word address of DBP bit */
+  52:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** #define CR_OFFSET                (PWR_OFFSET + 0x00)
+  53:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** #define DBP_BitNumber            0x08
+  54:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** #define CR_DBP_BB                (PERIPH_BB_BASE + (CR_OFFSET * 32) + (DBP_BitNumber * 4))
+  55:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+  56:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /* Alias word address of PVDE bit */
+  57:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** #define PVDE_BitNumber           0x04
+  58:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** #define CR_PVDE_BB               (PERIPH_BB_BASE + (CR_OFFSET * 32) + (PVDE_BitNumber * 4))
+  59:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+  60:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /* --- CSR Register ---*/
+  61:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+  62:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /* Alias word address of EWUP bit */
+  63:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** #define CSR_OFFSET               (PWR_OFFSET + 0x04)
+  64:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** #define EWUP_BitNumber           0x08
+  65:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** #define CSR_EWUP_BB              (PERIPH_BB_BASE + (CSR_OFFSET * 32) + (EWUP_BitNumber * 4))
+  66:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+  67:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /* ------------------ PWR registers bit mask ------------------------ */
+  68:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+  69:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /* CR register bit mask */
+  70:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** #define CR_PDDS_Set              ((uint32_t)0x00000002)
+  71:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** #define CR_DS_Mask               ((uint32_t)0xFFFFFFFC)
+  72:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** #define CR_CWUF_Set              ((uint32_t)0x00000004)
+  73:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** #define CR_PLS_Mask              ((uint32_t)0xFFFFFF1F)
+  74:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+  75:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /* --------- Cortex System Control register bit mask ---------------- */
+  76:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+  77:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /* Cortex System Control register address */
+  78:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** #define SCB_SysCtrl              ((uint32_t)0xE000ED10)
+  79:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+  80:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /* SLEEPDEEP bit mask */
+  81:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** #define SysCtrl_SLEEPDEEP_Set    ((uint32_t)0x00000004)
+  82:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** #define SysCtrl_SLEEPDEEP_Reset  ((uint32_t)0xFFFFFFFB)
+  83:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+  84:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /**
+  85:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @}
+  86:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   */
+  87:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+  88:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /** @defgroup PWR_Private_Macros
+  89:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @{
+  90:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   */
+  91:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+  92:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /**
+  93:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @}
+  94:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   */
+  95:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+  96:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /** @defgroup PWR_Private_Variables
+  97:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @{
+  98:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   */
+  99:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+ 100:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /**
+ 101:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @}
+ 102:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   */
+ 103:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+ 104:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /** @defgroup PWR_Private_FunctionPrototypes
+ 105:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @{
+ 106:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   */
+ 107:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+ 108:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /**
+ 109:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @}
+ 110:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   */
+ 111:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+ 112:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /** @defgroup PWR_Private_Functions
+ 113:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @{
+ 114:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   */
+ 115:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+ 116:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /**
+ 117:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @brief  Deinitializes the PWR peripheral registers to their default reset values.
+ 118:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @param  None
+ 119:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @retval None
+ 120:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   */
+ 121:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** void PWR_DeInit(void)
+ 122:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** {
+ 16414              		.loc 1 122 0
+ 16415              		.cfi_startproc
+ 16416              		@ args = 0, pretend = 0, frame = 0
+ 16417              		@ frame_needed = 0, uses_anonymous_args = 0
+ 16418 0000 10B5     		push	{r4, lr}
+ 16419              	.LCFI0:
+ 16420              		.cfi_def_cfa_offset 8
+ 16421              		.cfi_offset 14, -4
+ 16422              		.cfi_offset 4, -8
+ 123:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   RCC_APB1PeriphResetCmd(RCC_APB1Periph_PWR, ENABLE);
+ 16423              		.loc 1 123 0
+ 16424 0002 0121     		movs	r1, #1
+ 16425 0004 4FF08050 		mov	r0, #268435456
+ 16426 0008 034C     		ldr	r4, .L2
+ 16427 000a A047     		blx	r4
+ 124:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   RCC_APB1PeriphResetCmd(RCC_APB1Periph_PWR, DISABLE);
+ 16428              		.loc 1 124 0
+ 16429 000c 4FF08050 		mov	r0, #268435456
+ 16430 0010 0021     		movs	r1, #0
+ 16431 0012 A047     		blx	r4
+ 125:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** }
+ 16432              		.loc 1 125 0
+ 16433 0014 10BD     		pop	{r4, pc}
+ 16434              	.L3:
+ 16435 0016 00BF     		.align	2
+ 16436              	.L2:
+ 16437 0018 00000000 		.word	RCC_APB1PeriphResetCmd
+ 16438              		.cfi_endproc
+ 16439              	.LFE29:
+ 16441              		.section	.text.PWR_BackupAccessCmd,"ax",%progbits
+ 16442              		.align	1
+ 16443              		.global	PWR_BackupAccessCmd
+ 16444              		.thumb
+ 16445              		.thumb_func
+ 16447              	PWR_BackupAccessCmd:
+ 16448              	.LFB30:
+ 126:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+ 127:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /**
+ 128:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @brief  Enables or disables access to the RTC and backup registers.
+ 129:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @param  NewState: new state of the access to the RTC and backup registers.
+ 130:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *   This parameter can be: ENABLE or DISABLE.
+ 131:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @retval None
+ 132:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   */
+ 133:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** void PWR_BackupAccessCmd(FunctionalState NewState)
+ 134:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** {
+ 16449              		.loc 1 134 0
+ 16450              		.cfi_startproc
+ 16451              		@ args = 0, pretend = 0, frame = 0
+ 16452              		@ frame_needed = 0, uses_anonymous_args = 0
+ 16453              		@ link register save eliminated.
+ 16454              	.LVL0:
+ 135:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   /* Check the parameters */
+ 136:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
+ 137:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *(__IO uint32_t *) CR_DBP_BB = (uint32_t)NewState;
+ 16455              		.loc 1 137 0
+ 16456 0000 014B     		ldr	r3, .L5
+ 16457 0002 1860     		str	r0, [r3, #0]
+ 138:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** }
+ 16458              		.loc 1 138 0
+ 16459 0004 7047     		bx	lr
+ 16460              	.L6:
+ 16461 0006 00BF     		.align	2
+ 16462              	.L5:
+ 16463 0008 20000E42 		.word	1108213792
+ 16464              		.cfi_endproc
+ 16465              	.LFE30:
+ 16467              		.section	.text.PWR_PVDCmd,"ax",%progbits
+ 16468              		.align	1
+ 16469              		.global	PWR_PVDCmd
+ 16470              		.thumb
+ 16471              		.thumb_func
+ 16473              	PWR_PVDCmd:
+ 16474              	.LFB31:
+ 139:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+ 140:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /**
+ 141:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @brief  Enables or disables the Power Voltage Detector(PVD).
+ 142:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @param  NewState: new state of the PVD.
+ 143:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *   This parameter can be: ENABLE or DISABLE.
+ 144:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @retval None
+ 145:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   */
+ 146:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** void PWR_PVDCmd(FunctionalState NewState)
+ 147:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** {
+ 16475              		.loc 1 147 0
+ 16476              		.cfi_startproc
+ 16477              		@ args = 0, pretend = 0, frame = 0
+ 16478              		@ frame_needed = 0, uses_anonymous_args = 0
+ 16479              		@ link register save eliminated.
+ 16480              	.LVL1:
+ 148:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   /* Check the parameters */
+ 149:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
+ 150:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *(__IO uint32_t *) CR_PVDE_BB = (uint32_t)NewState;
+ 16481              		.loc 1 150 0
+ 16482 0000 014B     		ldr	r3, .L8
+ 16483 0002 1860     		str	r0, [r3, #0]
+ 151:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** }
+ 16484              		.loc 1 151 0
+ 16485 0004 7047     		bx	lr
+ 16486              	.L9:
+ 16487 0006 00BF     		.align	2
+ 16488              	.L8:
+ 16489 0008 10000E42 		.word	1108213776
+ 16490              		.cfi_endproc
+ 16491              	.LFE31:
+ 16493              		.section	.text.PWR_PVDLevelConfig,"ax",%progbits
+ 16494              		.align	1
+ 16495              		.global	PWR_PVDLevelConfig
+ 16496              		.thumb
+ 16497              		.thumb_func
+ 16499              	PWR_PVDLevelConfig:
+ 16500              	.LFB32:
+ 152:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+ 153:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /**
+ 154:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @brief  Configures the voltage threshold detected by the Power Voltage Detector(PVD).
+ 155:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @param  PWR_PVDLevel: specifies the PVD detection level
+ 156:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *   This parameter can be one of the following values:
+ 157:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *     @arg PWR_PVDLevel_2V2: PVD detection level set to 2.2V
+ 158:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *     @arg PWR_PVDLevel_2V3: PVD detection level set to 2.3V
+ 159:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *     @arg PWR_PVDLevel_2V4: PVD detection level set to 2.4V
+ 160:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *     @arg PWR_PVDLevel_2V5: PVD detection level set to 2.5V
+ 161:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *     @arg PWR_PVDLevel_2V6: PVD detection level set to 2.6V
+ 162:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *     @arg PWR_PVDLevel_2V7: PVD detection level set to 2.7V
+ 163:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *     @arg PWR_PVDLevel_2V8: PVD detection level set to 2.8V
+ 164:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *     @arg PWR_PVDLevel_2V9: PVD detection level set to 2.9V
+ 165:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @retval None
+ 166:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   */
+ 167:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** void PWR_PVDLevelConfig(uint32_t PWR_PVDLevel)
+ 168:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** {
+ 16501              		.loc 1 168 0
+ 16502              		.cfi_startproc
+ 16503              		@ args = 0, pretend = 0, frame = 0
+ 16504              		@ frame_needed = 0, uses_anonymous_args = 0
+ 16505              		@ link register save eliminated.
+ 16506              	.LVL2:
+ 169:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   uint32_t tmpreg = 0;
+ 170:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   /* Check the parameters */
+ 171:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   assert_param(IS_PWR_PVD_LEVEL(PWR_PVDLevel));
+ 172:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   tmpreg = PWR->CR;
+ 16507              		.loc 1 172 0
+ 16508 0000 034B     		ldr	r3, .L11
+ 16509 0002 1968     		ldr	r1, [r3, #0]
+ 16510              	.LVL3:
+ 173:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   /* Clear PLS[7:5] bits */
+ 174:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   tmpreg &= CR_PLS_Mask;
+ 16511              		.loc 1 174 0
+ 16512 0004 21F0E002 		bic	r2, r1, #224
+ 16513              	.LVL4:
+ 175:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   /* Set PLS[7:5] bits according to PWR_PVDLevel value */
+ 176:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   tmpreg |= PWR_PVDLevel;
+ 16514              		.loc 1 176 0
+ 16515 0008 1043     		orrs	r0, r0, r2
+ 16516              	.LVL5:
+ 177:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   /* Store the new value */
+ 178:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   PWR->CR = tmpreg;
+ 16517              		.loc 1 178 0
+ 16518 000a 1860     		str	r0, [r3, #0]
+ 179:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** }
+ 16519              		.loc 1 179 0
+ 16520 000c 7047     		bx	lr
+ 16521              	.L12:
+ 16522 000e 00BF     		.align	2
+ 16523              	.L11:
+ 16524 0010 00700040 		.word	1073770496
+ 16525              		.cfi_endproc
+ 16526              	.LFE32:
+ 16528              		.section	.text.PWR_WakeUpPinCmd,"ax",%progbits
+ 16529              		.align	1
+ 16530              		.global	PWR_WakeUpPinCmd
+ 16531              		.thumb
+ 16532              		.thumb_func
+ 16534              	PWR_WakeUpPinCmd:
+ 16535              	.LFB33:
+ 180:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+ 181:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /**
+ 182:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @brief  Enables or disables the WakeUp Pin functionality.
+ 183:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @param  NewState: new state of the WakeUp Pin functionality.
+ 184:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *   This parameter can be: ENABLE or DISABLE.
+ 185:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @retval None
+ 186:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   */
+ 187:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** void PWR_WakeUpPinCmd(FunctionalState NewState)
+ 188:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** {
+ 16536              		.loc 1 188 0
+ 16537              		.cfi_startproc
+ 16538              		@ args = 0, pretend = 0, frame = 0
+ 16539              		@ frame_needed = 0, uses_anonymous_args = 0
+ 16540              		@ link register save eliminated.
+ 16541              	.LVL6:
+ 189:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   /* Check the parameters */
+ 190:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
+ 191:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *(__IO uint32_t *) CSR_EWUP_BB = (uint32_t)NewState;
+ 16542              		.loc 1 191 0
+ 16543 0000 014B     		ldr	r3, .L14
+ 16544 0002 1860     		str	r0, [r3, #0]
+ 192:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** }
+ 16545              		.loc 1 192 0
+ 16546 0004 7047     		bx	lr
+ 16547              	.L15:
+ 16548 0006 00BF     		.align	2
+ 16549              	.L14:
+ 16550 0008 A0000E42 		.word	1108213920
+ 16551              		.cfi_endproc
+ 16552              	.LFE33:
+ 16554              		.section	.text.PWR_EnterSTOPMode,"ax",%progbits
+ 16555              		.align	1
+ 16556              		.global	PWR_EnterSTOPMode
+ 16557              		.thumb
+ 16558              		.thumb_func
+ 16560              	PWR_EnterSTOPMode:
+ 16561              	.LFB34:
+ 193:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+ 194:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /**
+ 195:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @brief  Enters STOP mode.
+ 196:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @param  PWR_Regulator: specifies the regulator state in STOP mode.
+ 197:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *   This parameter can be one of the following values:
+ 198:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *     @arg PWR_Regulator_ON: STOP mode with regulator ON
+ 199:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *     @arg PWR_Regulator_LowPower: STOP mode with regulator in low power mode
+ 200:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @param  PWR_STOPEntry: specifies if STOP mode in entered with WFI or WFE instruction.
+ 201:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *   This parameter can be one of the following values:
+ 202:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *     @arg PWR_STOPEntry_WFI: enter STOP mode with WFI instruction
+ 203:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *     @arg PWR_STOPEntry_WFE: enter STOP mode with WFE instruction
+ 204:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @retval None
+ 205:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   */
+ 206:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** void PWR_EnterSTOPMode(uint32_t PWR_Regulator, uint8_t PWR_STOPEntry)
+ 207:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** {
+ 16562              		.loc 1 207 0
+ 16563              		.cfi_startproc
+ 16564              		@ args = 0, pretend = 0, frame = 0
+ 16565              		@ frame_needed = 0, uses_anonymous_args = 0
+ 16566              		@ link register save eliminated.
+ 16567              	.LVL7:
+ 208:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   uint32_t tmpreg = 0;
+ 209:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   /* Check the parameters */
+ 210:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   assert_param(IS_PWR_REGULATOR(PWR_Regulator));
+ 211:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   assert_param(IS_PWR_STOP_ENTRY(PWR_STOPEntry));
+ 212:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   
+ 213:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   /* Select the regulator state in STOP mode ---------------------------------*/
+ 214:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   tmpreg = PWR->CR;
+ 16568              		.loc 1 214 0
+ 16569 0000 0A4B     		ldr	r3, .L19
+ 215:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   /* Clear PDDS and LPDS bits */
+ 216:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   tmpreg &= CR_DS_Mask;
+ 217:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   /* Set LPDS bit according to PWR_Regulator value */
+ 218:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   tmpreg |= PWR_Regulator;
+ 219:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   /* Store the new value */
+ 220:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   PWR->CR = tmpreg;
+ 221:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   /* Set SLEEPDEEP bit of Cortex System Control Register */
+ 222:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *(__IO uint32_t *) SCB_SysCtrl |= SysCtrl_SLEEPDEEP_Set;
+ 223:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   
+ 224:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   /* Select STOP mode entry --------------------------------------------------*/
+ 225:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   if(PWR_STOPEntry == PWR_STOPEntry_WFI)
+ 16570              		.loc 1 225 0
+ 16571 0002 0129     		cmp	r1, #1
+ 214:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   tmpreg = PWR->CR;
+ 16572              		.loc 1 214 0
+ 16573 0004 1A68     		ldr	r2, [r3, #0]
+ 16574              	.LVL8:
+ 216:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   tmpreg &= CR_DS_Mask;
+ 16575              		.loc 1 216 0
+ 16576 0006 22F0030C 		bic	ip, r2, #3
+ 16577              	.LVL9:
+ 218:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   tmpreg |= PWR_Regulator;
+ 16578              		.loc 1 218 0
+ 16579 000a 40EA0C02 		orr	r2, r0, ip
+ 16580              	.LVL10:
+ 220:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   PWR->CR = tmpreg;
+ 16581              		.loc 1 220 0
+ 16582 000e 1A60     		str	r2, [r3, #0]
+ 222:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *(__IO uint32_t *) SCB_SysCtrl |= SysCtrl_SLEEPDEEP_Set;
+ 16583              		.loc 1 222 0
+ 16584 0010 074B     		ldr	r3, .L19+4
+ 16585 0012 1868     		ldr	r0, [r3, #0]
+ 16586              	.LVL11:
+ 16587 0014 40F00402 		orr	r2, r0, #4
+ 16588              	.LVL12:
+ 16589 0018 1A60     		str	r2, [r3, #0]
+ 16590              		.loc 1 225 0
+ 16591 001a 01D1     		bne	.L17
+ 16592              	.LBB8:
+ 16593              	.LBB9:
+   1:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**************************************************************************//**
+   2:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @file     core_cm3.h
+   3:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief    CMSIS Cortex-M3 Core Peripheral Access Layer Header File
+   4:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @version  V1.30
+   5:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @date     30. October 2009
+   6:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+   7:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @note
+   8:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Copyright (C) 2009 ARM Limited. All rights reserved.
+   9:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+  10:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @par
+  11:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * ARM Limited (ARM) is supplying this software for use with Cortex-M 
+  12:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * processor based microcontrollers.  This file can be freely distributed 
+  13:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * within development tools that are supporting such ARM based processors. 
+  14:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+  15:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @par
+  16:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
+  17:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
+  18:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
+  19:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * ARM SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
+  20:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
+  21:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+  22:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  ******************************************************************************/
+  23:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+  24:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #ifndef __CM3_CORE_H__
+  25:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __CM3_CORE_H__
+  26:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+  27:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /** @addtogroup CMSIS_CM3_core_LintCinfiguration CMSIS CM3 Core Lint Configuration
+  28:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+  29:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * List of Lint messages which will be suppressed and not shown:
+  30:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *   - Error 10: \n
+  31:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *     register uint32_t __regBasePri         __asm("basepri"); \n
+  32:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *     Error 10: Expecting ';'
+  33:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * .
+  34:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *   - Error 530: \n
+  35:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *     return(__regBasePri); \n
+  36:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *     Warning 530: Symbol '__regBasePri' (line 264) not initialized
+  37:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * . 
+  38:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *   - Error 550: \n
+  39:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *     __regBasePri = (basePri & 0x1ff); \n
+  40:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *     Warning 550: Symbol '__regBasePri' (line 271) not accessed
+  41:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * .
+  42:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *   - Error 754: \n
+  43:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *     uint32_t RESERVED0[24]; \n
+  44:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *     Info 754: local structure member '<some, not used in the HAL>' (line 109, file ./cm3_core.h)
+  45:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * .
+  46:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *   - Error 750: \n
+  47:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *     #define __CM3_CORE_H__ \n
+  48:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *     Info 750: local macro '__CM3_CORE_H__' (line 43, file./cm3_core.h) not referenced
+  49:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * .
+  50:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *   - Error 528: \n
+  51:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *     static __INLINE void NVIC_DisableIRQ(uint32_t IRQn) \n
+  52:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *     Warning 528: Symbol 'NVIC_DisableIRQ(unsigned int)' (line 419, file ./cm3_core.h) not refere
+  53:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * .
+  54:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *   - Error 751: \n
+  55:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *     } InterruptType_Type; \n
+  56:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *     Info 751: local typedef 'InterruptType_Type' (line 170, file ./cm3_core.h) not referenced
+  57:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * .
+  58:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Note:  To re-enable a Message, insert a space before 'lint' *
+  59:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+  60:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+  61:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+  62:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /*lint -save */
+  63:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /*lint -e10  */
+  64:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /*lint -e530 */
+  65:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /*lint -e550 */
+  66:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /*lint -e754 */
+  67:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /*lint -e750 */
+  68:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /*lint -e528 */
+  69:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /*lint -e751 */
+  70:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+  71:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+  72:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /** @addtogroup CMSIS_CM3_core_definitions CM3 Core Definitions
+  73:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   This file defines all structures and symbols for CMSIS core:
+  74:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****     - CMSIS version number
+  75:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****     - Cortex-M core registers and bitfields
+  76:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****     - Cortex-M core peripheral base address
+  77:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   @{
+  78:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+  79:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+  80:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #ifdef __cplusplus
+  81:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  extern "C" {
+  82:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #endif 
+  83:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+  84:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __CM3_CMSIS_VERSION_MAIN  (0x01)                                                       /*!<
+  85:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __CM3_CMSIS_VERSION_SUB   (0x30)                                                       /*!<
+  86:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __CM3_CMSIS_VERSION       ((__CM3_CMSIS_VERSION_MAIN << 16) | __CM3_CMSIS_VERSION_SUB) /*!<
+  87:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+  88:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __CORTEX_M                (0x03)                                                       /*!<
+  89:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+  90:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #include <stdint.h>                           /* Include standard types */
+  91:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+  92:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #if defined (__ICCARM__)
+  93:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   #include <intrinsics.h>                     /* IAR Intrinsics   */
+  94:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #endif
+  95:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+  96:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+  97:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #ifndef __NVIC_PRIO_BITS
+  98:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   #define __NVIC_PRIO_BITS    4               /*!< standard definition for NVIC Priority Bits */
+  99:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #endif
+ 100:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 101:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 102:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 103:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 104:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+ 105:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * IO definitions
+ 106:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 107:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * define access restrictions to peripheral registers
+ 108:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 109:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 110:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #ifdef __cplusplus
+ 111:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   #define     __I     volatile                /*!< defines 'read only' permissions      */
+ 112:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #else
+ 113:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   #define     __I     volatile const          /*!< defines 'read only' permissions      */
+ 114:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #endif
+ 115:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define     __O     volatile                  /*!< defines 'write only' permissions     */
+ 116:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define     __IO    volatile                  /*!< defines 'read / write' permissions   */
+ 117:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 118:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 119:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 120:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /*******************************************************************************
+ 121:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *                 Register Abstraction
+ 122:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  ******************************************************************************/
+ 123:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /** @addtogroup CMSIS_CM3_core_register CMSIS CM3 Core Register
+ 124:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  @{
+ 125:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** */
+ 126:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 127:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 128:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /** @addtogroup CMSIS_CM3_NVIC CMSIS CM3 NVIC
+ 129:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   memory mapped structure for Nested Vectored Interrupt Controller (NVIC)
+ 130:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   @{
+ 131:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 132:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** typedef struct
+ 133:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** {
+ 134:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t ISER[8];                      /*!< Offset: 0x000  Interrupt Set Enable Register    
+ 135:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****        uint32_t RESERVED0[24];                                   
+ 136:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t ICER[8];                      /*!< Offset: 0x080  Interrupt Clear Enable Register  
+ 137:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****        uint32_t RSERVED1[24];                                    
+ 138:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t ISPR[8];                      /*!< Offset: 0x100  Interrupt Set Pending Register   
+ 139:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****        uint32_t RESERVED2[24];                                   
+ 140:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t ICPR[8];                      /*!< Offset: 0x180  Interrupt Clear Pending Register 
+ 141:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****        uint32_t RESERVED3[24];                                   
+ 142:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t IABR[8];                      /*!< Offset: 0x200  Interrupt Active bit Register    
+ 143:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****        uint32_t RESERVED4[56];                                   
+ 144:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint8_t  IP[240];                      /*!< Offset: 0x300  Interrupt Priority Register (8Bit
+ 145:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****        uint32_t RESERVED5[644];                                  
+ 146:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __O  uint32_t STIR;                         /*!< Offset: 0xE00  Software Trigger Interrupt Regist
+ 147:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** }  NVIC_Type;                                               
+ 148:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /*@}*/ /* end of group CMSIS_CM3_NVIC */
+ 149:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 150:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 151:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /** @addtogroup CMSIS_CM3_SCB CMSIS CM3 SCB
+ 152:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   memory mapped structure for System Control Block (SCB)
+ 153:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   @{
+ 154:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 155:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** typedef struct
+ 156:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** {
+ 157:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __I  uint32_t CPUID;                        /*!< Offset: 0x00  CPU ID Base Register              
+ 158:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t ICSR;                         /*!< Offset: 0x04  Interrupt Control State Register  
+ 159:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t VTOR;                         /*!< Offset: 0x08  Vector Table Offset Register      
+ 160:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t AIRCR;                        /*!< Offset: 0x0C  Application Interrupt / Reset Cont
+ 161:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t SCR;                          /*!< Offset: 0x10  System Control Register           
+ 162:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t CCR;                          /*!< Offset: 0x14  Configuration Control Register    
+ 163:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint8_t  SHP[12];                      /*!< Offset: 0x18  System Handlers Priority Registers
+ 164:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t SHCSR;                        /*!< Offset: 0x24  System Handler Control and State R
+ 165:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t CFSR;                         /*!< Offset: 0x28  Configurable Fault Status Register
+ 166:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t HFSR;                         /*!< Offset: 0x2C  Hard Fault Status Register        
+ 167:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t DFSR;                         /*!< Offset: 0x30  Debug Fault Status Register       
+ 168:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t MMFAR;                        /*!< Offset: 0x34  Mem Manage Address Register       
+ 169:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t BFAR;                         /*!< Offset: 0x38  Bus Fault Address Register        
+ 170:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t AFSR;                         /*!< Offset: 0x3C  Auxiliary Fault Status Register   
+ 171:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __I  uint32_t PFR[2];                       /*!< Offset: 0x40  Processor Feature Register        
+ 172:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __I  uint32_t DFR;                          /*!< Offset: 0x48  Debug Feature Register            
+ 173:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __I  uint32_t ADR;                          /*!< Offset: 0x4C  Auxiliary Feature Register        
+ 174:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __I  uint32_t MMFR[4];                      /*!< Offset: 0x50  Memory Model Feature Register     
+ 175:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __I  uint32_t ISAR[5];                      /*!< Offset: 0x60  ISA Feature Register              
+ 176:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** } SCB_Type;                                                
+ 177:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 178:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* SCB CPUID Register Definitions */
+ 179:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CPUID_IMPLEMENTER_Pos          24                                             /*!< SCB 
+ 180:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CPUID_IMPLEMENTER_Msk          (0xFFul << SCB_CPUID_IMPLEMENTER_Pos)          /*!< SCB 
+ 181:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 182:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CPUID_VARIANT_Pos              20                                             /*!< SCB 
+ 183:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CPUID_VARIANT_Msk              (0xFul << SCB_CPUID_VARIANT_Pos)               /*!< SCB 
+ 184:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 185:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CPUID_PARTNO_Pos                4                                             /*!< SCB 
+ 186:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CPUID_PARTNO_Msk               (0xFFFul << SCB_CPUID_PARTNO_Pos)              /*!< SCB 
+ 187:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 188:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CPUID_REVISION_Pos              0                                             /*!< SCB 
+ 189:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CPUID_REVISION_Msk             (0xFul << SCB_CPUID_REVISION_Pos)              /*!< SCB 
+ 190:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 191:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* SCB Interrupt Control State Register Definitions */
+ 192:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_ICSR_NMIPENDSET_Pos            31                                             /*!< SCB 
+ 193:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_ICSR_NMIPENDSET_Msk            (1ul << SCB_ICSR_NMIPENDSET_Pos)               /*!< SCB 
+ 194:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 195:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_ICSR_PENDSVSET_Pos             28                                             /*!< SCB 
+ 196:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_ICSR_PENDSVSET_Msk             (1ul << SCB_ICSR_PENDSVSET_Pos)                /*!< SCB 
+ 197:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 198:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_ICSR_PENDSVCLR_Pos             27                                             /*!< SCB 
+ 199:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_ICSR_PENDSVCLR_Msk             (1ul << SCB_ICSR_PENDSVCLR_Pos)                /*!< SCB 
+ 200:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 201:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_ICSR_PENDSTSET_Pos             26                                             /*!< SCB 
+ 202:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_ICSR_PENDSTSET_Msk             (1ul << SCB_ICSR_PENDSTSET_Pos)                /*!< SCB 
+ 203:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 204:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_ICSR_PENDSTCLR_Pos             25                                             /*!< SCB 
+ 205:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_ICSR_PENDSTCLR_Msk             (1ul << SCB_ICSR_PENDSTCLR_Pos)                /*!< SCB 
+ 206:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 207:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_ICSR_ISRPREEMPT_Pos            23                                             /*!< SCB 
+ 208:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_ICSR_ISRPREEMPT_Msk            (1ul << SCB_ICSR_ISRPREEMPT_Pos)               /*!< SCB 
+ 209:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 210:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_ICSR_ISRPENDING_Pos            22                                             /*!< SCB 
+ 211:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_ICSR_ISRPENDING_Msk            (1ul << SCB_ICSR_ISRPENDING_Pos)               /*!< SCB 
+ 212:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 213:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_ICSR_VECTPENDING_Pos           12                                             /*!< SCB 
+ 214:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_ICSR_VECTPENDING_Msk           (0x1FFul << SCB_ICSR_VECTPENDING_Pos)          /*!< SCB 
+ 215:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 216:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_ICSR_RETTOBASE_Pos             11                                             /*!< SCB 
+ 217:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_ICSR_RETTOBASE_Msk             (1ul << SCB_ICSR_RETTOBASE_Pos)                /*!< SCB 
+ 218:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 219:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_ICSR_VECTACTIVE_Pos             0                                             /*!< SCB 
+ 220:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_ICSR_VECTACTIVE_Msk            (0x1FFul << SCB_ICSR_VECTACTIVE_Pos)           /*!< SCB 
+ 221:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 222:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* SCB Interrupt Control State Register Definitions */
+ 223:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_VTOR_TBLBASE_Pos               29                                             /*!< SCB 
+ 224:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_VTOR_TBLBASE_Msk               (0x1FFul << SCB_VTOR_TBLBASE_Pos)              /*!< SCB 
+ 225:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 226:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_VTOR_TBLOFF_Pos                 7                                             /*!< SCB 
+ 227:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_VTOR_TBLOFF_Msk                (0x3FFFFFul << SCB_VTOR_TBLOFF_Pos)            /*!< SCB 
+ 228:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 229:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* SCB Application Interrupt and Reset Control Register Definitions */
+ 230:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_AIRCR_VECTKEY_Pos              16                                             /*!< SCB 
+ 231:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_AIRCR_VECTKEY_Msk              (0xFFFFul << SCB_AIRCR_VECTKEY_Pos)            /*!< SCB 
+ 232:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 233:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_AIRCR_VECTKEYSTAT_Pos          16                                             /*!< SCB 
+ 234:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_AIRCR_VECTKEYSTAT_Msk          (0xFFFFul << SCB_AIRCR_VECTKEYSTAT_Pos)        /*!< SCB 
+ 235:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 236:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_AIRCR_ENDIANESS_Pos            15                                             /*!< SCB 
+ 237:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_AIRCR_ENDIANESS_Msk            (1ul << SCB_AIRCR_ENDIANESS_Pos)               /*!< SCB 
+ 238:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 239:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_AIRCR_PRIGROUP_Pos              8                                             /*!< SCB 
+ 240:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_AIRCR_PRIGROUP_Msk             (7ul << SCB_AIRCR_PRIGROUP_Pos)                /*!< SCB 
+ 241:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 242:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_AIRCR_SYSRESETREQ_Pos           2                                             /*!< SCB 
+ 243:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_AIRCR_SYSRESETREQ_Msk          (1ul << SCB_AIRCR_SYSRESETREQ_Pos)             /*!< SCB 
+ 244:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 245:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_AIRCR_VECTCLRACTIVE_Pos         1                                             /*!< SCB 
+ 246:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_AIRCR_VECTCLRACTIVE_Msk        (1ul << SCB_AIRCR_VECTCLRACTIVE_Pos)           /*!< SCB 
+ 247:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 248:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_AIRCR_VECTRESET_Pos             0                                             /*!< SCB 
+ 249:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_AIRCR_VECTRESET_Msk            (1ul << SCB_AIRCR_VECTRESET_Pos)               /*!< SCB 
+ 250:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 251:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* SCB System Control Register Definitions */
+ 252:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SCR_SEVONPEND_Pos               4                                             /*!< SCB 
+ 253:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SCR_SEVONPEND_Msk              (1ul << SCB_SCR_SEVONPEND_Pos)                 /*!< SCB 
+ 254:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 255:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SCR_SLEEPDEEP_Pos               2                                             /*!< SCB 
+ 256:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SCR_SLEEPDEEP_Msk              (1ul << SCB_SCR_SLEEPDEEP_Pos)                 /*!< SCB 
+ 257:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 258:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SCR_SLEEPONEXIT_Pos             1                                             /*!< SCB 
+ 259:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SCR_SLEEPONEXIT_Msk            (1ul << SCB_SCR_SLEEPONEXIT_Pos)               /*!< SCB 
+ 260:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 261:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* SCB Configuration Control Register Definitions */
+ 262:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CCR_STKALIGN_Pos                9                                             /*!< SCB 
+ 263:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CCR_STKALIGN_Msk               (1ul << SCB_CCR_STKALIGN_Pos)                  /*!< SCB 
+ 264:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 265:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CCR_BFHFNMIGN_Pos               8                                             /*!< SCB 
+ 266:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CCR_BFHFNMIGN_Msk              (1ul << SCB_CCR_BFHFNMIGN_Pos)                 /*!< SCB 
+ 267:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 268:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CCR_DIV_0_TRP_Pos               4                                             /*!< SCB 
+ 269:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CCR_DIV_0_TRP_Msk              (1ul << SCB_CCR_DIV_0_TRP_Pos)                 /*!< SCB 
+ 270:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 271:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CCR_UNALIGN_TRP_Pos             3                                             /*!< SCB 
+ 272:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CCR_UNALIGN_TRP_Msk            (1ul << SCB_CCR_UNALIGN_TRP_Pos)               /*!< SCB 
+ 273:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 274:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CCR_USERSETMPEND_Pos            1                                             /*!< SCB 
+ 275:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CCR_USERSETMPEND_Msk           (1ul << SCB_CCR_USERSETMPEND_Pos)              /*!< SCB 
+ 276:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 277:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CCR_NONBASETHRDENA_Pos          0                                             /*!< SCB 
+ 278:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CCR_NONBASETHRDENA_Msk         (1ul << SCB_CCR_NONBASETHRDENA_Pos)            /*!< SCB 
+ 279:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 280:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* SCB System Handler Control and State Register Definitions */
+ 281:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_USGFAULTENA_Pos          18                                             /*!< SCB 
+ 282:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_USGFAULTENA_Msk          (1ul << SCB_SHCSR_USGFAULTENA_Pos)             /*!< SCB 
+ 283:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 284:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_BUSFAULTENA_Pos          17                                             /*!< SCB 
+ 285:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_BUSFAULTENA_Msk          (1ul << SCB_SHCSR_BUSFAULTENA_Pos)             /*!< SCB 
+ 286:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 287:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_MEMFAULTENA_Pos          16                                             /*!< SCB 
+ 288:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_MEMFAULTENA_Msk          (1ul << SCB_SHCSR_MEMFAULTENA_Pos)             /*!< SCB 
+ 289:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 290:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_SVCALLPENDED_Pos         15                                             /*!< SCB 
+ 291:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_SVCALLPENDED_Msk         (1ul << SCB_SHCSR_SVCALLPENDED_Pos)            /*!< SCB 
+ 292:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 293:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_BUSFAULTPENDED_Pos       14                                             /*!< SCB 
+ 294:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_BUSFAULTPENDED_Msk       (1ul << SCB_SHCSR_BUSFAULTPENDED_Pos)          /*!< SCB 
+ 295:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 296:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_MEMFAULTPENDED_Pos       13                                             /*!< SCB 
+ 297:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_MEMFAULTPENDED_Msk       (1ul << SCB_SHCSR_MEMFAULTPENDED_Pos)          /*!< SCB 
+ 298:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 299:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_USGFAULTPENDED_Pos       12                                             /*!< SCB 
+ 300:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_USGFAULTPENDED_Msk       (1ul << SCB_SHCSR_USGFAULTPENDED_Pos)          /*!< SCB 
+ 301:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 302:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_SYSTICKACT_Pos           11                                             /*!< SCB 
+ 303:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_SYSTICKACT_Msk           (1ul << SCB_SHCSR_SYSTICKACT_Pos)              /*!< SCB 
+ 304:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 305:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_PENDSVACT_Pos            10                                             /*!< SCB 
+ 306:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_PENDSVACT_Msk            (1ul << SCB_SHCSR_PENDSVACT_Pos)               /*!< SCB 
+ 307:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 308:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_MONITORACT_Pos            8                                             /*!< SCB 
+ 309:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_MONITORACT_Msk           (1ul << SCB_SHCSR_MONITORACT_Pos)              /*!< SCB 
+ 310:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 311:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_SVCALLACT_Pos             7                                             /*!< SCB 
+ 312:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_SVCALLACT_Msk            (1ul << SCB_SHCSR_SVCALLACT_Pos)               /*!< SCB 
+ 313:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****                                      
+ 314:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_USGFAULTACT_Pos           3                                             /*!< SCB 
+ 315:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_USGFAULTACT_Msk          (1ul << SCB_SHCSR_USGFAULTACT_Pos)             /*!< SCB 
+ 316:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 317:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_BUSFAULTACT_Pos           1                                             /*!< SCB 
+ 318:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_BUSFAULTACT_Msk          (1ul << SCB_SHCSR_BUSFAULTACT_Pos)             /*!< SCB 
+ 319:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 320:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_MEMFAULTACT_Pos           0                                             /*!< SCB 
+ 321:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_SHCSR_MEMFAULTACT_Msk          (1ul << SCB_SHCSR_MEMFAULTACT_Pos)             /*!< SCB 
+ 322:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 323:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* SCB Configurable Fault Status Registers Definitions */
+ 324:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CFSR_USGFAULTSR_Pos            16                                             /*!< SCB 
+ 325:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CFSR_USGFAULTSR_Msk            (0xFFFFul << SCB_CFSR_USGFAULTSR_Pos)          /*!< SCB 
+ 326:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 327:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CFSR_BUSFAULTSR_Pos             8                                             /*!< SCB 
+ 328:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CFSR_BUSFAULTSR_Msk            (0xFFul << SCB_CFSR_BUSFAULTSR_Pos)            /*!< SCB 
+ 329:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 330:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CFSR_MEMFAULTSR_Pos             0                                             /*!< SCB 
+ 331:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_CFSR_MEMFAULTSR_Msk            (0xFFul << SCB_CFSR_MEMFAULTSR_Pos)            /*!< SCB 
+ 332:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 333:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* SCB Hard Fault Status Registers Definitions */
+ 334:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_HFSR_DEBUGEVT_Pos              31                                             /*!< SCB 
+ 335:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_HFSR_DEBUGEVT_Msk              (1ul << SCB_HFSR_DEBUGEVT_Pos)                 /*!< SCB 
+ 336:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 337:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_HFSR_FORCED_Pos                30                                             /*!< SCB 
+ 338:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_HFSR_FORCED_Msk                (1ul << SCB_HFSR_FORCED_Pos)                   /*!< SCB 
+ 339:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 340:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_HFSR_VECTTBL_Pos                1                                             /*!< SCB 
+ 341:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_HFSR_VECTTBL_Msk               (1ul << SCB_HFSR_VECTTBL_Pos)                  /*!< SCB 
+ 342:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 343:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* SCB Debug Fault Status Register Definitions */
+ 344:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_DFSR_EXTERNAL_Pos               4                                             /*!< SCB 
+ 345:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_DFSR_EXTERNAL_Msk              (1ul << SCB_DFSR_EXTERNAL_Pos)                 /*!< SCB 
+ 346:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 347:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_DFSR_VCATCH_Pos                 3                                             /*!< SCB 
+ 348:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_DFSR_VCATCH_Msk                (1ul << SCB_DFSR_VCATCH_Pos)                   /*!< SCB 
+ 349:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 350:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_DFSR_DWTTRAP_Pos                2                                             /*!< SCB 
+ 351:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_DFSR_DWTTRAP_Msk               (1ul << SCB_DFSR_DWTTRAP_Pos)                  /*!< SCB 
+ 352:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 353:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_DFSR_BKPT_Pos                   1                                             /*!< SCB 
+ 354:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_DFSR_BKPT_Msk                  (1ul << SCB_DFSR_BKPT_Pos)                     /*!< SCB 
+ 355:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 356:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_DFSR_HALTED_Pos                 0                                             /*!< SCB 
+ 357:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_DFSR_HALTED_Msk                (1ul << SCB_DFSR_HALTED_Pos)                   /*!< SCB 
+ 358:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /*@}*/ /* end of group CMSIS_CM3_SCB */
+ 359:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 360:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 361:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /** @addtogroup CMSIS_CM3_SysTick CMSIS CM3 SysTick
+ 362:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   memory mapped structure for SysTick
+ 363:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   @{
+ 364:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 365:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** typedef struct
+ 366:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** {
+ 367:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t CTRL;                         /*!< Offset: 0x00  SysTick Control and Status Registe
+ 368:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t LOAD;                         /*!< Offset: 0x04  SysTick Reload Value Register     
+ 369:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t VAL;                          /*!< Offset: 0x08  SysTick Current Value Register    
+ 370:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __I  uint32_t CALIB;                        /*!< Offset: 0x0C  SysTick Calibration Register      
+ 371:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** } SysTick_Type;
+ 372:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 373:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* SysTick Control / Status Register Definitions */
+ 374:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SysTick_CTRL_COUNTFLAG_Pos         16                                             /*!< SysT
+ 375:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SysTick_CTRL_COUNTFLAG_Msk         (1ul << SysTick_CTRL_COUNTFLAG_Pos)            /*!< SysT
+ 376:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 377:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SysTick_CTRL_CLKSOURCE_Pos          2                                             /*!< SysT
+ 378:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SysTick_CTRL_CLKSOURCE_Msk         (1ul << SysTick_CTRL_CLKSOURCE_Pos)            /*!< SysT
+ 379:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 380:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SysTick_CTRL_TICKINT_Pos            1                                             /*!< SysT
+ 381:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SysTick_CTRL_TICKINT_Msk           (1ul << SysTick_CTRL_TICKINT_Pos)              /*!< SysT
+ 382:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 383:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SysTick_CTRL_ENABLE_Pos             0                                             /*!< SysT
+ 384:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SysTick_CTRL_ENABLE_Msk            (1ul << SysTick_CTRL_ENABLE_Pos)               /*!< SysT
+ 385:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 386:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* SysTick Reload Register Definitions */
+ 387:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SysTick_LOAD_RELOAD_Pos             0                                             /*!< SysT
+ 388:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SysTick_LOAD_RELOAD_Msk            (0xFFFFFFul << SysTick_LOAD_RELOAD_Pos)        /*!< SysT
+ 389:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 390:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* SysTick Current Register Definitions */
+ 391:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SysTick_VAL_CURRENT_Pos             0                                             /*!< SysT
+ 392:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SysTick_VAL_CURRENT_Msk            (0xFFFFFFul << SysTick_VAL_CURRENT_Pos)        /*!< SysT
+ 393:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 394:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* SysTick Calibration Register Definitions */
+ 395:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SysTick_CALIB_NOREF_Pos            31                                             /*!< SysT
+ 396:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SysTick_CALIB_NOREF_Msk            (1ul << SysTick_CALIB_NOREF_Pos)               /*!< SysT
+ 397:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 398:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SysTick_CALIB_SKEW_Pos             30                                             /*!< SysT
+ 399:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SysTick_CALIB_SKEW_Msk             (1ul << SysTick_CALIB_SKEW_Pos)                /*!< SysT
+ 400:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 401:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SysTick_CALIB_TENMS_Pos             0                                             /*!< SysT
+ 402:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SysTick_CALIB_TENMS_Msk            (0xFFFFFFul << SysTick_VAL_CURRENT_Pos)        /*!< SysT
+ 403:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /*@}*/ /* end of group CMSIS_CM3_SysTick */
+ 404:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 405:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 406:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /** @addtogroup CMSIS_CM3_ITM CMSIS CM3 ITM
+ 407:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   memory mapped structure for Instrumentation Trace Macrocell (ITM)
+ 408:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   @{
+ 409:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 410:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** typedef struct
+ 411:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** {
+ 412:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __O  union  
+ 413:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   {
+ 414:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****     __O  uint8_t    u8;                       /*!< Offset:       ITM Stimulus Port 8-bit           
+ 415:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****     __O  uint16_t   u16;                      /*!< Offset:       ITM Stimulus Port 16-bit          
+ 416:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****     __O  uint32_t   u32;                      /*!< Offset:       ITM Stimulus Port 32-bit          
+ 417:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   }  PORT [32];                               /*!< Offset: 0x00  ITM Stimulus Port Registers       
+ 418:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****        uint32_t RESERVED0[864];                                 
+ 419:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t TER;                          /*!< Offset:       ITM Trace Enable Register         
+ 420:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****        uint32_t RESERVED1[15];                                  
+ 421:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t TPR;                          /*!< Offset:       ITM Trace Privilege Register      
+ 422:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****        uint32_t RESERVED2[15];                                  
+ 423:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t TCR;                          /*!< Offset:       ITM Trace Control Register        
+ 424:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****        uint32_t RESERVED3[29];                                  
+ 425:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t IWR;                          /*!< Offset:       ITM Integration Write Register    
+ 426:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t IRR;                          /*!< Offset:       ITM Integration Read Register     
+ 427:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t IMCR;                         /*!< Offset:       ITM Integration Mode Control Regis
+ 428:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****        uint32_t RESERVED4[43];                                  
+ 429:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t LAR;                          /*!< Offset:       ITM Lock Access Register          
+ 430:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t LSR;                          /*!< Offset:       ITM Lock Status Register          
+ 431:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****        uint32_t RESERVED5[6];                                   
+ 432:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __I  uint32_t PID4;                         /*!< Offset:       ITM Peripheral Identification Regi
+ 433:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __I  uint32_t PID5;                         /*!< Offset:       ITM Peripheral Identification Regi
+ 434:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __I  uint32_t PID6;                         /*!< Offset:       ITM Peripheral Identification Regi
+ 435:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __I  uint32_t PID7;                         /*!< Offset:       ITM Peripheral Identification Regi
+ 436:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __I  uint32_t PID0;                         /*!< Offset:       ITM Peripheral Identification Regi
+ 437:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __I  uint32_t PID1;                         /*!< Offset:       ITM Peripheral Identification Regi
+ 438:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __I  uint32_t PID2;                         /*!< Offset:       ITM Peripheral Identification Regi
+ 439:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __I  uint32_t PID3;                         /*!< Offset:       ITM Peripheral Identification Regi
+ 440:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __I  uint32_t CID0;                         /*!< Offset:       ITM Component  Identification Regi
+ 441:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __I  uint32_t CID1;                         /*!< Offset:       ITM Component  Identification Regi
+ 442:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __I  uint32_t CID2;                         /*!< Offset:       ITM Component  Identification Regi
+ 443:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __I  uint32_t CID3;                         /*!< Offset:       ITM Component  Identification Regi
+ 444:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** } ITM_Type;                                                
+ 445:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 446:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* ITM Trace Privilege Register Definitions */
+ 447:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_TPR_PRIVMASK_Pos                0                                             /*!< ITM 
+ 448:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_TPR_PRIVMASK_Msk               (0xFul << ITM_TPR_PRIVMASK_Pos)                /*!< ITM 
+ 449:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 450:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* ITM Trace Control Register Definitions */
+ 451:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_TCR_BUSY_Pos                   23                                             /*!< ITM 
+ 452:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_TCR_BUSY_Msk                   (1ul << ITM_TCR_BUSY_Pos)                      /*!< ITM 
+ 453:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 454:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_TCR_ATBID_Pos                  16                                             /*!< ITM 
+ 455:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_TCR_ATBID_Msk                  (0x7Ful << ITM_TCR_ATBID_Pos)                  /*!< ITM 
+ 456:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 457:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_TCR_TSPrescale_Pos              8                                             /*!< ITM 
+ 458:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_TCR_TSPrescale_Msk             (3ul << ITM_TCR_TSPrescale_Pos)                /*!< ITM 
+ 459:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 460:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_TCR_SWOENA_Pos                  4                                             /*!< ITM 
+ 461:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_TCR_SWOENA_Msk                 (1ul << ITM_TCR_SWOENA_Pos)                    /*!< ITM 
+ 462:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 463:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_TCR_DWTENA_Pos                  3                                             /*!< ITM 
+ 464:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_TCR_DWTENA_Msk                 (1ul << ITM_TCR_DWTENA_Pos)                    /*!< ITM 
+ 465:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 466:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_TCR_SYNCENA_Pos                 2                                             /*!< ITM 
+ 467:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_TCR_SYNCENA_Msk                (1ul << ITM_TCR_SYNCENA_Pos)                   /*!< ITM 
+ 468:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 469:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_TCR_TSENA_Pos                   1                                             /*!< ITM 
+ 470:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_TCR_TSENA_Msk                  (1ul << ITM_TCR_TSENA_Pos)                     /*!< ITM 
+ 471:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 472:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_TCR_ITMENA_Pos                  0                                             /*!< ITM 
+ 473:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_TCR_ITMENA_Msk                 (1ul << ITM_TCR_ITMENA_Pos)                    /*!< ITM 
+ 474:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 475:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* ITM Integration Write Register Definitions */
+ 476:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_IWR_ATVALIDM_Pos                0                                             /*!< ITM 
+ 477:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_IWR_ATVALIDM_Msk               (1ul << ITM_IWR_ATVALIDM_Pos)                  /*!< ITM 
+ 478:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 479:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* ITM Integration Read Register Definitions */
+ 480:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_IRR_ATREADYM_Pos                0                                             /*!< ITM 
+ 481:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_IRR_ATREADYM_Msk               (1ul << ITM_IRR_ATREADYM_Pos)                  /*!< ITM 
+ 482:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 483:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* ITM Integration Mode Control Register Definitions */
+ 484:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_IMCR_INTEGRATION_Pos            0                                             /*!< ITM 
+ 485:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_IMCR_INTEGRATION_Msk           (1ul << ITM_IMCR_INTEGRATION_Pos)              /*!< ITM 
+ 486:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 487:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* ITM Lock Status Register Definitions */
+ 488:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_LSR_ByteAcc_Pos                 2                                             /*!< ITM 
+ 489:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_LSR_ByteAcc_Msk                (1ul << ITM_LSR_ByteAcc_Pos)                   /*!< ITM 
+ 490:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 491:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_LSR_Access_Pos                  1                                             /*!< ITM 
+ 492:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_LSR_Access_Msk                 (1ul << ITM_LSR_Access_Pos)                    /*!< ITM 
+ 493:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 494:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_LSR_Present_Pos                 0                                             /*!< ITM 
+ 495:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_LSR_Present_Msk                (1ul << ITM_LSR_Present_Pos)                   /*!< ITM 
+ 496:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /*@}*/ /* end of group CMSIS_CM3_ITM */
+ 497:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 498:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 499:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /** @addtogroup CMSIS_CM3_InterruptType CMSIS CM3 Interrupt Type
+ 500:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   memory mapped structure for Interrupt Type
+ 501:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   @{
+ 502:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 503:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** typedef struct
+ 504:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** {
+ 505:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****        uint32_t RESERVED0;
+ 506:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __I  uint32_t ICTR;                         /*!< Offset: 0x04  Interrupt Control Type Register */
+ 507:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #if ((defined __CM3_REV) && (__CM3_REV >= 0x200))
+ 508:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t ACTLR;                        /*!< Offset: 0x08  Auxiliary Control Register      */
+ 509:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #else
+ 510:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****        uint32_t RESERVED1;
+ 511:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #endif
+ 512:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** } InterruptType_Type;
+ 513:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 514:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* Interrupt Controller Type Register Definitions */
+ 515:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define InterruptType_ICTR_INTLINESNUM_Pos  0                                             /*!< Inte
+ 516:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define InterruptType_ICTR_INTLINESNUM_Msk (0x1Ful << InterruptType_ICTR_INTLINESNUM_Pos) /*!< Inte
+ 517:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 518:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* Auxiliary Control Register Definitions */
+ 519:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define InterruptType_ACTLR_DISFOLD_Pos     2                                             /*!< Inte
+ 520:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define InterruptType_ACTLR_DISFOLD_Msk    (1ul << InterruptType_ACTLR_DISFOLD_Pos)       /*!< Inte
+ 521:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 522:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define InterruptType_ACTLR_DISDEFWBUF_Pos  1                                             /*!< Inte
+ 523:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define InterruptType_ACTLR_DISDEFWBUF_Msk (1ul << InterruptType_ACTLR_DISDEFWBUF_Pos)    /*!< Inte
+ 524:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 525:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define InterruptType_ACTLR_DISMCYCINT_Pos  0                                             /*!< Inte
+ 526:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define InterruptType_ACTLR_DISMCYCINT_Msk (1ul << InterruptType_ACTLR_DISMCYCINT_Pos)    /*!< Inte
+ 527:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /*@}*/ /* end of group CMSIS_CM3_InterruptType */
+ 528:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 529:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 530:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #if defined (__MPU_PRESENT) && (__MPU_PRESENT == 1)
+ 531:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /** @addtogroup CMSIS_CM3_MPU CMSIS CM3 MPU
+ 532:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   memory mapped structure for Memory Protection Unit (MPU)
+ 533:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   @{
+ 534:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 535:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** typedef struct
+ 536:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** {
+ 537:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __I  uint32_t TYPE;                         /*!< Offset: 0x00  MPU Type Register                 
+ 538:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t CTRL;                         /*!< Offset: 0x04  MPU Control Register              
+ 539:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t RNR;                          /*!< Offset: 0x08  MPU Region RNRber Register        
+ 540:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t RBAR;                         /*!< Offset: 0x0C  MPU Region Base Address Register  
+ 541:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t RASR;                         /*!< Offset: 0x10  MPU Region Attribute and Size Regi
+ 542:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t RBAR_A1;                      /*!< Offset: 0x14  MPU Alias 1 Region Base Address Re
+ 543:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t RASR_A1;                      /*!< Offset: 0x18  MPU Alias 1 Region Attribute and S
+ 544:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t RBAR_A2;                      /*!< Offset: 0x1C  MPU Alias 2 Region Base Address Re
+ 545:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t RASR_A2;                      /*!< Offset: 0x20  MPU Alias 2 Region Attribute and S
+ 546:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t RBAR_A3;                      /*!< Offset: 0x24  MPU Alias 3 Region Base Address Re
+ 547:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t RASR_A3;                      /*!< Offset: 0x28  MPU Alias 3 Region Attribute and S
+ 548:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** } MPU_Type;                                                
+ 549:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 550:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* MPU Type Register */
+ 551:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_TYPE_IREGION_Pos               16                                             /*!< MPU 
+ 552:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_TYPE_IREGION_Msk               (0xFFul << MPU_TYPE_IREGION_Pos)               /*!< MPU 
+ 553:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 554:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_TYPE_DREGION_Pos                8                                             /*!< MPU 
+ 555:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_TYPE_DREGION_Msk               (0xFFul << MPU_TYPE_DREGION_Pos)               /*!< MPU 
+ 556:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 557:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_TYPE_SEPARATE_Pos               0                                             /*!< MPU 
+ 558:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_TYPE_SEPARATE_Msk              (1ul << MPU_TYPE_SEPARATE_Pos)                 /*!< MPU 
+ 559:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 560:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* MPU Control Register */
+ 561:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_CTRL_PRIVDEFENA_Pos             2                                             /*!< MPU 
+ 562:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_CTRL_PRIVDEFENA_Msk            (1ul << MPU_CTRL_PRIVDEFENA_Pos)               /*!< MPU 
+ 563:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 564:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_CTRL_HFNMIENA_Pos               1                                             /*!< MPU 
+ 565:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_CTRL_HFNMIENA_Msk              (1ul << MPU_CTRL_HFNMIENA_Pos)                 /*!< MPU 
+ 566:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 567:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_CTRL_ENABLE_Pos                 0                                             /*!< MPU 
+ 568:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_CTRL_ENABLE_Msk                (1ul << MPU_CTRL_ENABLE_Pos)                   /*!< MPU 
+ 569:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 570:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* MPU Region Number Register */
+ 571:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RNR_REGION_Pos                  0                                             /*!< MPU 
+ 572:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RNR_REGION_Msk                 (0xFFul << MPU_RNR_REGION_Pos)                 /*!< MPU 
+ 573:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 574:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* MPU Region Base Address Register */
+ 575:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RBAR_ADDR_Pos                   5                                             /*!< MPU 
+ 576:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RBAR_ADDR_Msk                  (0x7FFFFFFul << MPU_RBAR_ADDR_Pos)             /*!< MPU 
+ 577:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 578:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RBAR_VALID_Pos                  4                                             /*!< MPU 
+ 579:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RBAR_VALID_Msk                 (1ul << MPU_RBAR_VALID_Pos)                    /*!< MPU 
+ 580:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 581:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RBAR_REGION_Pos                 0                                             /*!< MPU 
+ 582:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RBAR_REGION_Msk                (0xFul << MPU_RBAR_REGION_Pos)                 /*!< MPU 
+ 583:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 584:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* MPU Region Attribute and Size Register */
+ 585:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RASR_XN_Pos                    28                                             /*!< MPU 
+ 586:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RASR_XN_Msk                    (1ul << MPU_RASR_XN_Pos)                       /*!< MPU 
+ 587:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 588:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RASR_AP_Pos                    24                                             /*!< MPU 
+ 589:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RASR_AP_Msk                    (7ul << MPU_RASR_AP_Pos)                       /*!< MPU 
+ 590:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 591:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RASR_TEX_Pos                   19                                             /*!< MPU 
+ 592:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RASR_TEX_Msk                   (7ul << MPU_RASR_TEX_Pos)                      /*!< MPU 
+ 593:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 594:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RASR_S_Pos                     18                                             /*!< MPU 
+ 595:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RASR_S_Msk                     (1ul << MPU_RASR_S_Pos)                        /*!< MPU 
+ 596:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 597:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RASR_C_Pos                     17                                             /*!< MPU 
+ 598:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RASR_C_Msk                     (1ul << MPU_RASR_C_Pos)                        /*!< MPU 
+ 599:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 600:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RASR_B_Pos                     16                                             /*!< MPU 
+ 601:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RASR_B_Msk                     (1ul << MPU_RASR_B_Pos)                        /*!< MPU 
+ 602:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 603:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RASR_SRD_Pos                    8                                             /*!< MPU 
+ 604:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RASR_SRD_Msk                   (0xFFul << MPU_RASR_SRD_Pos)                   /*!< MPU 
+ 605:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 606:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RASR_SIZE_Pos                   1                                             /*!< MPU 
+ 607:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RASR_SIZE_Msk                  (0x1Ful << MPU_RASR_SIZE_Pos)                  /*!< MPU 
+ 608:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 609:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RASR_ENA_Pos                     0                                            /*!< MPU 
+ 610:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define MPU_RASR_ENA_Msk                    (0x1Ful << MPU_RASR_ENA_Pos)                  /*!< MPU 
+ 611:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 612:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /*@}*/ /* end of group CMSIS_CM3_MPU */
+ 613:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #endif
+ 614:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 615:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 616:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /** @addtogroup CMSIS_CM3_CoreDebug CMSIS CM3 Core Debug
+ 617:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   memory mapped structure for Core Debug Register
+ 618:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   @{
+ 619:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 620:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** typedef struct
+ 621:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** {
+ 622:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t DHCSR;                        /*!< Offset: 0x00  Debug Halting Control and Status R
+ 623:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __O  uint32_t DCRSR;                        /*!< Offset: 0x04  Debug Core Register Selector Regis
+ 624:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t DCRDR;                        /*!< Offset: 0x08  Debug Core Register Data Register 
+ 625:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __IO uint32_t DEMCR;                        /*!< Offset: 0x0C  Debug Exception and Monitor Contro
+ 626:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** } CoreDebug_Type;
+ 627:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 628:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* Debug Halting Control and Status Register */
+ 629:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DHCSR_DBGKEY_Pos         16                                             /*!< Core
+ 630:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DHCSR_DBGKEY_Msk         (0xFFFFul << CoreDebug_DHCSR_DBGKEY_Pos)       /*!< Core
+ 631:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 632:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DHCSR_S_RESET_ST_Pos     25                                             /*!< Core
+ 633:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DHCSR_S_RESET_ST_Msk     (1ul << CoreDebug_DHCSR_S_RESET_ST_Pos)        /*!< Core
+ 634:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 635:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DHCSR_S_RETIRE_ST_Pos    24                                             /*!< Core
+ 636:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DHCSR_S_RETIRE_ST_Msk    (1ul << CoreDebug_DHCSR_S_RETIRE_ST_Pos)       /*!< Core
+ 637:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 638:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DHCSR_S_LOCKUP_Pos       19                                             /*!< Core
+ 639:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DHCSR_S_LOCKUP_Msk       (1ul << CoreDebug_DHCSR_S_LOCKUP_Pos)          /*!< Core
+ 640:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 641:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DHCSR_S_SLEEP_Pos        18                                             /*!< Core
+ 642:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DHCSR_S_SLEEP_Msk        (1ul << CoreDebug_DHCSR_S_SLEEP_Pos)           /*!< Core
+ 643:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 644:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DHCSR_S_HALT_Pos         17                                             /*!< Core
+ 645:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DHCSR_S_HALT_Msk         (1ul << CoreDebug_DHCSR_S_HALT_Pos)            /*!< Core
+ 646:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 647:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DHCSR_S_REGRDY_Pos       16                                             /*!< Core
+ 648:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DHCSR_S_REGRDY_Msk       (1ul << CoreDebug_DHCSR_S_REGRDY_Pos)          /*!< Core
+ 649:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 650:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DHCSR_C_SNAPSTALL_Pos     5                                             /*!< Core
+ 651:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DHCSR_C_SNAPSTALL_Msk    (1ul << CoreDebug_DHCSR_C_SNAPSTALL_Pos)       /*!< Core
+ 652:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 653:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DHCSR_C_MASKINTS_Pos      3                                             /*!< Core
+ 654:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DHCSR_C_MASKINTS_Msk     (1ul << CoreDebug_DHCSR_C_MASKINTS_Pos)        /*!< Core
+ 655:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 656:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DHCSR_C_STEP_Pos          2                                             /*!< Core
+ 657:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DHCSR_C_STEP_Msk         (1ul << CoreDebug_DHCSR_C_STEP_Pos)            /*!< Core
+ 658:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 659:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DHCSR_C_HALT_Pos          1                                             /*!< Core
+ 660:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DHCSR_C_HALT_Msk         (1ul << CoreDebug_DHCSR_C_HALT_Pos)            /*!< Core
+ 661:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 662:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DHCSR_C_DEBUGEN_Pos       0                                             /*!< Core
+ 663:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DHCSR_C_DEBUGEN_Msk      (1ul << CoreDebug_DHCSR_C_DEBUGEN_Pos)         /*!< Core
+ 664:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 665:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* Debug Core Register Selector Register */
+ 666:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DCRSR_REGWnR_Pos         16                                             /*!< Core
+ 667:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DCRSR_REGWnR_Msk         (1ul << CoreDebug_DCRSR_REGWnR_Pos)            /*!< Core
+ 668:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 669:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DCRSR_REGSEL_Pos          0                                             /*!< Core
+ 670:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DCRSR_REGSEL_Msk         (0x1Ful << CoreDebug_DCRSR_REGSEL_Pos)         /*!< Core
+ 671:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 672:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* Debug Exception and Monitor Control Register */
+ 673:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_TRCENA_Pos         24                                             /*!< Core
+ 674:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_TRCENA_Msk         (1ul << CoreDebug_DEMCR_TRCENA_Pos)            /*!< Core
+ 675:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 676:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_MON_REQ_Pos        19                                             /*!< Core
+ 677:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_MON_REQ_Msk        (1ul << CoreDebug_DEMCR_MON_REQ_Pos)           /*!< Core
+ 678:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 679:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_MON_STEP_Pos       18                                             /*!< Core
+ 680:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_MON_STEP_Msk       (1ul << CoreDebug_DEMCR_MON_STEP_Pos)          /*!< Core
+ 681:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 682:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_MON_PEND_Pos       17                                             /*!< Core
+ 683:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_MON_PEND_Msk       (1ul << CoreDebug_DEMCR_MON_PEND_Pos)          /*!< Core
+ 684:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 685:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_MON_EN_Pos         16                                             /*!< Core
+ 686:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_MON_EN_Msk         (1ul << CoreDebug_DEMCR_MON_EN_Pos)            /*!< Core
+ 687:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 688:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_VC_HARDERR_Pos     10                                             /*!< Core
+ 689:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_VC_HARDERR_Msk     (1ul << CoreDebug_DEMCR_VC_HARDERR_Pos)        /*!< Core
+ 690:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 691:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_VC_INTERR_Pos       9                                             /*!< Core
+ 692:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_VC_INTERR_Msk      (1ul << CoreDebug_DEMCR_VC_INTERR_Pos)         /*!< Core
+ 693:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 694:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_VC_BUSERR_Pos       8                                             /*!< Core
+ 695:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_VC_BUSERR_Msk      (1ul << CoreDebug_DEMCR_VC_BUSERR_Pos)         /*!< Core
+ 696:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 697:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_VC_STATERR_Pos      7                                             /*!< Core
+ 698:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_VC_STATERR_Msk     (1ul << CoreDebug_DEMCR_VC_STATERR_Pos)        /*!< Core
+ 699:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 700:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_VC_CHKERR_Pos       6                                             /*!< Core
+ 701:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_VC_CHKERR_Msk      (1ul << CoreDebug_DEMCR_VC_CHKERR_Pos)         /*!< Core
+ 702:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 703:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_VC_NOCPERR_Pos      5                                             /*!< Core
+ 704:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_VC_NOCPERR_Msk     (1ul << CoreDebug_DEMCR_VC_NOCPERR_Pos)        /*!< Core
+ 705:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 706:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_VC_MMERR_Pos        4                                             /*!< Core
+ 707:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_VC_MMERR_Msk       (1ul << CoreDebug_DEMCR_VC_MMERR_Pos)          /*!< Core
+ 708:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 709:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_VC_CORERESET_Pos    0                                             /*!< Core
+ 710:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_DEMCR_VC_CORERESET_Msk   (1ul << CoreDebug_DEMCR_VC_CORERESET_Pos)      /*!< Core
+ 711:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /*@}*/ /* end of group CMSIS_CM3_CoreDebug */
+ 712:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 713:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 714:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* Memory mapping of Cortex-M3 Hardware */
+ 715:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCS_BASE            (0xE000E000)                              /*!< System Control Space Bas
+ 716:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM_BASE            (0xE0000000)                              /*!< ITM Base Address        
+ 717:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug_BASE      (0xE000EDF0)                              /*!< Core Debug Base Address 
+ 718:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SysTick_BASE        (SCS_BASE +  0x0010)                      /*!< SysTick Base Address    
+ 719:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define NVIC_BASE           (SCS_BASE +  0x0100)                      /*!< NVIC Base Address       
+ 720:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB_BASE            (SCS_BASE +  0x0D00)                      /*!< System Control Block Bas
+ 721:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 722:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define InterruptType       ((InterruptType_Type *) SCS_BASE)         /*!< Interrupt Type Register 
+ 723:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SCB                 ((SCB_Type *)           SCB_BASE)         /*!< SCB configuration struct
+ 724:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define SysTick             ((SysTick_Type *)       SysTick_BASE)     /*!< SysTick configuration st
+ 725:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define NVIC                ((NVIC_Type *)          NVIC_BASE)        /*!< NVIC configuration struc
+ 726:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define ITM                 ((ITM_Type *)           ITM_BASE)         /*!< ITM configuration struct
+ 727:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define CoreDebug           ((CoreDebug_Type *)     CoreDebug_BASE)   /*!< Core Debug configuration
+ 728:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 729:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #if defined (__MPU_PRESENT) && (__MPU_PRESENT == 1)
+ 730:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   #define MPU_BASE          (SCS_BASE +  0x0D90)                      /*!< Memory Protection Unit  
+ 731:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   #define MPU               ((MPU_Type*)            MPU_BASE)         /*!< Memory Protection Unit  
+ 732:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #endif
+ 733:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 734:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /*@}*/ /* end of group CMSIS_CM3_core_register */
+ 735:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 736:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 737:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /*******************************************************************************
+ 738:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *                Hardware Abstraction Layer
+ 739:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  ******************************************************************************/
+ 740:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 741:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #if defined ( __CC_ARM   )
+ 742:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   #define __ASM            __asm                                      /*!< asm keyword for ARM Comp
+ 743:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   #define __INLINE         __inline                                   /*!< inline keyword for ARM C
+ 744:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 745:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #elif defined ( __ICCARM__ )
+ 746:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   #define __ASM           __asm                                       /*!< asm keyword for IAR Comp
+ 747:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   #define __INLINE        inline                                      /*!< inline keyword for IAR C
+ 748:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 749:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #elif defined   (  __GNUC__  )
+ 750:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   #define __ASM            __asm                                      /*!< asm keyword for GNU Comp
+ 751:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   #define __INLINE         inline                                     /*!< inline keyword for GNU C
+ 752:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 753:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #elif defined   (  __TASKING__  )
+ 754:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   #define __ASM            __asm                                      /*!< asm keyword for TASKING 
+ 755:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   #define __INLINE         inline                                     /*!< inline keyword for TASKI
+ 756:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 757:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #endif
+ 758:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 759:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 760:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* ###################  Compiler specific Intrinsics  ########################### */
+ 761:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 762:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #if defined ( __CC_ARM   ) /*------------------RealView Compiler -----------------*/
+ 763:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* ARM armcc specific functions */
+ 764:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 765:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __enable_fault_irq                __enable_fiq
+ 766:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __disable_fault_irq               __disable_fiq
+ 767:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 768:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __NOP                             __nop
+ 769:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __WFI                             __wfi
+ 770:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __WFE                             __wfe
+ 771:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __SEV                             __sev
+ 772:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __ISB()                           __isb(0)
+ 773:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __DSB()                           __dsb(0)
+ 774:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __DMB()                           __dmb(0)
+ 775:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __REV                             __rev
+ 776:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __RBIT                            __rbit
+ 777:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __LDREXB(ptr)                     ((unsigned char ) __ldrex(ptr))
+ 778:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __LDREXH(ptr)                     ((unsigned short) __ldrex(ptr))
+ 779:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __LDREXW(ptr)                     ((unsigned int  ) __ldrex(ptr))
+ 780:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __STREXB(value, ptr)              __strex(value, ptr)
+ 781:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __STREXH(value, ptr)              __strex(value, ptr)
+ 782:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __STREXW(value, ptr)              __strex(value, ptr)
+ 783:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 784:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 785:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* intrinsic unsigned long long __ldrexd(volatile void *ptr) */
+ 786:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* intrinsic int __strexd(unsigned long long val, volatile void *ptr) */
+ 787:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* intrinsic void __enable_irq();     */
+ 788:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* intrinsic void __disable_irq();    */
+ 789:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 790:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 791:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+ 792:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Return the Process Stack Pointer
+ 793:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 794:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @return ProcessStackPointer
+ 795:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 796:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Return the actual process stack pointer
+ 797:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 798:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern uint32_t __get_PSP(void);
+ 799:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 800:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+ 801:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Set the Process Stack Pointer
+ 802:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 803:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @param  topOfProcStack  Process Stack Pointer
+ 804:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 805:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Assign the value ProcessStackPointer to the MSP 
+ 806:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * (process stack pointer) Cortex processor register
+ 807:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 808:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern void __set_PSP(uint32_t topOfProcStack);
+ 809:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 810:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+ 811:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Return the Main Stack Pointer
+ 812:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 813:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @return Main Stack Pointer
+ 814:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 815:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Return the current value of the MSP (main stack pointer)
+ 816:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Cortex processor register
+ 817:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 818:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern uint32_t __get_MSP(void);
+ 819:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 820:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+ 821:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Set the Main Stack Pointer
+ 822:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 823:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @param  topOfMainStack  Main Stack Pointer
+ 824:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 825:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Assign the value mainStackPointer to the MSP 
+ 826:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * (main stack pointer) Cortex processor register
+ 827:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 828:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern void __set_MSP(uint32_t topOfMainStack);
+ 829:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 830:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+ 831:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Reverse byte order in unsigned short value
+ 832:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 833:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @param   value  value to reverse
+ 834:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @return         reversed value
+ 835:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 836:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Reverse byte order in unsigned short value
+ 837:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 838:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern uint32_t __REV16(uint16_t value);
+ 839:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 840:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+ 841:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Reverse byte order in signed short value with sign extension to integer
+ 842:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 843:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @param   value  value to reverse
+ 844:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @return         reversed value
+ 845:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 846:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Reverse byte order in signed short value with sign extension to integer
+ 847:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 848:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern int32_t __REVSH(int16_t value);
+ 849:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 850:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 851:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #if (__ARMCC_VERSION < 400000)
+ 852:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 853:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+ 854:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Remove the exclusive lock created by ldrex
+ 855:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 856:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Removes the exclusive lock which is created by ldrex.
+ 857:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 858:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern void __CLREX(void);
+ 859:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 860:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+ 861:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Return the Base Priority value
+ 862:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 863:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @return BasePriority
+ 864:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 865:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Return the content of the base priority register
+ 866:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 867:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern uint32_t __get_BASEPRI(void);
+ 868:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 869:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+ 870:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Set the Base Priority value
+ 871:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 872:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @param  basePri  BasePriority
+ 873:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 874:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Set the base priority register
+ 875:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 876:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern void __set_BASEPRI(uint32_t basePri);
+ 877:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 878:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+ 879:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Return the Priority Mask value
+ 880:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 881:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @return PriMask
+ 882:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 883:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Return state of the priority mask bit from the priority mask register
+ 884:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 885:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern uint32_t __get_PRIMASK(void);
+ 886:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 887:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+ 888:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Set the Priority Mask value
+ 889:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 890:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @param   priMask  PriMask
+ 891:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 892:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Set the priority mask bit in the priority mask register
+ 893:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 894:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern void __set_PRIMASK(uint32_t priMask);
+ 895:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 896:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+ 897:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Return the Fault Mask value
+ 898:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 899:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @return FaultMask
+ 900:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 901:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Return the content of the fault mask register
+ 902:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 903:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern uint32_t __get_FAULTMASK(void);
+ 904:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 905:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+ 906:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Set the Fault Mask value
+ 907:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 908:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @param  faultMask faultMask value
+ 909:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 910:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Set the fault mask register
+ 911:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 912:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern void __set_FAULTMASK(uint32_t faultMask);
+ 913:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 914:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+ 915:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Return the Control Register value
+ 916:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * 
+ 917:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @return Control value
+ 918:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 919:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Return the content of the control register
+ 920:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 921:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern uint32_t __get_CONTROL(void);
+ 922:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 923:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+ 924:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Set the Control Register value
+ 925:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 926:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @param  control  Control value
+ 927:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 928:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Set the control register
+ 929:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 930:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern void __set_CONTROL(uint32_t control);
+ 931:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 932:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #else  /* (__ARMCC_VERSION >= 400000)  */
+ 933:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 934:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+ 935:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Remove the exclusive lock created by ldrex
+ 936:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 937:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Removes the exclusive lock which is created by ldrex.
+ 938:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 939:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __CLREX                           __clrex
+ 940:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 941:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+ 942:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Return the Base Priority value
+ 943:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 944:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @return BasePriority
+ 945:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 946:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Return the content of the base priority register
+ 947:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 948:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** static __INLINE uint32_t  __get_BASEPRI(void)
+ 949:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** {
+ 950:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   register uint32_t __regBasePri         __ASM("basepri");
+ 951:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   return(__regBasePri);
+ 952:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** }
+ 953:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 954:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+ 955:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Set the Base Priority value
+ 956:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 957:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @param  basePri  BasePriority
+ 958:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 959:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Set the base priority register
+ 960:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 961:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** static __INLINE void __set_BASEPRI(uint32_t basePri)
+ 962:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** {
+ 963:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   register uint32_t __regBasePri         __ASM("basepri");
+ 964:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __regBasePri = (basePri & 0xff);
+ 965:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** }
+ 966:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 967:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+ 968:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Return the Priority Mask value
+ 969:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 970:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @return PriMask
+ 971:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 972:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Return state of the priority mask bit from the priority mask register
+ 973:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 974:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** static __INLINE uint32_t __get_PRIMASK(void)
+ 975:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** {
+ 976:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   register uint32_t __regPriMask         __ASM("primask");
+ 977:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   return(__regPriMask);
+ 978:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** }
+ 979:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 980:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+ 981:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Set the Priority Mask value
+ 982:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 983:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @param  priMask  PriMask
+ 984:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 985:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Set the priority mask bit in the priority mask register
+ 986:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+ 987:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** static __INLINE void __set_PRIMASK(uint32_t priMask)
+ 988:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** {
+ 989:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   register uint32_t __regPriMask         __ASM("primask");
+ 990:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __regPriMask = (priMask);
+ 991:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** }
+ 992:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+ 993:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+ 994:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Return the Fault Mask value
+ 995:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 996:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @return FaultMask
+ 997:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+ 998:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Return the content of the fault mask register
+ 999:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+1000:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** static __INLINE uint32_t __get_FAULTMASK(void)
+1001:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** {
+1002:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   register uint32_t __regFaultMask       __ASM("faultmask");
+1003:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   return(__regFaultMask);
+1004:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** }
+1005:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1006:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+1007:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Set the Fault Mask value
+1008:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1009:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @param  faultMask  faultMask value
+1010:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1011:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Set the fault mask register
+1012:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+1013:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** static __INLINE void __set_FAULTMASK(uint32_t faultMask)
+1014:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** {
+1015:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   register uint32_t __regFaultMask       __ASM("faultmask");
+1016:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __regFaultMask = (faultMask & 1);
+1017:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** }
+1018:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1019:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+1020:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Return the Control Register value
+1021:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * 
+1022:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @return Control value
+1023:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1024:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Return the content of the control register
+1025:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+1026:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** static __INLINE uint32_t __get_CONTROL(void)
+1027:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** {
+1028:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   register uint32_t __regControl         __ASM("control");
+1029:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   return(__regControl);
+1030:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** }
+1031:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1032:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+1033:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Set the Control Register value
+1034:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1035:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @param  control  Control value
+1036:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1037:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Set the control register
+1038:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+1039:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** static __INLINE void __set_CONTROL(uint32_t control)
+1040:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** {
+1041:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   register uint32_t __regControl         __ASM("control");
+1042:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****   __regControl = control;
+1043:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** }
+1044:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1045:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #endif /* __ARMCC_VERSION  */ 
+1046:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1047:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1048:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1049:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #elif (defined (__ICCARM__)) /*------------------ ICC Compiler -------------------*/
+1050:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* IAR iccarm specific functions */
+1051:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1052:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __enable_irq                              __enable_interrupt        /*!< global Interrupt e
+1053:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __disable_irq                             __disable_interrupt       /*!< global Interrupt d
+1054:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1055:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** static __INLINE void __enable_fault_irq()         { __ASM ("cpsie f"); }
+1056:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** static __INLINE void __disable_fault_irq()        { __ASM ("cpsid f"); }
+1057:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1058:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #define __NOP                                     __no_operation            /*!< no operation intri
+1059:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** static __INLINE  void __WFI()                     { __ASM ("wfi"); }
+1060:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** static __INLINE  void __WFE()                     { __ASM ("wfe"); }
+1061:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** static __INLINE  void __SEV()                     { __ASM ("sev"); }
+1062:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** static __INLINE  void __CLREX()                   { __ASM ("clrex"); }
+1063:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1064:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* intrinsic void __ISB(void)                                     */
+1065:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* intrinsic void __DSB(void)                                     */
+1066:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* intrinsic void __DMB(void)                                     */
+1067:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* intrinsic void __set_PRIMASK();                                */
+1068:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* intrinsic void __get_PRIMASK();                                */
+1069:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* intrinsic void __set_FAULTMASK();                              */
+1070:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* intrinsic void __get_FAULTMASK();                              */
+1071:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* intrinsic uint32_t __REV(uint32_t value);                      */
+1072:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* intrinsic uint32_t __REVSH(uint32_t value);                    */
+1073:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* intrinsic unsigned long __STREX(unsigned long, unsigned long); */
+1074:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* intrinsic unsigned long __LDREX(unsigned long *);              */
+1075:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1076:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1077:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+1078:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Return the Process Stack Pointer
+1079:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1080:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @return ProcessStackPointer
+1081:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1082:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Return the actual process stack pointer
+1083:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+1084:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern uint32_t __get_PSP(void);
+1085:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1086:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+1087:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Set the Process Stack Pointer
+1088:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1089:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @param  topOfProcStack  Process Stack Pointer
+1090:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1091:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Assign the value ProcessStackPointer to the MSP 
+1092:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * (process stack pointer) Cortex processor register
+1093:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+1094:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern void __set_PSP(uint32_t topOfProcStack);
+1095:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1096:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+1097:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Return the Main Stack Pointer
+1098:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1099:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @return Main Stack Pointer
+1100:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1101:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Return the current value of the MSP (main stack pointer)
+1102:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Cortex processor register
+1103:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+1104:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern uint32_t __get_MSP(void);
+1105:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1106:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+1107:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Set the Main Stack Pointer
+1108:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1109:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @param  topOfMainStack  Main Stack Pointer
+1110:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1111:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Assign the value mainStackPointer to the MSP 
+1112:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * (main stack pointer) Cortex processor register
+1113:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+1114:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern void __set_MSP(uint32_t topOfMainStack);
+1115:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1116:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+1117:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Reverse byte order in unsigned short value
+1118:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1119:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @param  value  value to reverse
+1120:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @return        reversed value
+1121:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1122:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Reverse byte order in unsigned short value
+1123:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+1124:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern uint32_t __REV16(uint16_t value);
+1125:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1126:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+1127:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  Reverse bit order of value
+1128:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1129:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @param  value  value to reverse
+1130:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @return        reversed value
+1131:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1132:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Reverse bit order of value
+1133:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+1134:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern uint32_t __RBIT(uint32_t value);
+1135:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1136:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+1137:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  LDR Exclusive (8 bit)
+1138:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1139:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @param  *addr  address pointer
+1140:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @return        value of (*address)
+1141:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1142:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Exclusive LDR command for 8 bit values)
+1143:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+1144:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern uint8_t __LDREXB(uint8_t *addr);
+1145:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1146:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+1147:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  LDR Exclusive (16 bit)
+1148:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1149:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @param  *addr  address pointer
+1150:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @return        value of (*address)
+1151:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1152:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Exclusive LDR command for 16 bit values
+1153:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+1154:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern uint16_t __LDREXH(uint16_t *addr);
+1155:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1156:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+1157:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  LDR Exclusive (32 bit)
+1158:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1159:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @param  *addr  address pointer
+1160:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @return        value of (*address)
+1161:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1162:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Exclusive LDR command for 32 bit values
+1163:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+1164:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern uint32_t __LDREXW(uint32_t *addr);
+1165:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1166:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+1167:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  STR Exclusive (8 bit)
+1168:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1169:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @param  value  value to store
+1170:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @param  *addr  address pointer
+1171:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @return        successful / failed
+1172:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1173:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Exclusive STR command for 8 bit values
+1174:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+1175:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern uint32_t __STREXB(uint8_t value, uint8_t *addr);
+1176:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1177:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+1178:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  STR Exclusive (16 bit)
+1179:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1180:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @param  value  value to store
+1181:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @param  *addr  address pointer
+1182:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @return        successful / failed
+1183:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1184:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Exclusive STR command for 16 bit values
+1185:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+1186:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern uint32_t __STREXH(uint16_t value, uint16_t *addr);
+1187:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1188:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /**
+1189:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @brief  STR Exclusive (32 bit)
+1190:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1191:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @param  value  value to store
+1192:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @param  *addr  address pointer
+1193:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * @return        successful / failed
+1194:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  *
+1195:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  * Exclusive STR command for 32 bit values
+1196:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h ****  */
+1197:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** extern uint32_t __STREXW(uint32_t value, uint32_t *addr);
+1198:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1199:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1200:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1201:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** #elif (defined (__GNUC__)) /*------------------ GNU Compiler ---------------------*/
+1202:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** /* GNU gcc specific functions */
+1203:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1204:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** static __INLINE void __enable_irq()               { __ASM volatile ("cpsie i"); }
+1205:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** static __INLINE void __disable_irq()              { __ASM volatile ("cpsid i"); }
+1206:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1207:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** static __INLINE void __enable_fault_irq()         { __ASM volatile ("cpsie f"); }
+1208:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** static __INLINE void __disable_fault_irq()        { __ASM volatile ("cpsid f"); }
+1209:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** 
+1210:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** static __INLINE void __NOP()                      { __ASM volatile ("nop"); }
+1211:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** static __INLINE void __WFI()                      { __ASM volatile ("wfi"); }
+ 16594              		.loc 4 1211 0
+ 16595              	@ 1211 "../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h" 1
+ 16596 001c 30BF     		wfi
+ 16597              	@ 0 "" 2
+ 16598              		.thumb
+ 16599 001e 00E0     		b	.L18
+ 16600              	.L17:
+ 16601              	.LBE9:
+ 16602              	.LBE8:
+ 16603              	.LBB10:
+ 16604              	.LBB11:
+1212:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** static __INLINE void __WFE()                      { __ASM volatile ("wfe"); }
+ 16605              		.loc 4 1212 0
+ 16606              	@ 1212 "../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h" 1
+ 16607 0020 20BF     		wfe
+ 16608              	@ 0 "" 2
+ 16609              		.thumb
+ 16610              	.L18:
+ 16611              	.LBE11:
+ 16612              	.LBE10:
+ 226:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   {   
+ 227:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****     /* Request Wait For Interrupt */
+ 228:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****     __WFI();
+ 229:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   }
+ 230:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   else
+ 231:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   {
+ 232:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****     /* Request Wait For Event */
+ 233:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****     __WFE();
+ 234:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   }
+ 235:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   
+ 236:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   /* Reset SLEEPDEEP bit of Cortex System Control Register */
+ 237:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *(__IO uint32_t *) SCB_SysCtrl &= SysCtrl_SLEEPDEEP_Reset;  
+ 16613              		.loc 1 237 0
+ 16614 0022 1868     		ldr	r0, [r3, #0]
+ 16615 0024 20F00401 		bic	r1, r0, #4
+ 16616              	.LVL13:
+ 16617 0028 1960     		str	r1, [r3, #0]
+ 238:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** }
+ 16618              		.loc 1 238 0
+ 16619 002a 7047     		bx	lr
+ 16620              	.L20:
+ 16621              		.align	2
+ 16622              	.L19:
+ 16623 002c 00700040 		.word	1073770496
+ 16624 0030 10ED00E0 		.word	-536810224
+ 16625              		.cfi_endproc
+ 16626              	.LFE34:
+ 16628              		.section	.text.PWR_EnterSTANDBYMode,"ax",%progbits
+ 16629              		.align	1
+ 16630              		.global	PWR_EnterSTANDBYMode
+ 16631              		.thumb
+ 16632              		.thumb_func
+ 16634              	PWR_EnterSTANDBYMode:
+ 16635              	.LFB35:
+ 239:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+ 240:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /**
+ 241:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @brief  Enters STANDBY mode.
+ 242:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @param  None
+ 243:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @retval None
+ 244:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   */
+ 245:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** void PWR_EnterSTANDBYMode(void)
+ 246:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** {
+ 16636              		.loc 1 246 0
+ 16637              		.cfi_startproc
+ 16638              		@ args = 0, pretend = 0, frame = 0
+ 16639              		@ frame_needed = 0, uses_anonymous_args = 0
+ 16640              		@ link register save eliminated.
+ 247:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   /* Clear Wake-up flag */
+ 248:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   PWR->CR |= CR_CWUF_Set;
+ 16641              		.loc 1 248 0
+ 16642 0000 074B     		ldr	r3, .L22
+ 16643 0002 1968     		ldr	r1, [r3, #0]
+ 16644 0004 41F00400 		orr	r0, r1, #4
+ 16645 0008 1860     		str	r0, [r3, #0]
+ 249:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   /* Select STANDBY mode */
+ 250:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   PWR->CR |= CR_PDDS_Set;
+ 16646              		.loc 1 250 0
+ 16647 000a 1A68     		ldr	r2, [r3, #0]
+ 16648 000c 42F00201 		orr	r1, r2, #2
+ 16649 0010 1960     		str	r1, [r3, #0]
+ 251:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   /* Set SLEEPDEEP bit of Cortex System Control Register */
+ 252:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *(__IO uint32_t *) SCB_SysCtrl |= SysCtrl_SLEEPDEEP_Set;
+ 16650              		.loc 1 252 0
+ 16651 0012 044B     		ldr	r3, .L22+4
+ 16652 0014 1868     		ldr	r0, [r3, #0]
+ 16653 0016 40F00402 		orr	r2, r0, #4
+ 16654 001a 1A60     		str	r2, [r3, #0]
+ 16655              	.LBB12:
+ 16656              	.LBB13:
+1211:../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h **** static __INLINE void __WFI()                      { __ASM volatile ("wfi"); }
+ 16657              		.loc 4 1211 0
+ 16658              	@ 1211 "../../../SDK_embedded/libs/stm32/CMSIS/core_cm3.h" 1
+ 16659 001c 30BF     		wfi
+ 16660              	@ 0 "" 2
+ 16661              		.thumb
+ 16662              	.LBE13:
+ 16663              	.LBE12:
+ 253:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /* This option is used to ensure that store operations are completed */
+ 254:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** #if defined ( __CC_ARM   )
+ 255:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   __force_stores();
+ 256:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** #endif
+ 257:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   /* Request Wait For Interrupt */
+ 258:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   __WFI();
+ 259:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** }
+ 16664              		.loc 1 259 0
+ 16665 001e 7047     		bx	lr
+ 16666              	.L23:
+ 16667              		.align	2
+ 16668              	.L22:
+ 16669 0020 00700040 		.word	1073770496
+ 16670 0024 10ED00E0 		.word	-536810224
+ 16671              		.cfi_endproc
+ 16672              	.LFE35:
+ 16674              		.section	.text.PWR_GetFlagStatus,"ax",%progbits
+ 16675              		.align	1
+ 16676              		.global	PWR_GetFlagStatus
+ 16677              		.thumb
+ 16678              		.thumb_func
+ 16680              	PWR_GetFlagStatus:
+ 16681              	.LFB36:
+ 260:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+ 261:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /**
+ 262:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @brief  Checks whether the specified PWR flag is set or not.
+ 263:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @param  PWR_FLAG: specifies the flag to check.
+ 264:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *   This parameter can be one of the following values:
+ 265:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *     @arg PWR_FLAG_WU: Wake Up flag
+ 266:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *     @arg PWR_FLAG_SB: StandBy flag
+ 267:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *     @arg PWR_FLAG_PVDO: PVD Output
+ 268:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @retval The new state of PWR_FLAG (SET or RESET).
+ 269:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   */
+ 270:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** FlagStatus PWR_GetFlagStatus(uint32_t PWR_FLAG)
+ 271:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** {
+ 16682              		.loc 1 271 0
+ 16683              		.cfi_startproc
+ 16684              		@ args = 0, pretend = 0, frame = 0
+ 16685              		@ frame_needed = 0, uses_anonymous_args = 0
+ 16686              		@ link register save eliminated.
+ 16687              	.LVL14:
+ 272:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   FlagStatus bitstatus = RESET;
+ 273:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   /* Check the parameters */
+ 274:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   assert_param(IS_PWR_GET_FLAG(PWR_FLAG));
+ 275:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   
+ 276:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   if ((PWR->CSR & PWR_FLAG) != (uint32_t)RESET)
+ 16688              		.loc 1 276 0
+ 16689 0000 0349     		ldr	r1, .L25
+ 16690 0002 4B68     		ldr	r3, [r1, #4]
+ 16691              	.LVL15:
+ 277:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   {
+ 278:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****     bitstatus = SET;
+ 16692              		.loc 1 278 0
+ 16693 0004 1842     		tst	r0, r3
+ 276:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   if ((PWR->CSR & PWR_FLAG) != (uint32_t)RESET)
+ 16694              		.loc 1 276 0
+ 16695 0006 0CBF     		ite	eq
+ 16696 0008 0020     		moveq	r0, #0
+ 16697 000a 0120     		movne	r0, #1
+ 16698              	.LVL16:
+ 279:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   }
+ 280:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   else
+ 281:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   {
+ 282:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****     bitstatus = RESET;
+ 283:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   }
+ 284:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   /* Return the flag status */
+ 285:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   return bitstatus;
+ 286:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** }
+ 16699              		.loc 1 286 0
+ 16700 000c 7047     		bx	lr
+ 16701              	.L26:
+ 16702 000e 00BF     		.align	2
+ 16703              	.L25:
+ 16704 0010 00700040 		.word	1073770496
+ 16705              		.cfi_endproc
+ 16706              	.LFE36:
+ 16708              		.section	.text.PWR_ClearFlag,"ax",%progbits
+ 16709              		.align	1
+ 16710              		.global	PWR_ClearFlag
+ 16711              		.thumb
+ 16712              		.thumb_func
+ 16714              	PWR_ClearFlag:
+ 16715              	.LFB37:
+ 287:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** 
+ 288:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** /**
+ 289:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @brief  Clears the PWR's pending flags.
+ 290:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @param  PWR_FLAG: specifies the flag to clear.
+ 291:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *   This parameter can be one of the following values:
+ 292:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *     @arg PWR_FLAG_WU: Wake Up flag
+ 293:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   *     @arg PWR_FLAG_SB: StandBy flag
+ 294:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   * @retval None
+ 295:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   */
+ 296:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** void PWR_ClearFlag(uint32_t PWR_FLAG)
+ 297:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** {
+ 16716              		.loc 1 297 0
+ 16717              		.cfi_startproc
+ 16718              		@ args = 0, pretend = 0, frame = 0
+ 16719              		@ frame_needed = 0, uses_anonymous_args = 0
+ 16720              		@ link register save eliminated.
+ 16721              	.LVL17:
+ 298:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   /* Check the parameters */
+ 299:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   assert_param(IS_PWR_CLEAR_FLAG(PWR_FLAG));
+ 300:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****          
+ 301:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c ****   PWR->CR |=  PWR_FLAG << 2;
+ 16722              		.loc 1 301 0
+ 16723 0000 024B     		ldr	r3, .L28
+ 16724 0002 1A68     		ldr	r2, [r3, #0]
+ 16725 0004 42EA8000 		orr	r0, r2, r0, lsl #2
+ 16726              	.LVL18:
+ 16727 0008 1860     		str	r0, [r3, #0]
+ 302:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_pwr.c **** }
+ 16728              		.loc 1 302 0
+ 16729 000a 7047     		bx	lr
+ 16730              	.L29:
+ 16731              		.align	2
+ 16732              	.L28:
+ 16733 000c 00700040 		.word	1073770496
+ 16734              		.cfi_endproc
+ 16735              	.LFE37:
+ 16737              		.text
+ 16738              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32f10x_pwr.c
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16407  .text.PWR_DeInit:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16412  .text.PWR_DeInit:00000000 PWR_DeInit
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16437  .text.PWR_DeInit:00000018 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16442  .text.PWR_BackupAccessCmd:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16447  .text.PWR_BackupAccessCmd:00000000 PWR_BackupAccessCmd
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16463  .text.PWR_BackupAccessCmd:00000008 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16468  .text.PWR_PVDCmd:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16473  .text.PWR_PVDCmd:00000000 PWR_PVDCmd
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16489  .text.PWR_PVDCmd:00000008 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16494  .text.PWR_PVDLevelConfig:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16499  .text.PWR_PVDLevelConfig:00000000 PWR_PVDLevelConfig
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16524  .text.PWR_PVDLevelConfig:00000010 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16529  .text.PWR_WakeUpPinCmd:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16534  .text.PWR_WakeUpPinCmd:00000000 PWR_WakeUpPinCmd
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16550  .text.PWR_WakeUpPinCmd:00000008 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16555  .text.PWR_EnterSTOPMode:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16560  .text.PWR_EnterSTOPMode:00000000 PWR_EnterSTOPMode
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16623  .text.PWR_EnterSTOPMode:0000002c $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16629  .text.PWR_EnterSTANDBYMode:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16634  .text.PWR_EnterSTANDBYMode:00000000 PWR_EnterSTANDBYMode
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16669  .text.PWR_EnterSTANDBYMode:00000020 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16675  .text.PWR_GetFlagStatus:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16680  .text.PWR_GetFlagStatus:00000000 PWR_GetFlagStatus
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16704  .text.PWR_GetFlagStatus:00000010 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16709  .text.PWR_ClearFlag:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16714  .text.PWR_ClearFlag:00000000 PWR_ClearFlag
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccPLAe6t.s:16733  .text.PWR_ClearFlag:0000000c $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+RCC_APB1PeriphResetCmd

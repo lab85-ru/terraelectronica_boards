@@ -1,0 +1,155 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 18, 4
+  12              		.thumb
+  13              		.file	"usb_init.c"
+  23              	.Ltext0:
+ 16563              		.align	1
+ 16564              		.global	USB_Init
+ 16565              		.thumb
+ 16566              		.thumb_func
+ 16568              	USB_Init:
+ 16569              	.LFB29:
+   1:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** /******************** (C) COPYRIGHT 2010 STMicroelectronics ********************
+   2:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** * File Name          : usb_init.c
+   3:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** * Author             : MCD Application Team
+   4:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** * Version            : V3.2.1
+   5:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** * Date               : 07/05/2010
+   6:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** * Description        : Initialization routines & global variables
+   7:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** ********************************************************************************
+   8:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+   9:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
+  10:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** * AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY DIRECT,
+  11:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** * INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING FROM THE
+  12:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** * CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE CODING
+  13:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** * INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  14:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** *******************************************************************************/
+  15:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** 
+  16:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** /* Includes ------------------------------------------------------------------*/
+  17:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** #include "usb_lib.h"
+  18:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** 
+  19:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** /* Private typedef -----------------------------------------------------------*/
+  20:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** /* Private define ------------------------------------------------------------*/
+  21:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** /* Private macro -------------------------------------------------------------*/
+  22:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** /* Private variables ---------------------------------------------------------*/
+  23:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** /*  The number of current endpoint, it will be used to specify an endpoint */
+  24:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c ****  uint8_t	EPindex;
+  25:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** /*  The number of current device, it is an index to the Device_Table */
+  26:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** /* uint8_t	Device_no; */
+  27:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** /*  Points to the DEVICE_INFO structure of current device */
+  28:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** /*  The purpose of this register is to speed up the execution */
+  29:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** DEVICE_INFO *pInformation;
+  30:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** /*  Points to the DEVICE_PROP structure of current device */
+  31:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** /*  The purpose of this register is to speed up the execution */
+  32:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** DEVICE_PROP *pProperty;
+  33:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** /*  Temporary save the state of Rx & Tx status. */
+  34:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** /*  Whenever the Rx or Tx state is changed, its value is saved */
+  35:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** /*  in this variable first and will be set to the EPRB or EPRA */
+  36:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** /*  at the end of interrupt process */
+  37:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** uint16_t	SaveState ;
+  38:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** uint16_t  wInterrupt_Mask;
+  39:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** DEVICE_INFO	Device_Info;
+  40:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** USER_STANDARD_REQUESTS  *pUser_Standard_Requests;
+  41:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** 
+  42:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** /* Extern variables ----------------------------------------------------------*/
+  43:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** /* Private function prototypes -----------------------------------------------*/
+  44:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** /* Private functions ---------------------------------------------------------*/
+  45:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** 
+  46:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** /*******************************************************************************
+  47:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** * Function Name  : USB_Init
+  48:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** * Description    : USB system initialization
+  49:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** * Input          : None.
+  50:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** * Output         : None.
+  51:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** * Return         : None.
+  52:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** *******************************************************************************/
+  53:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** void USB_Init(void)
+  54:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** {
+ 16570              		.loc 1 54 0
+ 16571              		.cfi_startproc
+ 16572              		@ args = 0, pretend = 0, frame = 0
+ 16573              		@ frame_needed = 0, uses_anonymous_args = 0
+  55:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c ****   pInformation = &Device_Info;
+ 16574              		.loc 1 55 0
+ 16575 0000 0749     		ldr	r1, .L2
+ 16576 0002 084A     		ldr	r2, .L2+4
+  56:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c ****   pInformation->ControlState = 2;
+ 16577              		.loc 1 56 0
+ 16578 0004 0220     		movs	r0, #2
+  54:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** {
+ 16579              		.loc 1 54 0
+ 16580 0006 08B5     		push	{r3, lr}
+ 16581              	.LCFI0:
+ 16582              		.cfi_def_cfa_offset 8
+ 16583              		.cfi_offset 14, -4
+ 16584              		.cfi_offset 3, -8
+  55:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c ****   pInformation = &Device_Info;
+ 16585              		.loc 1 55 0
+ 16586 0008 1160     		str	r1, [r2, #0]
+ 16587              		.loc 1 56 0
+ 16588 000a 0872     		strb	r0, [r1, #8]
+  57:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c ****   pProperty = &Device_Property;
+ 16589              		.loc 1 57 0
+ 16590 000c 064B     		ldr	r3, .L2+8
+ 16591 000e 0748     		ldr	r0, .L2+12
+  58:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c ****   pUser_Standard_Requests = &User_Standard_Requests;
+ 16592              		.loc 1 58 0
+ 16593 0010 0749     		ldr	r1, .L2+16
+ 16594 0012 084A     		ldr	r2, .L2+20
+  57:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c ****   pProperty = &Device_Property;
+ 16595              		.loc 1 57 0
+ 16596 0014 1860     		str	r0, [r3, #0]
+ 16597              		.loc 1 58 0
+ 16598 0016 1160     		str	r1, [r2, #0]
+  59:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c ****   /* Initialize devices one by one */
+  60:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c ****   pProperty->Init();
+ 16599              		.loc 1 60 0
+ 16600 0018 0368     		ldr	r3, [r0, #0]
+ 16601 001a 9847     		blx	r3
+  61:../../../SDK_embedded/libs/stm32/STM32_USB_FS_Device_Driver/usb_init.c **** }
+ 16602              		.loc 1 61 0
+ 16603 001c 08BD     		pop	{r3, pc}
+ 16604              	.L3:
+ 16605 001e 00BF     		.align	2
+ 16606              	.L2:
+ 16607 0020 00000000 		.word	Device_Info
+ 16608 0024 00000000 		.word	pInformation
+ 16609 0028 00000000 		.word	pProperty
+ 16610 002c 00000000 		.word	Device_Property
+ 16611 0030 00000000 		.word	User_Standard_Requests
+ 16612 0034 00000000 		.word	pUser_Standard_Requests
+ 16613              		.cfi_endproc
+ 16614              	.LFE29:
+ 16616              		.comm	pUser_Standard_Requests,4,4
+ 16617              		.comm	Device_Info,28,4
+ 16618              		.comm	wInterrupt_Mask,2,2
+ 16619              		.comm	SaveState,2,2
+ 16620              		.comm	pProperty,4,4
+ 16621              		.comm	pInformation,4,4
+ 16622              		.comm	EPindex,1,1
+ 16623              		.text
+ 16624              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 usb_init.c
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccsOEbfN.s:16563  .text.USB_Init:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccsOEbfN.s:16568  .text.USB_Init:00000000 USB_Init
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccsOEbfN.s:16607  .text.USB_Init:00000020 $d
+                            *COM*:0000001c Device_Info
+                            *COM*:00000004 pInformation
+                            *COM*:00000004 pProperty
+                            *COM*:00000004 pUser_Standard_Requests
+                            *COM*:00000002 wInterrupt_Mask
+                            *COM*:00000002 SaveState
+                            *COM*:00000001 EPindex
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+Device_Property
+User_Standard_Requests

@@ -1,0 +1,1339 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 18, 4
+  12              		.thumb
+  13              		.file	"system_stm32f10x.c"
+  23              	.Ltext0:
+ 15788              		.align	1
+ 15789              		.global	SystemInit
+ 15790              		.thumb
+ 15791              		.thumb_func
+ 15793              	SystemInit:
+ 15794              	.LFB29:
+   1:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /**
+   2:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   ******************************************************************************
+   3:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @file    system_stm32f10x.c
+   4:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @author  MCD Application Team
+   5:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @version V3.3.0
+   6:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @date    04/16/2010
+   7:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @brief   CMSIS Cortex-M3 Device Peripheral Access Layer System Source File.
+   8:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   ******************************************************************************  
+   9:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   *
+  10:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+  11:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+  12:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+  13:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+  14:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+  15:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  16:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   *
+  17:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * <h2><center>&copy; COPYRIGHT 2010 STMicroelectronics</center></h2>
+  18:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   ******************************************************************************
+  19:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */
+  20:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+  21:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /** @addtogroup CMSIS
+  22:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @{
+  23:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */
+  24:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+  25:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /** @addtogroup stm32f10x_system
+  26:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @{
+  27:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */  
+  28:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   
+  29:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /** @addtogroup STM32F10x_System_Private_Includes
+  30:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @{
+  31:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */
+  32:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+  33:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #include "stm32f10x.h"
+  34:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+  35:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /**
+  36:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @}
+  37:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */
+  38:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+  39:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /** @addtogroup STM32F10x_System_Private_TypesDefinitions
+  40:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @{
+  41:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */
+  42:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+  43:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /**
+  44:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @}
+  45:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */
+  46:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+  47:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /** @addtogroup STM32F10x_System_Private_Defines
+  48:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @{
+  49:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */
+  50:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+  51:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /*!< Uncomment the line corresponding to the desired System clock (SYSCLK)
+  52:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****    frequency (after reset the HSI is used as SYSCLK source)
+  53:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****    
+  54:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****    IMPORTANT NOTE:
+  55:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****    ============== 
+  56:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****    1. After each device reset the HSI is used as System clock source.
+  57:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+  58:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****    2. Please make sure that the selected System clock doesn't exceed your device's
+  59:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       maximum frequency.
+  60:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       
+  61:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****    3. If none of the define below is enabled, the HSI is used as System clock
+  62:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     source.
+  63:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+  64:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****    4. The System clock configuration functions provided within this file assume that:
+  65:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         - For Low and Medium density Value line devices an external 8MHz crystal 
+  66:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****           is used to drive the System clock.
+  67:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         - For Low, Medium and High density devices an external 8MHz crystal is
+  68:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****           used to drive the System clock.
+  69:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         - For Connectivity line devices an external 25MHz crystal is used to drive
+  70:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****           the System clock.
+  71:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****      If you are using different crystal you have to adapt those functions accordingly.
+  72:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     */
+  73:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     
+  74:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #if defined (STM32F10X_LD_VL) || (defined STM32F10X_MD_VL) 
+  75:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /* #define SYSCLK_FREQ_HSE    HSE_Value */
+  76:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****  #define SYSCLK_FREQ_24MHz  24000000
+  77:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #else
+  78:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /* #define SYSCLK_FREQ_HSE    HSE_Value */
+  79:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /* #define SYSCLK_FREQ_24MHz  24000000 */ 
+  80:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /* #define SYSCLK_FREQ_36MHz  36000000 */
+  81:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /* #define SYSCLK_FREQ_48MHz  48000000 */
+  82:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /* #define SYSCLK_FREQ_56MHz  56000000 */
+  83:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #define SYSCLK_FREQ_72MHz  72000000
+  84:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #endif
+  85:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+  86:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /*!< Uncomment the following line if you need to use external SRAM mounted
+  87:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****      on STM3210E-EVAL board (STM32 High density and XL-density devices) as data memory  */ 
+  88:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #if defined (STM32F10X_HD) || (defined STM32F10X_XL)
+  89:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /* #define DATA_IN_ExtSRAM */
+  90:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #endif
+  91:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+  92:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /**
+  93:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @}
+  94:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */
+  95:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+  96:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /** @addtogroup STM32F10x_System_Private_Macros
+  97:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @{
+  98:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */
+  99:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 100:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /**
+ 101:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @}
+ 102:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */
+ 103:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 104:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /** @addtogroup STM32F10x_System_Private_Variables
+ 105:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @{
+ 106:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */
+ 107:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 108:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /*******************************************************************************
+ 109:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** *  Clock Definitions
+ 110:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** *******************************************************************************/
+ 111:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #ifdef SYSCLK_FREQ_HSE
+ 112:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   uint32_t SystemCoreClock         = SYSCLK_FREQ_HSE;        /*!< System Clock Frequency (Core Cloc
+ 113:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #elif defined SYSCLK_FREQ_24MHz
+ 114:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   uint32_t SystemCoreClock         = SYSCLK_FREQ_24MHz;        /*!< System Clock Frequency (Core Cl
+ 115:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #elif defined SYSCLK_FREQ_36MHz
+ 116:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   uint32_t SystemCoreClock         = SYSCLK_FREQ_36MHz;        /*!< System Clock Frequency (Core Cl
+ 117:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #elif defined SYSCLK_FREQ_48MHz
+ 118:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   uint32_t SystemCoreClock         = SYSCLK_FREQ_48MHz;        /*!< System Clock Frequency (Core Cl
+ 119:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #elif defined SYSCLK_FREQ_56MHz
+ 120:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   uint32_t SystemCoreClock         = SYSCLK_FREQ_56MHz;        /*!< System Clock Frequency (Core Cl
+ 121:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #elif defined SYSCLK_FREQ_72MHz
+ 122:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   uint32_t SystemCoreClock         = SYSCLK_FREQ_72MHz;        /*!< System Clock Frequency (Core Cl
+ 123:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #else /*!< HSI Selected as System Clock source */
+ 124:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   uint32_t SystemCoreClock         = HSI_Value;        /*!< System Clock Frequency (Core Clock) */
+ 125:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #endif
+ 126:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 127:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** __I uint8_t AHBPrescTable[16] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9};
+ 128:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /**
+ 129:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @}
+ 130:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */
+ 131:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 132:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /** @addtogroup STM32F10x_System_Private_FunctionPrototypes
+ 133:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @{
+ 134:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */
+ 135:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 136:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** static void SetSysClock(void);
+ 137:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 138:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #ifdef SYSCLK_FREQ_HSE
+ 139:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   static void SetSysClockToHSE(void);
+ 140:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #elif defined SYSCLK_FREQ_24MHz
+ 141:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   static void SetSysClockTo24(void);
+ 142:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #elif defined SYSCLK_FREQ_36MHz
+ 143:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   static void SetSysClockTo36(void);
+ 144:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #elif defined SYSCLK_FREQ_48MHz
+ 145:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   static void SetSysClockTo48(void);
+ 146:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #elif defined SYSCLK_FREQ_56MHz
+ 147:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   static void SetSysClockTo56(void);  
+ 148:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #elif defined SYSCLK_FREQ_72MHz
+ 149:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   static void SetSysClockTo72(void);
+ 150:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #endif
+ 151:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 152:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #ifdef DATA_IN_ExtSRAM
+ 153:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   static void SystemInit_ExtMemCtl(void); 
+ 154:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #endif /* DATA_IN_ExtSRAM */
+ 155:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 156:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /**
+ 157:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @}
+ 158:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */
+ 159:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 160:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /** @addtogroup STM32F10x_System_Private_Functions
+ 161:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @{
+ 162:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */
+ 163:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 164:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /**
+ 165:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @brief  Setup the microcontroller system
+ 166:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   *         Initialize the Embedded Flash Interface, the PLL and update the 
+ 167:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   *         SystemCoreClock variable.
+ 168:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @note   This function should be used only after reset.
+ 169:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @param  None
+ 170:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @retval None
+ 171:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */
+ 172:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** void SystemInit (void)
+ 173:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** {
+ 15795              		.loc 1 173 0
+ 15796              		.cfi_startproc
+ 15797              		@ args = 0, pretend = 0, frame = 8
+ 15798              		@ frame_needed = 0, uses_anonymous_args = 0
+ 15799              		@ link register save eliminated.
+ 174:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Reset the RCC clock configuration to the default reset state(for debug purpose) */
+ 175:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Set HSION bit */
+ 176:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   RCC->CR |= (uint32_t)0x00000001;
+ 15800              		.loc 1 176 0
+ 15801 0000 384B     		ldr	r3, .L12
+ 173:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** {
+ 15802              		.loc 1 173 0
+ 15803 0002 82B0     		sub	sp, sp, #8
+ 15804              	.LCFI0:
+ 15805              		.cfi_def_cfa_offset 8
+ 15806              		.loc 1 176 0
+ 15807 0004 1A68     		ldr	r2, [r3, #0]
+ 15808 0006 42F00100 		orr	r0, r2, #1
+ 15809 000a 1860     		str	r0, [r3, #0]
+ 177:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 178:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Reset SW, HPRE, PPRE1, PPRE2, ADCPRE and MCO bits */
+ 179:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #ifndef STM32F10X_CL
+ 180:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   RCC->CFGR &= (uint32_t)0xF8FF0000;
+ 15810              		.loc 1 180 0
+ 15811 000c 5968     		ldr	r1, [r3, #4]
+ 15812 000e 364A     		ldr	r2, .L12+4
+ 15813 0010 01EA0200 		and	r0, r1, r2
+ 15814 0014 5860     		str	r0, [r3, #4]
+ 181:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #else
+ 182:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   RCC->CFGR &= (uint32_t)0xF0FF0000;
+ 183:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #endif /* STM32F10X_CL */   
+ 184:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   
+ 185:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Reset HSEON, CSSON and PLLON bits */
+ 186:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   RCC->CR &= (uint32_t)0xFEF6FFFF;
+ 15815              		.loc 1 186 0
+ 15816 0016 1A68     		ldr	r2, [r3, #0]
+ 15817 0018 22F0847C 		bic	ip, r2, #17301504
+ 15818 001c 2CF48031 		bic	r1, ip, #65536
+ 15819 0020 1960     		str	r1, [r3, #0]
+ 187:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 188:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Reset HSEBYP bit */
+ 189:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   RCC->CR &= (uint32_t)0xFFFBFFFF;
+ 15820              		.loc 1 189 0
+ 15821 0022 1868     		ldr	r0, [r3, #0]
+ 15822 0024 20F48022 		bic	r2, r0, #262144
+ 15823 0028 1A60     		str	r2, [r3, #0]
+ 190:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 191:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Reset PLLSRC, PLLXTPRE, PLLMUL and USBPRE/OTGFSPRE bits */
+ 192:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   RCC->CFGR &= (uint32_t)0xFF80FFFF;
+ 15824              		.loc 1 192 0
+ 15825 002a 5968     		ldr	r1, [r3, #4]
+ 193:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 194:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #ifdef STM32F10X_CL
+ 195:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Reset PLL2ON and PLL3ON bits */
+ 196:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   RCC->CR &= (uint32_t)0xEBFFFFFF;
+ 197:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 198:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Disable all interrupts and clear pending bits  */
+ 199:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   RCC->CIR = 0x00FF0000;
+ 200:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 201:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Reset CFGR2 register */
+ 202:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   RCC->CFGR2 = 0x00000000;
+ 203:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #elif defined (STM32F10X_LD_VL) || defined (STM32F10X_MD_VL) 
+ 204:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Disable all interrupts and clear pending bits  */
+ 205:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   RCC->CIR = 0x009F0000;
+ 206:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 207:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Reset CFGR2 register */
+ 208:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   RCC->CFGR2 = 0x00000000;      
+ 209:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #else
+ 210:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Disable all interrupts and clear pending bits  */
+ 211:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   RCC->CIR = 0x009F0000;
+ 15826              		.loc 1 211 0
+ 15827 002c 4FF41F02 		mov	r2, #10420224
+ 192:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   RCC->CFGR &= (uint32_t)0xFF80FFFF;
+ 15828              		.loc 1 192 0
+ 15829 0030 21F4FE00 		bic	r0, r1, #8323072
+ 15830              	.LBB8:
+ 15831              	.LBB9:
+ 15832              	.LBB10:
+ 212:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #endif /* STM32F10X_CL */
+ 213:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     
+ 214:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #if defined (STM32F10X_HD) || (defined STM32F10X_XL)
+ 215:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   #ifdef DATA_IN_ExtSRAM
+ 216:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     SystemInit_ExtMemCtl(); 
+ 217:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   #endif /* DATA_IN_ExtSRAM */
+ 218:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #endif 
+ 219:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 220:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Configure the System clock frequency, HCLK, PCLK2 and PCLK1 prescalers */
+ 221:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Configure the Flash Latency cycles and enable prefetch buffer */
+ 222:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   SetSysClock();
+ 223:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** }
+ 224:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 225:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /**
+ 226:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @brief  Update SystemCoreClock according to Clock Register Values
+ 227:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @note   None
+ 228:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @param  None
+ 229:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @retval None
+ 230:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */
+ 231:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** void SystemCoreClockUpdate (void)
+ 232:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** {
+ 233:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   uint32_t tmp = 0, pllmull = 0, pllsource = 0;
+ 234:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 235:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #ifdef  STM32F10X_CL
+ 236:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   uint32_t prediv1source = 0, prediv1factor = 0, prediv2factor = 0, pll2mull = 0;
+ 237:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #endif /* STM32F10X_CL */
+ 238:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 239:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #if defined (STM32F10X_LD_VL) || defined (STM32F10X_MD_VL)
+ 240:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   uint32_t prediv1factor = 0;
+ 241:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #endif /* STM32F10X_LD_VL or STM32F10X_MD_VL */
+ 242:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     
+ 243:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Get SYSCLK source -------------------------------------------------------*/
+ 244:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   tmp = RCC->CFGR & RCC_CFGR_SWS;
+ 245:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   
+ 246:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   switch (tmp)
+ 247:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   {
+ 248:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     case 0x00:  /* HSI used as system clock */
+ 249:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       SystemCoreClock = HSI_Value;
+ 250:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       break;
+ 251:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     case 0x04:  /* HSE used as system clock */
+ 252:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       SystemCoreClock = HSE_Value;
+ 253:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       break;
+ 254:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     case 0x08:  /* PLL used as system clock */
+ 255:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 256:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       /* Get PLL clock source and multiplication factor ----------------------*/
+ 257:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       pllmull = RCC->CFGR & RCC_CFGR_PLLMULL;
+ 258:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       pllsource = RCC->CFGR & RCC_CFGR_PLLSRC;
+ 259:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       
+ 260:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #ifndef STM32F10X_CL      
+ 261:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       pllmull = ( pllmull >> 18) + 2;
+ 262:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       
+ 263:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       if (pllsource == 0x00)
+ 264:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       {
+ 265:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         /* HSI oscillator clock divided by 2 selected as PLL clock entry */
+ 266:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         SystemCoreClock = (HSI_Value >> 1) * pllmull;
+ 267:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       }
+ 268:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       else
+ 269:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       {
+ 270:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****  #if defined (STM32F10X_LD_VL) || defined (STM32F10X_MD_VL)
+ 271:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****        prediv1factor = (RCC->CFGR2 & RCC_CFGR2_PREDIV1) + 1;
+ 272:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****        /* HSE oscillator clock selected as PREDIV1 clock entry */
+ 273:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****        SystemCoreClock = (HSE_Value / prediv1factor) * pllmull; 
+ 274:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****  #else
+ 275:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         /* HSE selected as PLL clock entry */
+ 276:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         if ((RCC->CFGR & RCC_CFGR_PLLXTPRE) != (uint32_t)RESET)
+ 277:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         {/* HSE oscillator clock divided by 2 */
+ 278:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****           SystemCoreClock = (HSE_Value >> 1) * pllmull;
+ 279:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         }
+ 280:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         else
+ 281:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         {
+ 282:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****           SystemCoreClock = HSE_Value * pllmull;
+ 283:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         }
+ 284:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****  #endif
+ 285:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       }
+ 286:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #else
+ 287:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       pllmull = pllmull >> 18;
+ 288:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       
+ 289:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       if (pllmull != 0x0D)
+ 290:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       {
+ 291:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****          pllmull += 2;
+ 292:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       }
+ 293:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       else
+ 294:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       { /* PLL multiplication factor = PLL input clock * 6.5 */
+ 295:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         pllmull = 13 / 2; 
+ 296:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       }
+ 297:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****             
+ 298:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       if (pllsource == 0x00)
+ 299:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       {
+ 300:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         /* HSI oscillator clock divided by 2 selected as PLL clock entry */
+ 301:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         SystemCoreClock = (HSI_Value >> 1) * pllmull;
+ 302:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       }
+ 303:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       else
+ 304:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       {/* PREDIV1 selected as PLL clock entry */
+ 305:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         
+ 306:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         /* Get PREDIV1 clock source and division factor */
+ 307:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         prediv1source = RCC->CFGR2 & RCC_CFGR2_PREDIV1SRC;
+ 308:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         prediv1factor = (RCC->CFGR2 & RCC_CFGR2_PREDIV1) + 1;
+ 309:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         
+ 310:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         if (prediv1source == 0)
+ 311:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         { 
+ 312:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****           /* HSE oscillator clock selected as PREDIV1 clock entry */
+ 313:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****           SystemCoreClock = (HSE_Value / prediv1factor) * pllmull;          
+ 314:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         }
+ 315:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         else
+ 316:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         {/* PLL2 clock selected as PREDIV1 clock entry */
+ 317:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****           
+ 318:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****           /* Get PREDIV2 division factor and PLL2 multiplication factor */
+ 319:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****           prediv2factor = ((RCC->CFGR2 & RCC_CFGR2_PREDIV2) >> 4) + 1;
+ 320:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****           pll2mull = ((RCC->CFGR2 & RCC_CFGR2_PLL2MUL) >> 8 ) + 2; 
+ 321:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****           SystemCoreClock = (((HSE_Value / prediv2factor) * pll2mull) / prediv1factor) * pllmull;  
+ 322:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         }
+ 323:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       }
+ 324:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #endif /* STM32F10X_CL */ 
+ 325:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       break;
+ 326:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 327:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     default:
+ 328:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       SystemCoreClock = HSI_Value;
+ 329:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       break;
+ 330:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   }
+ 331:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   
+ 332:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Compute HCLK clock frequency ----------------*/
+ 333:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Get HCLK prescaler */
+ 334:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   tmp = AHBPrescTable[((RCC->CFGR & RCC_CFGR_HPRE) >> 4)];
+ 335:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* HCLK clock frequency */
+ 336:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   SystemCoreClock >>= tmp;  
+ 337:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** }
+ 338:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 339:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /**
+ 340:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @brief  Configures the System clock frequency, HCLK, PCLK2 and PCLK1 prescalers.
+ 341:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @param  None
+ 342:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @retval None
+ 343:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */
+ 344:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** static void SetSysClock(void)
+ 345:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** {
+ 346:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #ifdef SYSCLK_FREQ_HSE
+ 347:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   SetSysClockToHSE();
+ 348:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #elif defined SYSCLK_FREQ_24MHz
+ 349:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   SetSysClockTo24();
+ 350:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #elif defined SYSCLK_FREQ_36MHz
+ 351:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   SetSysClockTo36();
+ 352:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #elif defined SYSCLK_FREQ_48MHz
+ 353:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   SetSysClockTo48();
+ 354:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #elif defined SYSCLK_FREQ_56MHz
+ 355:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   SetSysClockTo56();  
+ 356:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #elif defined SYSCLK_FREQ_72MHz
+ 357:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   SetSysClockTo72();
+ 358:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #endif
+ 359:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****  
+ 360:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****  /* If none of the define above is enabled, the HSI is used as System clock
+ 361:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     source (default after reset) */ 
+ 362:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** }
+ 363:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 364:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /**
+ 365:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @brief  Setup the external memory controller. Called in startup_stm32f10x.s 
+ 366:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   *          before jump to __main
+ 367:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @param  None
+ 368:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @retval None
+ 369:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */ 
+ 370:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #ifdef DATA_IN_ExtSRAM
+ 371:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /**
+ 372:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @brief  Setup the external memory controller. 
+ 373:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   *         Called in startup_stm32f10x_xx.s/.c before jump to main.
+ 374:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * 	      This function configures the external SRAM mounted on STM3210E-EVAL
+ 375:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   *         board (STM32 High density devices). This SRAM will be used as program
+ 376:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   *         data memory (including heap and stack).
+ 377:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @param  None
+ 378:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @retval None
+ 379:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */ 
+ 380:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** void SystemInit_ExtMemCtl(void) 
+ 381:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** {
+ 382:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /*!< FSMC Bank1 NOR/SRAM3 is used for the STM3210E-EVAL, if another Bank is 
+ 383:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   required, then adjust the Register Addresses */
+ 384:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 385:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Enable FSMC clock */
+ 386:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   RCC->AHBENR = 0x00000114;
+ 387:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   
+ 388:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Enable GPIOD, GPIOE, GPIOF and GPIOG clocks */  
+ 389:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   RCC->APB2ENR = 0x000001E0;
+ 390:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   
+ 391:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /* ---------------  SRAM Data lines, NOE and NWE configuration ---------------*/
+ 392:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /*----------------  SRAM Address lines configuration -------------------------*/
+ 393:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /*----------------  NOE and NWE configuration --------------------------------*/  
+ 394:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /*----------------  NE3 configuration ----------------------------------------*/
+ 395:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /*----------------  NBL0, NBL1 configuration ---------------------------------*/
+ 396:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   
+ 397:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   GPIOD->CRL = 0x44BB44BB;  
+ 398:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   GPIOD->CRH = 0xBBBBBBBB;
+ 399:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 400:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   GPIOE->CRL = 0xB44444BB;  
+ 401:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   GPIOE->CRH = 0xBBBBBBBB;
+ 402:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 403:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   GPIOF->CRL = 0x44BBBBBB;  
+ 404:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   GPIOF->CRH = 0xBBBB4444;
+ 405:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 406:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   GPIOG->CRL = 0x44BBBBBB;  
+ 407:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   GPIOG->CRH = 0x44444B44;
+ 408:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****    
+ 409:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /*----------------  FSMC Configuration ---------------------------------------*/  
+ 410:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /*----------------  Enable FSMC Bank1_SRAM Bank ------------------------------*/
+ 411:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   
+ 412:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   FSMC_Bank1->BTCR[4] = 0x00001011;
+ 413:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   FSMC_Bank1->BTCR[5] = 0x00000200;
+ 414:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** }
+ 415:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #endif /* DATA_IN_ExtSRAM */
+ 416:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 417:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #ifdef SYSCLK_FREQ_HSE
+ 418:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /**
+ 419:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @brief  Selects HSE as System clock source and configure HCLK, PCLK2
+ 420:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   *          and PCLK1 prescalers.
+ 421:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @note   This function should be used only after reset.
+ 422:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @param  None
+ 423:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @retval None
+ 424:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */
+ 425:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** static void SetSysClockToHSE(void)
+ 426:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** {
+ 427:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
+ 428:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   
+ 429:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* SYSCLK, HCLK, PCLK2 and PCLK1 configuration ---------------------------*/    
+ 430:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Enable HSE */    
+ 431:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   RCC->CR |= ((uint32_t)RCC_CR_HSEON);
+ 432:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****  
+ 433:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Wait till HSE is ready and if Time out is reached exit */
+ 434:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   do
+ 435:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   {
+ 436:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     HSEStatus = RCC->CR & RCC_CR_HSERDY;
+ 437:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     StartUpCounter++;  
+ 438:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   } while((HSEStatus == 0) && (StartUpCounter != HSEStartUp_TimeOut));
+ 439:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 440:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   if ((RCC->CR & RCC_CR_HSERDY) != RESET)
+ 441:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   {
+ 442:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     HSEStatus = (uint32_t)0x01;
+ 443:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   }
+ 444:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   else
+ 445:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   {
+ 446:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     HSEStatus = (uint32_t)0x00;
+ 447:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   }  
+ 448:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 449:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   if (HSEStatus == (uint32_t)0x01)
+ 450:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   {
+ 451:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 452:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #if !defined STM32F10X_LD_VL && !defined STM32F10X_MD_VL 
+ 453:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Enable Prefetch Buffer */
+ 454:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     FLASH->ACR |= FLASH_ACR_PRFTBE;
+ 455:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 456:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Flash 0 wait state */
+ 457:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     FLASH->ACR &= (uint32_t)((uint32_t)~FLASH_ACR_LATENCY);
+ 458:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 459:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #ifndef STM32F10X_CL
+ 460:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     FLASH->ACR |= (uint32_t)FLASH_ACR_LATENCY_0;
+ 461:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #else
+ 462:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     if (HSE_Value <= 24000000)
+ 463:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 	{
+ 464:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       FLASH->ACR |= (uint32_t)FLASH_ACR_LATENCY_0;
+ 465:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 	}
+ 466:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 	else
+ 467:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 	{
+ 468:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       FLASH->ACR |= (uint32_t)FLASH_ACR_LATENCY_1;
+ 469:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 	}
+ 470:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #endif /* STM32F10X_CL */
+ 471:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #endif
+ 472:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****  
+ 473:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* HCLK = SYSCLK */
+ 474:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)RCC_CFGR_HPRE_DIV1;
+ 475:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       
+ 476:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PCLK2 = HCLK */
+ 477:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE2_DIV1;
+ 478:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     
+ 479:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PCLK1 = HCLK */
+ 480:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE1_DIV1;
+ 481:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     
+ 482:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Select HSE as system clock source */
+ 483:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_SW));
+ 484:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)RCC_CFGR_SW_HSE;    
+ 485:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 486:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Wait till HSE is used as system clock source */
+ 487:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS) != (uint32_t)0x04)
+ 488:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     {
+ 489:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     }
+ 490:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   }
+ 491:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   else
+ 492:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   { /* If HSE fails to start-up, the application will have wrong clock 
+ 493:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****          configuration. User can add here some code to deal with this error */
+ 494:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   }  
+ 495:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** }
+ 496:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #elif defined SYSCLK_FREQ_24MHz
+ 497:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /**
+ 498:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @brief  Sets System clock frequency to 24MHz and configure HCLK, PCLK2 
+ 499:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   *          and PCLK1 prescalers.
+ 500:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @note   This function should be used only after reset.
+ 501:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @param  None
+ 502:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @retval None
+ 503:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */
+ 504:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** static void SetSysClockTo24(void)
+ 505:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** {
+ 506:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
+ 507:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   
+ 508:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* SYSCLK, HCLK, PCLK2 and PCLK1 configuration ---------------------------*/    
+ 509:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Enable HSE */    
+ 510:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   RCC->CR |= ((uint32_t)RCC_CR_HSEON);
+ 511:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****  
+ 512:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Wait till HSE is ready and if Time out is reached exit */
+ 513:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   do
+ 514:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   {
+ 515:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     HSEStatus = RCC->CR & RCC_CR_HSERDY;
+ 516:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     StartUpCounter++;  
+ 517:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   } while((HSEStatus == 0) && (StartUpCounter != HSEStartUp_TimeOut));
+ 518:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 519:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   if ((RCC->CR & RCC_CR_HSERDY) != RESET)
+ 520:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   {
+ 521:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     HSEStatus = (uint32_t)0x01;
+ 522:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   }
+ 523:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   else
+ 524:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   {
+ 525:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     HSEStatus = (uint32_t)0x00;
+ 526:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   }  
+ 527:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 528:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   if (HSEStatus == (uint32_t)0x01)
+ 529:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   {
+ 530:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #if !defined STM32F10X_LD_VL && !defined STM32F10X_MD_VL 
+ 531:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Enable Prefetch Buffer */
+ 532:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     FLASH->ACR |= FLASH_ACR_PRFTBE;
+ 533:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 534:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Flash 0 wait state */
+ 535:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     FLASH->ACR &= (uint32_t)((uint32_t)~FLASH_ACR_LATENCY);
+ 536:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     FLASH->ACR |= (uint32_t)FLASH_ACR_LATENCY_0;    
+ 537:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #endif
+ 538:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****  
+ 539:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* HCLK = SYSCLK */
+ 540:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)RCC_CFGR_HPRE_DIV1;
+ 541:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       
+ 542:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PCLK2 = HCLK */
+ 543:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE2_DIV1;
+ 544:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     
+ 545:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PCLK1 = HCLK */
+ 546:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE1_DIV1;
+ 547:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     
+ 548:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #ifdef STM32F10X_CL
+ 549:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Configure PLLs ------------------------------------------------------*/
+ 550:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PLL configuration: PLLCLK = PREDIV1 * 6 = 24 MHz */ 
+ 551:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR &= (uint32_t)~(RCC_CFGR_PLLXTPRE | RCC_CFGR_PLLSRC | RCC_CFGR_PLLMULL);
+ 552:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLXTPRE_PREDIV1 | RCC_CFGR_PLLSRC_PREDIV1 | 
+ 553:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****                             RCC_CFGR_PLLMULL6); 
+ 554:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 555:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PLL2 configuration: PLL2CLK = (HSE / 5) * 8 = 40 MHz */
+ 556:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PREDIV1 configuration: PREDIV1CLK = PLL2 / 10 = 4 MHz */       
+ 557:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR2 &= (uint32_t)~(RCC_CFGR2_PREDIV2 | RCC_CFGR2_PLL2MUL |
+ 558:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****                               RCC_CFGR2_PREDIV1 | RCC_CFGR2_PREDIV1SRC);
+ 559:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR2 |= (uint32_t)(RCC_CFGR2_PREDIV2_DIV5 | RCC_CFGR2_PLL2MUL8 |
+ 560:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****                              RCC_CFGR2_PREDIV1SRC_PLL2 | RCC_CFGR2_PREDIV1_DIV10);
+ 561:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   
+ 562:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Enable PLL2 */
+ 563:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CR |= RCC_CR_PLL2ON;
+ 564:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Wait till PLL2 is ready */
+ 565:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     while((RCC->CR & RCC_CR_PLL2RDY) == 0)
+ 566:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     {
+ 567:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     }   
+ 568:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #elif defined (STM32F10X_LD_VL) || defined (STM32F10X_MD_VL)
+ 569:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /*  PLL configuration:  = (HSE / 2) * 6 = 24 MHz */
+ 570:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_PLLSRC | RCC_CFGR_PLLXTPRE | RCC_CFGR_PLLMULL));
+ 571:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC_PREDIV1 | RCC_CFGR_PLLXTPRE_PREDIV1_Div2 | RCC_CFGR_PLL
+ 572:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #else    
+ 573:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /*  PLL configuration:  = (HSE / 2) * 6 = 24 MHz */
+ 574:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_PLLSRC | RCC_CFGR_PLLXTPRE | RCC_CFGR_PLLMULL));
+ 575:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC_HSE | RCC_CFGR_PLLXTPRE_HSE_Div2 | RCC_CFGR_PLLMULL6);
+ 576:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #endif /* STM32F10X_CL */
+ 577:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 578:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Enable PLL */
+ 579:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CR |= RCC_CR_PLLON;
+ 580:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 581:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Wait till PLL is ready */
+ 582:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     while((RCC->CR & RCC_CR_PLLRDY) == 0)
+ 583:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     {
+ 584:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     }
+ 585:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 586:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Select PLL as system clock source */
+ 587:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_SW));
+ 588:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)RCC_CFGR_SW_PLL;    
+ 589:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 590:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Wait till PLL is used as system clock source */
+ 591:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS) != (uint32_t)0x08)
+ 592:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     {
+ 593:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     }
+ 594:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   }
+ 595:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   else
+ 596:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   { /* If HSE fails to start-up, the application will have wrong clock 
+ 597:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****          configuration. User can add here some code to deal with this error */
+ 598:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   } 
+ 599:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** }
+ 600:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #elif defined SYSCLK_FREQ_36MHz
+ 601:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /**
+ 602:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @brief  Sets System clock frequency to 36MHz and configure HCLK, PCLK2 
+ 603:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   *          and PCLK1 prescalers. 
+ 604:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @note   This function should be used only after reset.
+ 605:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @param  None
+ 606:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @retval None
+ 607:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */
+ 608:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** static void SetSysClockTo36(void)
+ 609:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** {
+ 610:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
+ 611:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   
+ 612:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* SYSCLK, HCLK, PCLK2 and PCLK1 configuration ---------------------------*/    
+ 613:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Enable HSE */    
+ 614:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   RCC->CR |= ((uint32_t)RCC_CR_HSEON);
+ 615:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****  
+ 616:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Wait till HSE is ready and if Time out is reached exit */
+ 617:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   do
+ 618:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   {
+ 619:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     HSEStatus = RCC->CR & RCC_CR_HSERDY;
+ 620:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     StartUpCounter++;  
+ 621:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   } while((HSEStatus == 0) && (StartUpCounter != HSEStartUp_TimeOut));
+ 622:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 623:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   if ((RCC->CR & RCC_CR_HSERDY) != RESET)
+ 624:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   {
+ 625:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     HSEStatus = (uint32_t)0x01;
+ 626:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   }
+ 627:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   else
+ 628:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   {
+ 629:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     HSEStatus = (uint32_t)0x00;
+ 630:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   }  
+ 631:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 632:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   if (HSEStatus == (uint32_t)0x01)
+ 633:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   {
+ 634:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Enable Prefetch Buffer */
+ 635:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     FLASH->ACR |= FLASH_ACR_PRFTBE;
+ 636:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 637:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Flash 1 wait state */
+ 638:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     FLASH->ACR &= (uint32_t)((uint32_t)~FLASH_ACR_LATENCY);
+ 639:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     FLASH->ACR |= (uint32_t)FLASH_ACR_LATENCY_1;    
+ 640:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****  
+ 641:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* HCLK = SYSCLK */
+ 642:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)RCC_CFGR_HPRE_DIV1;
+ 643:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       
+ 644:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PCLK2 = HCLK */
+ 645:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE2_DIV1;
+ 646:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     
+ 647:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PCLK1 = HCLK */
+ 648:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE1_DIV1;
+ 649:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     
+ 650:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #ifdef STM32F10X_CL
+ 651:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Configure PLLs ------------------------------------------------------*/
+ 652:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     
+ 653:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PLL configuration: PLLCLK = PREDIV1 * 9 = 36 MHz */ 
+ 654:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR &= (uint32_t)~(RCC_CFGR_PLLXTPRE | RCC_CFGR_PLLSRC | RCC_CFGR_PLLMULL);
+ 655:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLXTPRE_PREDIV1 | RCC_CFGR_PLLSRC_PREDIV1 | 
+ 656:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****                             RCC_CFGR_PLLMULL9); 
+ 657:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 658:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 	/*!< PLL2 configuration: PLL2CLK = (HSE / 5) * 8 = 40 MHz */
+ 659:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PREDIV1 configuration: PREDIV1CLK = PLL2 / 10 = 4 MHz */
+ 660:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         
+ 661:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR2 &= (uint32_t)~(RCC_CFGR2_PREDIV2 | RCC_CFGR2_PLL2MUL |
+ 662:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****                               RCC_CFGR2_PREDIV1 | RCC_CFGR2_PREDIV1SRC);
+ 663:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR2 |= (uint32_t)(RCC_CFGR2_PREDIV2_DIV5 | RCC_CFGR2_PLL2MUL8 |
+ 664:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****                              RCC_CFGR2_PREDIV1SRC_PLL2 | RCC_CFGR2_PREDIV1_DIV10);
+ 665:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   
+ 666:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Enable PLL2 */
+ 667:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CR |= RCC_CR_PLL2ON;
+ 668:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Wait till PLL2 is ready */
+ 669:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     while((RCC->CR & RCC_CR_PLL2RDY) == 0)
+ 670:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     {
+ 671:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     }
+ 672:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     
+ 673:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #else    
+ 674:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /*  PLL configuration: PLLCLK = (HSE / 2) * 9 = 36 MHz */
+ 675:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_PLLSRC | RCC_CFGR_PLLXTPRE | RCC_CFGR_PLLMULL));
+ 676:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC_HSE | RCC_CFGR_PLLXTPRE_HSE_Div2 | RCC_CFGR_PLLMULL9);
+ 677:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #endif /* STM32F10X_CL */
+ 678:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 679:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Enable PLL */
+ 680:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CR |= RCC_CR_PLLON;
+ 681:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 682:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Wait till PLL is ready */
+ 683:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     while((RCC->CR & RCC_CR_PLLRDY) == 0)
+ 684:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     {
+ 685:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     }
+ 686:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 687:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Select PLL as system clock source */
+ 688:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_SW));
+ 689:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)RCC_CFGR_SW_PLL;    
+ 690:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 691:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Wait till PLL is used as system clock source */
+ 692:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS) != (uint32_t)0x08)
+ 693:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     {
+ 694:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     }
+ 695:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   }
+ 696:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   else
+ 697:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   { /* If HSE fails to start-up, the application will have wrong clock 
+ 698:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****          configuration. User can add here some code to deal with this error */
+ 699:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   } 
+ 700:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** }
+ 701:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #elif defined SYSCLK_FREQ_48MHz
+ 702:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /**
+ 703:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @brief  Sets System clock frequency to 48MHz and configure HCLK, PCLK2 
+ 704:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   *          and PCLK1 prescalers. 
+ 705:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @note   This function should be used only after reset.
+ 706:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @param  None
+ 707:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @retval None
+ 708:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */
+ 709:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** static void SetSysClockTo48(void)
+ 710:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** {
+ 711:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
+ 712:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   
+ 713:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* SYSCLK, HCLK, PCLK2 and PCLK1 configuration ---------------------------*/    
+ 714:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Enable HSE */    
+ 715:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   RCC->CR |= ((uint32_t)RCC_CR_HSEON);
+ 716:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****  
+ 717:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Wait till HSE is ready and if Time out is reached exit */
+ 718:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   do
+ 719:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   {
+ 720:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     HSEStatus = RCC->CR & RCC_CR_HSERDY;
+ 721:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     StartUpCounter++;  
+ 722:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   } while((HSEStatus == 0) && (StartUpCounter != HSEStartUp_TimeOut));
+ 723:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 724:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   if ((RCC->CR & RCC_CR_HSERDY) != RESET)
+ 725:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   {
+ 726:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     HSEStatus = (uint32_t)0x01;
+ 727:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   }
+ 728:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   else
+ 729:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   {
+ 730:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     HSEStatus = (uint32_t)0x00;
+ 731:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   }  
+ 732:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 733:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   if (HSEStatus == (uint32_t)0x01)
+ 734:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   {
+ 735:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Enable Prefetch Buffer */
+ 736:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     FLASH->ACR |= FLASH_ACR_PRFTBE;
+ 737:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 738:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Flash 1 wait state */
+ 739:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     FLASH->ACR &= (uint32_t)((uint32_t)~FLASH_ACR_LATENCY);
+ 740:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     FLASH->ACR |= (uint32_t)FLASH_ACR_LATENCY_1;    
+ 741:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****  
+ 742:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* HCLK = SYSCLK */
+ 743:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)RCC_CFGR_HPRE_DIV1;
+ 744:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       
+ 745:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PCLK2 = HCLK */
+ 746:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE2_DIV1;
+ 747:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     
+ 748:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PCLK1 = HCLK */
+ 749:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE1_DIV2;
+ 750:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     
+ 751:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #ifdef STM32F10X_CL
+ 752:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Configure PLLs ------------------------------------------------------*/
+ 753:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PLL2 configuration: PLL2CLK = (HSE / 5) * 8 = 40 MHz */
+ 754:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PREDIV1 configuration: PREDIV1CLK = PLL2 / 5 = 8 MHz */
+ 755:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         
+ 756:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR2 &= (uint32_t)~(RCC_CFGR2_PREDIV2 | RCC_CFGR2_PLL2MUL |
+ 757:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****                               RCC_CFGR2_PREDIV1 | RCC_CFGR2_PREDIV1SRC);
+ 758:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR2 |= (uint32_t)(RCC_CFGR2_PREDIV2_DIV5 | RCC_CFGR2_PLL2MUL8 |
+ 759:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****                              RCC_CFGR2_PREDIV1SRC_PLL2 | RCC_CFGR2_PREDIV1_DIV5);
+ 760:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   
+ 761:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Enable PLL2 */
+ 762:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CR |= RCC_CR_PLL2ON;
+ 763:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Wait till PLL2 is ready */
+ 764:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     while((RCC->CR & RCC_CR_PLL2RDY) == 0)
+ 765:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     {
+ 766:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     }
+ 767:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     
+ 768:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****    
+ 769:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PLL configuration: PLLCLK = PREDIV1 * 6 = 48 MHz */ 
+ 770:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR &= (uint32_t)~(RCC_CFGR_PLLXTPRE | RCC_CFGR_PLLSRC | RCC_CFGR_PLLMULL);
+ 771:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLXTPRE_PREDIV1 | RCC_CFGR_PLLSRC_PREDIV1 | 
+ 772:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****                             RCC_CFGR_PLLMULL6); 
+ 773:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #else    
+ 774:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /*  PLL configuration: PLLCLK = HSE * 6 = 48 MHz */
+ 775:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_PLLSRC | RCC_CFGR_PLLXTPRE | RCC_CFGR_PLLMULL));
+ 776:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC_HSE | RCC_CFGR_PLLMULL6);
+ 777:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #endif /* STM32F10X_CL */
+ 778:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 779:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Enable PLL */
+ 780:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CR |= RCC_CR_PLLON;
+ 781:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 782:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Wait till PLL is ready */
+ 783:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     while((RCC->CR & RCC_CR_PLLRDY) == 0)
+ 784:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     {
+ 785:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     }
+ 786:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 787:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Select PLL as system clock source */
+ 788:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_SW));
+ 789:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)RCC_CFGR_SW_PLL;    
+ 790:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 791:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Wait till PLL is used as system clock source */
+ 792:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS) != (uint32_t)0x08)
+ 793:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     {
+ 794:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     }
+ 795:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   }
+ 796:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   else
+ 797:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   { /* If HSE fails to start-up, the application will have wrong clock 
+ 798:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****          configuration. User can add here some code to deal with this error */
+ 799:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   } 
+ 800:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** }
+ 801:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 802:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #elif defined SYSCLK_FREQ_56MHz
+ 803:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /**
+ 804:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @brief  Sets System clock frequency to 56MHz and configure HCLK, PCLK2 
+ 805:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   *          and PCLK1 prescalers. 
+ 806:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @note   This function should be used only after reset.
+ 807:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @param  None
+ 808:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @retval None
+ 809:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */
+ 810:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** static void SetSysClockTo56(void)
+ 811:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** {
+ 812:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
+ 813:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   
+ 814:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* SYSCLK, HCLK, PCLK2 and PCLK1 configuration ---------------------------*/   
+ 815:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Enable HSE */    
+ 816:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   RCC->CR |= ((uint32_t)RCC_CR_HSEON);
+ 817:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****  
+ 818:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Wait till HSE is ready and if Time out is reached exit */
+ 819:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   do
+ 820:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   {
+ 821:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     HSEStatus = RCC->CR & RCC_CR_HSERDY;
+ 822:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     StartUpCounter++;  
+ 823:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   } while((HSEStatus == 0) && (StartUpCounter != HSEStartUp_TimeOut));
+ 824:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 825:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   if ((RCC->CR & RCC_CR_HSERDY) != RESET)
+ 826:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   {
+ 827:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     HSEStatus = (uint32_t)0x01;
+ 828:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   }
+ 829:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   else
+ 830:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   {
+ 831:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     HSEStatus = (uint32_t)0x00;
+ 832:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   }  
+ 833:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 834:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   if (HSEStatus == (uint32_t)0x01)
+ 835:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   {
+ 836:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Enable Prefetch Buffer */
+ 837:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     FLASH->ACR |= FLASH_ACR_PRFTBE;
+ 838:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 839:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Flash 2 wait state */
+ 840:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     FLASH->ACR &= (uint32_t)((uint32_t)~FLASH_ACR_LATENCY);
+ 841:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     FLASH->ACR |= (uint32_t)FLASH_ACR_LATENCY_2;    
+ 842:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****  
+ 843:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* HCLK = SYSCLK */
+ 844:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)RCC_CFGR_HPRE_DIV1;
+ 845:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       
+ 846:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PCLK2 = HCLK */
+ 847:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE2_DIV1;
+ 848:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     
+ 849:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PCLK1 = HCLK */
+ 850:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE1_DIV2;
+ 851:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 852:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #ifdef STM32F10X_CL
+ 853:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Configure PLLs ------------------------------------------------------*/
+ 854:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PLL2 configuration: PLL2CLK = (HSE / 5) * 8 = 40 MHz */
+ 855:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PREDIV1 configuration: PREDIV1CLK = PLL2 / 5 = 8 MHz */
+ 856:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         
+ 857:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR2 &= (uint32_t)~(RCC_CFGR2_PREDIV2 | RCC_CFGR2_PLL2MUL |
+ 858:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****                               RCC_CFGR2_PREDIV1 | RCC_CFGR2_PREDIV1SRC);
+ 859:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR2 |= (uint32_t)(RCC_CFGR2_PREDIV2_DIV5 | RCC_CFGR2_PLL2MUL8 |
+ 860:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****                              RCC_CFGR2_PREDIV1SRC_PLL2 | RCC_CFGR2_PREDIV1_DIV5);
+ 861:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   
+ 862:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Enable PLL2 */
+ 863:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CR |= RCC_CR_PLL2ON;
+ 864:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Wait till PLL2 is ready */
+ 865:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     while((RCC->CR & RCC_CR_PLL2RDY) == 0)
+ 866:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     {
+ 867:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     }
+ 868:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     
+ 869:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****    
+ 870:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PLL configuration: PLLCLK = PREDIV1 * 7 = 56 MHz */ 
+ 871:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR &= (uint32_t)~(RCC_CFGR_PLLXTPRE | RCC_CFGR_PLLSRC | RCC_CFGR_PLLMULL);
+ 872:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLXTPRE_PREDIV1 | RCC_CFGR_PLLSRC_PREDIV1 | 
+ 873:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****                             RCC_CFGR_PLLMULL7); 
+ 874:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #else     
+ 875:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PLL configuration: PLLCLK = HSE * 7 = 56 MHz */
+ 876:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_PLLSRC | RCC_CFGR_PLLXTPRE | RCC_CFGR_PLLMULL));
+ 877:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC_HSE | RCC_CFGR_PLLMULL7);
+ 878:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 879:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #endif /* STM32F10X_CL */
+ 880:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 881:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Enable PLL */
+ 882:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CR |= RCC_CR_PLLON;
+ 883:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 884:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Wait till PLL is ready */
+ 885:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     while((RCC->CR & RCC_CR_PLLRDY) == 0)
+ 886:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     {
+ 887:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     }
+ 888:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 889:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Select PLL as system clock source */
+ 890:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_SW));
+ 891:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)RCC_CFGR_SW_PLL;    
+ 892:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 893:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Wait till PLL is used as system clock source */
+ 894:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS) != (uint32_t)0x08)
+ 895:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     {
+ 896:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     }
+ 897:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   }
+ 898:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   else
+ 899:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   { /* If HSE fails to start-up, the application will have wrong clock 
+ 900:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****          configuration. User can add here some code to deal with this error */
+ 901:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   } 
+ 902:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** }
+ 903:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 904:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #elif defined SYSCLK_FREQ_72MHz
+ 905:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** /**
+ 906:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @brief  Sets System clock frequency to 72MHz and configure HCLK, PCLK2 
+ 907:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   *          and PCLK1 prescalers. 
+ 908:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @note   This function should be used only after reset.
+ 909:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @param  None
+ 910:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   * @retval None
+ 911:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   */
+ 912:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** static void SetSysClockTo72(void)
+ 913:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** {
+ 914:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
+ 15833              		.loc 1 914 0
+ 15834 0034 0021     		movs	r1, #0
+ 15835              	.LBE10:
+ 15836              	.LBE9:
+ 15837              	.LBE8:
+ 192:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   RCC->CFGR &= (uint32_t)0xFF80FFFF;
+ 15838              		.loc 1 192 0
+ 15839 0036 5860     		str	r0, [r3, #4]
+ 211:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   RCC->CIR = 0x009F0000;
+ 15840              		.loc 1 211 0
+ 15841 0038 9A60     		str	r2, [r3, #8]
+ 15842              	.LBB13:
+ 15843              	.LBB12:
+ 15844              	.LBB11:
+ 15845              		.loc 1 914 0
+ 15846 003a 0091     		str	r1, [sp, #0]
+ 15847              	.LVL0:
+ 15848 003c 0191     		str	r1, [sp, #4]
+ 15849              	.LVL1:
+ 915:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   
+ 916:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* SYSCLK, HCLK, PCLK2 and PCLK1 configuration ---------------------------*/    
+ 917:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Enable HSE */    
+ 918:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   RCC->CR |= ((uint32_t)RCC_CR_HSEON);
+ 15850              		.loc 1 918 0
+ 15851 003e 1868     		ldr	r0, [r3, #0]
+ 15852 0040 40F48032 		orr	r2, r0, #65536
+ 15853 0044 1A60     		str	r2, [r3, #0]
+ 15854              	.L3:
+ 919:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****  
+ 920:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   /* Wait till HSE is ready and if Time out is reached exit */
+ 921:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   do
+ 922:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   {
+ 923:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     HSEStatus = RCC->CR & RCC_CR_HSERDY;
+ 15855              		.loc 1 923 0
+ 15856 0046 1868     		ldr	r0, [r3, #0]
+ 15857 0048 00F40031 		and	r1, r0, #131072
+ 15858              	.LVL2:
+ 15859 004c 0191     		str	r1, [sp, #4]
+ 15860              	.LVL3:
+ 924:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     StartUpCounter++;  
+ 15861              		.loc 1 924 0
+ 15862 004e 009A     		ldr	r2, [sp, #0]
+ 15863 0050 501C     		adds	r0, r2, #1
+ 15864              	.LVL4:
+ 15865 0052 0090     		str	r0, [sp, #0]
+ 15866              	.LVL5:
+ 925:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   } while((HSEStatus == 0) && (StartUpCounter != HSEStartUp_TimeOut));
+ 15867              		.loc 1 925 0
+ 15868 0054 0199     		ldr	r1, [sp, #4]
+ 15869              	.LVL6:
+ 15870 0056 19B9     		cbnz	r1, .L2
+ 15871 0058 009A     		ldr	r2, [sp, #0]
+ 15872 005a B2F5A06F 		cmp	r2, #1280
+ 15873 005e F2D1     		bne	.L3
+ 15874              	.L2:
+ 926:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 927:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   if ((RCC->CR & RCC_CR_HSERDY) != RESET)
+ 15875              		.loc 1 927 0
+ 15876 0060 204A     		ldr	r2, .L12
+ 15877 0062 1068     		ldr	r0, [r2, #0]
+ 15878              	.LVL7:
+ 15879 0064 10F40031 		ands	r1, r0, #131072
+ 928:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   {
+ 929:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     HSEStatus = (uint32_t)0x01;
+ 15880              		.loc 1 929 0
+ 15881 0068 18BF     		it	ne
+ 15882 006a 0121     		movne	r1, #1
+ 930:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   }
+ 931:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   else
+ 932:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   {
+ 933:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     HSEStatus = (uint32_t)0x00;
+ 15883              		.loc 1 933 0
+ 15884 006c 0191     		str	r1, [sp, #4]
+ 934:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   }  
+ 935:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 936:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   if (HSEStatus == (uint32_t)0x01)
+ 15885              		.loc 1 936 0
+ 15886 006e 019B     		ldr	r3, [sp, #4]
+ 15887 0070 012B     		cmp	r3, #1
+ 15888 0072 34D1     		bne	.L1
+ 937:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   {
+ 938:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Enable Prefetch Buffer */
+ 939:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     FLASH->ACR |= FLASH_ACR_PRFTBE;
+ 15889              		.loc 1 939 0
+ 15890 0074 1D4B     		ldr	r3, .L12+8
+ 15891 0076 1968     		ldr	r1, [r3, #0]
+ 15892 0078 41F01002 		orr	r2, r1, #16
+ 15893 007c 1A60     		str	r2, [r3, #0]
+ 940:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 941:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Flash 2 wait state */
+ 942:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     FLASH->ACR &= (uint32_t)((uint32_t)~FLASH_ACR_LATENCY);
+ 15894              		.loc 1 942 0
+ 15895 007e 1868     		ldr	r0, [r3, #0]
+ 15896 0080 20F00301 		bic	r1, r0, #3
+ 15897 0084 1960     		str	r1, [r3, #0]
+ 943:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     FLASH->ACR |= (uint32_t)FLASH_ACR_LATENCY_2;    
+ 15898              		.loc 1 943 0
+ 15899 0086 1A68     		ldr	r2, [r3, #0]
+ 15900 0088 42F00200 		orr	r0, r2, #2
+ 15901 008c 1860     		str	r0, [r3, #0]
+ 944:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 945:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****  
+ 946:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* HCLK = SYSCLK */
+ 947:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)RCC_CFGR_HPRE_DIV1;
+ 15902              		.loc 1 947 0
+ 15903 008e A3F58053 		sub	r3, r3, #4096
+ 15904 0092 5968     		ldr	r1, [r3, #4]
+ 15905 0094 5960     		str	r1, [r3, #4]
+ 948:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       
+ 949:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PCLK2 = HCLK */
+ 950:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE2_DIV1;
+ 15906              		.loc 1 950 0
+ 15907 0096 5A68     		ldr	r2, [r3, #4]
+ 15908 0098 5A60     		str	r2, [r3, #4]
+ 951:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     
+ 952:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PCLK1 = HCLK */
+ 953:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE1_DIV2;
+ 15909              		.loc 1 953 0
+ 15910 009a 5868     		ldr	r0, [r3, #4]
+ 15911 009c 40F48061 		orr	r1, r0, #1024
+ 15912 00a0 5960     		str	r1, [r3, #4]
+ 954:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 955:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #ifdef STM32F10X_CL
+ 956:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Configure PLLs ------------------------------------------------------*/
+ 957:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PLL2 configuration: PLL2CLK = (HSE / 5) * 8 = 40 MHz */
+ 958:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PREDIV1 configuration: PREDIV1CLK = PLL2 / 5 = 8 MHz */
+ 959:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         
+ 960:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR2 &= (uint32_t)~(RCC_CFGR2_PREDIV2 | RCC_CFGR2_PLL2MUL |
+ 961:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****                               RCC_CFGR2_PREDIV1 | RCC_CFGR2_PREDIV1SRC);
+ 962:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR2 |= (uint32_t)(RCC_CFGR2_PREDIV2_DIV5 | RCC_CFGR2_PLL2MUL8 |
+ 963:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****                              RCC_CFGR2_PREDIV1SRC_PLL2 | RCC_CFGR2_PREDIV1_DIV5);
+ 964:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   
+ 965:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Enable PLL2 */
+ 966:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CR |= RCC_CR_PLL2ON;
+ 967:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Wait till PLL2 is ready */
+ 968:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     while((RCC->CR & RCC_CR_PLL2RDY) == 0)
+ 969:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     {
+ 970:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     }
+ 971:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     
+ 972:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****    
+ 973:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* PLL configuration: PLLCLK = PREDIV1 * 9 = 72 MHz */ 
+ 974:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR &= (uint32_t)~(RCC_CFGR_PLLXTPRE | RCC_CFGR_PLLSRC | RCC_CFGR_PLLMULL);
+ 975:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLXTPRE_PREDIV1 | RCC_CFGR_PLLSRC_PREDIV1 | 
+ 976:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****                             RCC_CFGR_PLLMULL9); 
+ 977:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #else    
+ 978:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /*  PLL configuration: PLLCLK = HSE * 9 = 72 MHz */
+ 979:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_PLLSRC | RCC_CFGR_PLLXTPRE |
+ 15913              		.loc 1 979 0
+ 15914 00a2 5A68     		ldr	r2, [r3, #4]
+ 15915 00a4 22F47C10 		bic	r0, r2, #4128768
+ 15916 00a8 5860     		str	r0, [r3, #4]
+ 980:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****                                         RCC_CFGR_PLLMULL));
+ 981:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC_HSE | RCC_CFGR_PLLMULL9);
+ 15917              		.loc 1 981 0
+ 15918 00aa 5968     		ldr	r1, [r3, #4]
+ 15919 00ac 41F4E812 		orr	r2, r1, #1900544
+ 15920 00b0 5A60     		str	r2, [r3, #4]
+ 982:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** #endif /* STM32F10X_CL */
+ 983:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 984:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Enable PLL */
+ 985:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CR |= RCC_CR_PLLON;
+ 15921              		.loc 1 985 0
+ 15922 00b2 1868     		ldr	r0, [r3, #0]
+ 15923 00b4 40F08071 		orr	r1, r0, #16777216
+ 15924 00b8 1960     		str	r1, [r3, #0]
+ 15925              	.L7:
+ 986:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 987:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Wait till PLL is ready */
+ 988:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     while((RCC->CR & RCC_CR_PLLRDY) == 0)
+ 15926              		.loc 1 988 0
+ 15927 00ba 1868     		ldr	r0, [r3, #0]
+ 15928 00bc 094A     		ldr	r2, .L12
+ 15929 00be 8101     		lsls	r1, r0, #6
+ 15930 00c0 FBD5     		bpl	.L7
+ 989:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     {
+ 990:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     }
+ 991:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     
+ 992:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Select PLL as system clock source */
+ 993:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_SW));
+ 15931              		.loc 1 993 0
+ 15932 00c2 5368     		ldr	r3, [r2, #4]
+ 15933 00c4 23F00300 		bic	r0, r3, #3
+ 15934 00c8 5060     		str	r0, [r2, #4]
+ 994:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     RCC->CFGR |= (uint32_t)RCC_CFGR_SW_PLL;    
+ 15935              		.loc 1 994 0
+ 15936 00ca 5168     		ldr	r1, [r2, #4]
+ 15937 00cc 41F00203 		orr	r3, r1, #2
+ 15938 00d0 5360     		str	r3, [r2, #4]
+ 15939              	.L8:
+ 995:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** 
+ 996:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     /* Wait till PLL is used as system clock source */
+ 997:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****     while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS) != (uint32_t)0x08)
+ 15940              		.loc 1 997 0
+ 15941 00d2 5168     		ldr	r1, [r2, #4]
+ 15942 00d4 01F00C0C 		and	ip, r1, #12
+ 15943 00d8 BCF1080F 		cmp	ip, #8
+ 15944 00dc F9D1     		bne	.L8
+ 15945              	.L1:
+ 15946              	.LBE11:
+ 15947              	.LBE12:
+ 15948              	.LBE13:
+ 223:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** }
+ 15949              		.loc 1 223 0
+ 15950 00de 02B0     		add	sp, sp, #8
+ 15951 00e0 7047     		bx	lr
+ 15952              	.L13:
+ 15953 00e2 00BF     		.align	2
+ 15954              	.L12:
+ 15955 00e4 00100240 		.word	1073876992
+ 15956 00e8 0000FFF8 		.word	-117506048
+ 15957 00ec 00200240 		.word	1073881088
+ 15958              		.cfi_endproc
+ 15959              	.LFE29:
+ 15961              		.section	.text.SystemCoreClockUpdate,"ax",%progbits
+ 15962              		.align	1
+ 15963              		.global	SystemCoreClockUpdate
+ 15964              		.thumb
+ 15965              		.thumb_func
+ 15967              	SystemCoreClockUpdate:
+ 15968              	.LFB30:
+ 232:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** {
+ 15969              		.loc 1 232 0
+ 15970              		.cfi_startproc
+ 15971              		@ args = 0, pretend = 0, frame = 0
+ 15972              		@ frame_needed = 0, uses_anonymous_args = 0
+ 15973              		@ link register save eliminated.
+ 15974              	.LVL8:
+ 244:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   tmp = RCC->CFGR & RCC_CFGR_SWS;
+ 15975              		.loc 1 244 0
+ 15976 0000 134A     		ldr	r2, .L24
+ 15977 0002 144B     		ldr	r3, .L24+4
+ 15978 0004 5168     		ldr	r1, [r2, #4]
+ 15979              	.LVL9:
+ 15980 0006 01F00C01 		and	r1, r1, #12
+ 15981              	.LVL10:
+ 246:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   switch (tmp)
+ 15982              		.loc 1 246 0
+ 15983 000a 0429     		cmp	r1, #4
+ 15984 000c 01D0     		beq	.L17
+ 15985 000e 0829     		cmp	r1, #8
+ 15986 0010 02D0     		beq	.L18
+ 15987              	.L17:
+ 252:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       SystemCoreClock = HSE_Value;
+ 15988              		.loc 1 252 0
+ 15989 0012 114A     		ldr	r2, .L24+8
+ 15990 0014 1A60     		str	r2, [r3, #0]
+ 253:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       break;
+ 15991              		.loc 1 253 0
+ 15992 0016 0EE0     		b	.L19
+ 15993              	.L18:
+ 257:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       pllmull = RCC->CFGR & RCC_CFGR_PLLMULL;
+ 15994              		.loc 1 257 0
+ 15995 0018 5168     		ldr	r1, [r2, #4]
+ 15996              	.LVL11:
+ 258:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       pllsource = RCC->CFGR & RCC_CFGR_PLLSRC;
+ 15997              		.loc 1 258 0
+ 15998 001a 5068     		ldr	r0, [r2, #4]
+ 15999              	.LVL12:
+ 261:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       pllmull = ( pllmull >> 18) + 2;
+ 16000              		.loc 1 261 0
+ 16001 001c C1F38341 		ubfx	r1, r1, #18, #4
+ 16002              	.LVL13:
+ 16003 0020 0231     		adds	r1, r1, #2
+ 16004              	.LVL14:
+ 263:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****       if (pllsource == 0x00)
+ 16005              		.loc 1 263 0
+ 16006 0022 C003     		lsls	r0, r0, #15
+ 16007              	.LVL15:
+ 16008 0024 04D5     		bpl	.L23
+ 16009              	.L20:
+ 276:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         if ((RCC->CFGR & RCC_CFGR_PLLXTPRE) != (uint32_t)RESET)
+ 16010              		.loc 1 276 0
+ 16011 0026 5268     		ldr	r2, [r2, #4]
+ 16012 0028 9003     		lsls	r0, r2, #14
+ 282:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****           SystemCoreClock = HSE_Value * pllmull;
+ 16013              		.loc 1 282 0
+ 16014 002a 58BF     		it	pl
+ 16015 002c 0A4A     		ldrpl	r2, .L24+8
+ 276:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****         if ((RCC->CFGR & RCC_CFGR_PLLXTPRE) != (uint32_t)RESET)
+ 16016              		.loc 1 276 0
+ 16017 002e 00D5     		bpl	.L22
+ 16018              	.L23:
+ 278:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****           SystemCoreClock = (HSE_Value >> 1) * pllmull;
+ 16019              		.loc 1 278 0
+ 16020 0030 0A4A     		ldr	r2, .L24+12
+ 16021              	.L22:
+ 282:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****           SystemCoreClock = HSE_Value * pllmull;
+ 16022              		.loc 1 282 0
+ 16023 0032 5143     		muls	r1, r2, r1
+ 16024              	.LVL16:
+ 16025 0034 1960     		str	r1, [r3, #0]
+ 16026              	.L19:
+ 334:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   tmp = AHBPrescTable[((RCC->CFGR & RCC_CFGR_HPRE) >> 4)];
+ 16027              		.loc 1 334 0
+ 16028 0036 0648     		ldr	r0, .L24
+ 16029 0038 094A     		ldr	r2, .L24+16
+ 16030 003a 4368     		ldr	r3, [r0, #4]
+ 16031 003c C3F3031C 		ubfx	ip, r3, #4, #4
+ 336:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   SystemCoreClock >>= tmp;  
+ 16032              		.loc 1 336 0
+ 16033 0040 044B     		ldr	r3, .L24+4
+ 334:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   tmp = AHBPrescTable[((RCC->CFGR & RCC_CFGR_HPRE) >> 4)];
+ 16034              		.loc 1 334 0
+ 16035 0042 12F80C00 		ldrb	r0, [r2, ip]	@ zero_extendqisi2
+ 16036              	.LVL17:
+ 336:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c ****   SystemCoreClock >>= tmp;  
+ 16037              		.loc 1 336 0
+ 16038 0046 1968     		ldr	r1, [r3, #0]
+ 16039 0048 31FA00F2 		lsrs	r2, r1, r0
+ 16040 004c 1A60     		str	r2, [r3, #0]
+ 337:../../../SDK_embedded/libs/stm32/CMSIS/system_stm32f10x.c **** }
+ 16041              		.loc 1 337 0
+ 16042 004e 7047     		bx	lr
+ 16043              	.L25:
+ 16044              		.align	2
+ 16045              	.L24:
+ 16046 0050 00100240 		.word	1073876992
+ 16047 0054 00000000 		.word	.LANCHOR0
+ 16048 0058 00127A00 		.word	8000000
+ 16049 005c 00093D00 		.word	4000000
+ 16050 0060 00000000 		.word	.LANCHOR1
+ 16051              		.cfi_endproc
+ 16052              	.LFE30:
+ 16054              		.global	AHBPrescTable
+ 16055              		.global	SystemCoreClock
+ 16056              		.section	.data.AHBPrescTable,"aw",%progbits
+ 16057              		.set	.LANCHOR1,. + 0
+ 16060              	AHBPrescTable:
+ 16061 0000 00       		.byte	0
+ 16062 0001 00       		.byte	0
+ 16063 0002 00       		.byte	0
+ 16064 0003 00       		.byte	0
+ 16065 0004 00       		.byte	0
+ 16066 0005 00       		.byte	0
+ 16067 0006 00       		.byte	0
+ 16068 0007 00       		.byte	0
+ 16069 0008 01       		.byte	1
+ 16070 0009 02       		.byte	2
+ 16071 000a 03       		.byte	3
+ 16072 000b 04       		.byte	4
+ 16073 000c 06       		.byte	6
+ 16074 000d 07       		.byte	7
+ 16075 000e 08       		.byte	8
+ 16076 000f 09       		.byte	9
+ 16077              		.section	.data.SystemCoreClock,"aw",%progbits
+ 16078              		.align	2
+ 16079              		.set	.LANCHOR0,. + 0
+ 16082              	SystemCoreClock:
+ 16083 0000 00A24A04 		.word	72000000
+ 16084              		.text
+ 16085              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 system_stm32f10x.c
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cctuXRLp.s:15788  .text.SystemInit:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cctuXRLp.s:15793  .text.SystemInit:00000000 SystemInit
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cctuXRLp.s:15955  .text.SystemInit:000000e4 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cctuXRLp.s:15962  .text.SystemCoreClockUpdate:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cctuXRLp.s:15967  .text.SystemCoreClockUpdate:00000000 SystemCoreClockUpdate
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cctuXRLp.s:16046  .text.SystemCoreClockUpdate:00000050 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cctuXRLp.s:16060  .data.AHBPrescTable:00000000 AHBPrescTable
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cctuXRLp.s:16082  .data.SystemCoreClock:00000000 SystemCoreClock
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cctuXRLp.s:16078  .data.SystemCoreClock:00000000 $d
+                     .debug_frame:00000010 $d
+
+NO UNDEFINED SYMBOLS

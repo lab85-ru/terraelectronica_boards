@@ -1,0 +1,559 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 18, 4
+  12              		.thumb
+  13              		.file	"crt.c"
+  23              	.Ltext0:
+ 19827              		.align	1
+ 19828              		.global	crt_init
+ 19829              		.thumb
+ 19830              		.thumb_func
+ 19832              	crt_init:
+ 19833              	.LFB30:
+   1:crt.c         **** #include "appdefs.h"
+   2:crt.c         **** #include "crt.h"
+   3:crt.c         **** #include "stm32f10x_it.h"
+   4:crt.c         **** 
+   5:crt.c         **** void Reset_Handler(void) __attribute__((__interrupt__));
+   6:crt.c         **** 
+   7:crt.c         **** extern int  main(void);
+   8:crt.c         **** 
+   9:crt.c         **** /* init value for the stack pointer. defined in linker script */
+  10:crt.c         **** extern unsigned _stack_end_;
+  11:crt.c         **** //--------------------------------------------------------------------------
+  12:crt.c         **** __attribute__ ((section(".flash_vec_table")))
+  13:crt.c         **** IrqHandlerFunc flash_vec_table[] =
+  14:crt.c         **** {
+  15:crt.c         ****   (IrqHandlerFunc)&_stack_end_,            /* The initial stack pointer*/
+  16:crt.c         ****   Reset_Handler,             /* The reset handler*/
+  17:crt.c         ****   NMIException,
+  18:crt.c         ****   HardFaultException,
+  19:crt.c         ****   MemManageException,
+  20:crt.c         ****   BusFaultException,
+  21:crt.c         ****   UsageFaultException,
+  22:crt.c         ****   0, 0, 0, 0,            /* Reserved */
+  23:crt.c         ****   SVCHandler,
+  24:crt.c         ****   DebugMonitor,
+  25:crt.c         ****   0,                      /* Reserved */
+  26:crt.c         ****   PendSVC,
+  27:crt.c         ****   SysTickHandler,
+  28:crt.c         ****   WWDG_IRQHandler,
+  29:crt.c         ****   PVD_IRQHandler,
+  30:crt.c         ****   TAMPER_IRQHandler,
+  31:crt.c         ****   RTC_IRQHandler,
+  32:crt.c         ****   FLASH_IRQHandler,
+  33:crt.c         ****   RCC_IRQHandler,
+  34:crt.c         ****   EXTI0_IRQHandler,
+  35:crt.c         ****   EXTI1_IRQHandler,
+  36:crt.c         ****   EXTI2_IRQHandler,
+  37:crt.c         ****   EXTI3_IRQHandler,
+  38:crt.c         ****   EXTI4_IRQHandler,
+  39:crt.c         ****   DMA1_Channel1_IRQHandler,
+  40:crt.c         ****   DMA1_Channel2_IRQHandler,
+  41:crt.c         ****   DMA1_Channel3_IRQHandler,
+  42:crt.c         ****   DMA1_Channel4_IRQHandler,
+  43:crt.c         ****   DMA1_Channel5_IRQHandler,
+  44:crt.c         ****   DMA1_Channel6_IRQHandler,
+  45:crt.c         ****   DMA1_Channel7_IRQHandler,
+  46:crt.c         ****   ADC1_2_IRQHandler,
+  47:crt.c         ****   USB_HP_CAN_TX_IRQHandler,
+  48:crt.c         ****   USB_LP_CAN_RX0_IRQHandler,
+  49:crt.c         ****   CAN_RX1_IRQHandler,
+  50:crt.c         ****   CAN_SCE_IRQHandler,
+  51:crt.c         ****   EXTI9_5_IRQHandler,
+  52:crt.c         ****   TIM1_BRK_IRQHandler,
+  53:crt.c         ****   TIM1_UP_IRQHandler,
+  54:crt.c         ****   TIM1_TRG_COM_IRQHandler,
+  55:crt.c         ****   TIM1_CC_IRQHandler,
+  56:crt.c         ****   TIM2_IRQHandler,
+  57:crt.c         ****   TIM3_IRQHandler,
+  58:crt.c         ****   TIM4_IRQHandler,
+  59:crt.c         ****   I2C1_EV_IRQHandler,
+  60:crt.c         ****   I2C1_ER_IRQHandler,
+  61:crt.c         ****   I2C2_EV_IRQHandler,
+  62:crt.c         ****   I2C2_ER_IRQHandler,
+  63:crt.c         ****   SPI1_IRQHandler,
+  64:crt.c         ****   SPI2_IRQHandler,
+  65:crt.c         ****   USART1_IRQHandler,
+  66:crt.c         ****   USART2_IRQHandler,
+  67:crt.c         ****   USART3_IRQHandler,
+  68:crt.c         ****   EXTI15_10_IRQHandler,
+  69:crt.c         ****   RTCAlarm_IRQHandler,
+  70:crt.c         ****   USBWakeUp_IRQHandler,
+  71:crt.c         ****   TIM8_BRK_IRQHandler,
+  72:crt.c         ****   TIM8_UP_IRQHandler,
+  73:crt.c         ****   TIM8_TRG_COM_IRQHandler,
+  74:crt.c         ****   TIM8_CC_IRQHandler,
+  75:crt.c         ****   ADC3_IRQHandler,
+  76:crt.c         ****   FSMC_IRQHandler,
+  77:crt.c         ****   SDIO_IRQHandler,
+  78:crt.c         ****   TIM5_IRQHandler,
+  79:crt.c         ****   SPI3_IRQHandler,
+  80:crt.c         ****   UART4_IRQHandler,
+  81:crt.c         ****   UART5_IRQHandler,
+  82:crt.c         ****   TIM6_IRQHandler,
+  83:crt.c         ****   TIM7_IRQHandler,
+  84:crt.c         ****   DMA2_Channel1_IRQHandler,
+  85:crt.c         ****   DMA2_Channel2_IRQHandler,
+  86:crt.c         ****   DMA2_Channel3_IRQHandler,
+  87:crt.c         ****   DMA2_Channel4_5_IRQHandler,
+  88:crt.c         **** };
+  89:crt.c         **** //--------------------------------------------------------------------------
+  90:crt.c         **** void crt_init()
+  91:crt.c         **** {
+ 19834              		.loc 1 91 0
+ 19835              		.cfi_startproc
+ 19836              		@ args = 0, pretend = 0, frame = 0
+ 19837              		@ frame_needed = 0, uses_anonymous_args = 0
+ 19838              	.LVL0:
+ 19839 0000 08B5     		push	{r3, lr}
+ 19840              	.LCFI0:
+ 19841              		.cfi_def_cfa_offset 8
+ 19842              		.cfi_offset 14, -4
+ 19843              		.cfi_offset 3, -8
+  92:crt.c         ****   // коприрование инициализированных данных в ОЗУ (секция .data)
+  93:crt.c         ****   extern uint32_t _data_load_start_ ;
+  94:crt.c         ****   extern uint32_t _data_start_ ;
+  95:crt.c         ****   extern uint32_t _data_end_ ;
+  96:crt.c         ****   volatile  uint32_t* data_load = &_data_load_start_ ;
+ 19844              		.loc 1 96 0
+ 19845 0002 0F4A     		ldr	r2, .L8
+  97:crt.c         ****   volatile  uint32_t* data = &_data_start_ ;
+ 19846              		.loc 1 97 0
+ 19847 0004 0F4B     		ldr	r3, .L8+4
+  98:crt.c         ****   volatile  uint32_t* data_end = &_data_end_ ;
+  99:crt.c         ****   while( data < data_end )
+ 19848              		.loc 1 99 0
+ 19849 0006 1049     		ldr	r1, .L8+8
+ 19850 0008 03E0     		b	.L2
+ 19851              	.LVL1:
+ 19852              	.L3:
+ 100:crt.c         ****          {
+ 101:crt.c         ****           *(data++) = *(data_load++);
+ 19853              		.loc 1 101 0
+ 19854 000a 52F8040B 		ldr	r0, [r2], #4
+ 19855              	.LVL2:
+ 19856 000e 43F8040B 		str	r0, [r3], #4
+ 19857              	.LVL3:
+ 19858              	.L2:
+  99:crt.c         ****   while( data < data_end )
+ 19859              		.loc 1 99 0 discriminator 1
+ 19860 0012 8B42     		cmp	r3, r1
+ 19861 0014 F9D3     		bcc	.L3
+  99:crt.c         ****   while( data < data_end )
+ 19862              		.loc 1 99 0 is_stmt 0
+ 19863 0016 0D4A     		ldr	r2, .L8+12
+ 19864              	.LVL4:
+ 19865 0018 0D4B     		ldr	r3, .L8+16
+ 19866              	.LVL5:
+ 102:crt.c         ****          }
+ 103:crt.c         **** 
+ 104:crt.c         ****   // копирование секции .fast в ОЗУ
+ 105:crt.c         ****   extern unsigned _fast_load_start_ ;
+ 106:crt.c         ****   extern unsigned _fast_start_ ;
+ 107:crt.c         ****   extern unsigned _fast_end_   ;
+ 108:crt.c         ****   unsigned *fast_load = &_fast_load_start_ ;
+ 109:crt.c         ****   unsigned *fast = &_fast_start_ ;
+ 110:crt.c         ****   unsigned *fast_end = &_fast_end_ ;
+ 111:crt.c         ****   // коприрование кода в ОЗУ (секция .fast)
+ 112:crt.c         ****   while(fast < fast_end )
+ 19867              		.loc 1 112 0 is_stmt 1
+ 19868 001a 0E49     		ldr	r1, .L8+20
+ 19869 001c 03E0     		b	.L4
+ 19870              	.LVL6:
+ 19871              	.L5:
+ 113:crt.c         ****        {
+ 114:crt.c         ****         *(fast++) = *(fast_load++);
+ 19872              		.loc 1 114 0
+ 19873 001e 52F8040B 		ldr	r0, [r2], #4
+ 19874 0022 43F8040B 		str	r0, [r3], #4
+ 19875              	.LVL7:
+ 19876              	.L4:
+ 112:crt.c         ****   while(fast < fast_end )
+ 19877              		.loc 1 112 0 discriminator 1
+ 19878 0026 8B42     		cmp	r3, r1
+ 19879 0028 F9D3     		bcc	.L5
+ 112:crt.c         ****   while(fast < fast_end )
+ 19880              		.loc 1 112 0 is_stmt 0
+ 19881 002a 0B4B     		ldr	r3, .L8+24
+ 19882              	.LVL8:
+ 115:crt.c         ****        }
+ 116:crt.c         **** 
+ 117:crt.c         ****   // инициализация данных в ОЗУ нулями(секция .bss)
+ 118:crt.c         ****   extern unsigned _bss_start_ ;
+ 119:crt.c         ****   extern unsigned _bss_end_   ;
+ 120:crt.c         ****   unsigned *bss = &_bss_start_ ;
+ 121:crt.c         ****   unsigned *bss_end = &_bss_end_ ;
+ 122:crt.c         ****   while(bss < bss_end )
+ 19883              		.loc 1 122 0 is_stmt 1
+ 19884 002c 0B49     		ldr	r1, .L8+28
+ 123:crt.c         ****    {
+ 124:crt.c         ****     *(bss++) = 0 ;
+ 19885              		.loc 1 124 0
+ 19886 002e 0022     		movs	r2, #0
+ 19887 0030 01E0     		b	.L6
+ 19888              	.LVL9:
+ 19889              	.L7:
+ 19890 0032 43F8042B 		str	r2, [r3], #4
+ 19891              	.LVL10:
+ 19892              	.L6:
+ 122:crt.c         ****   while(bss < bss_end )
+ 19893              		.loc 1 122 0 discriminator 1
+ 19894 0036 8B42     		cmp	r3, r1
+ 19895 0038 FBD3     		bcc	.L7
+ 125:crt.c         ****    }
+ 126:crt.c         **** 
+ 127:crt.c         ****   // вызов конструкторов
+ 128:crt.c         ****   void __libc_init_array();
+ 129:crt.c         ****   __libc_init_array() ;
+ 19896              		.loc 1 129 0
+ 19897 003a 094B     		ldr	r3, .L8+32
+ 19898              	.LVL11:
+ 19899 003c 9847     		blx	r3
+ 130:crt.c         **** 
+ 131:crt.c         **** }
+ 19900              		.loc 1 131 0
+ 19901 003e 08BD     		pop	{r3, pc}
+ 19902              	.L9:
+ 19903              		.align	2
+ 19904              	.L8:
+ 19905 0040 00000000 		.word	_data_load_start_
+ 19906 0044 00000000 		.word	_data_start_
+ 19907 0048 00000000 		.word	_data_end_
+ 19908 004c 00000000 		.word	_fast_load_start_
+ 19909 0050 00000000 		.word	_fast_start_
+ 19910 0054 00000000 		.word	_fast_end_
+ 19911 0058 00000000 		.word	_bss_start_
+ 19912 005c 00000000 		.word	_bss_end_
+ 19913 0060 00000000 		.word	__libc_init_array
+ 19914              		.cfi_endproc
+ 19915              	.LFE30:
+ 19917              		.section	.text.Reset_Handler,"ax",%progbits
+ 19918              		.align	1
+ 19919              		.global	Reset_Handler
+ 19920              		.thumb
+ 19921              		.thumb_func
+ 19923              	Reset_Handler:
+ 19924              	.LFB32:
+ 132:crt.c         **** //--------------------------------------------------------------------------
+ 133:crt.c         **** void _init()
+ 134:crt.c         **** {}
+ 135:crt.c         **** //--------------------------------------------------------------------------
+ 136:crt.c         **** void Reset_Handler(void)
+ 137:crt.c         **** {
+ 19925              		.loc 1 137 0
+ 19926              		.cfi_startproc
+ 19927              		@ Stack Align: May be called with mis-aligned SP.
+ 19928              		@ args = 0, pretend = 0, frame = 0
+ 19929              		@ frame_needed = 0, uses_anonymous_args = 0
+ 19930              	.LVL12:
+ 19931 0000 6846     		mov	r0, sp
+ 19932              		.cfi_register 13, 0
+ 19933 0002 20F00701 		bic	r1, r0, #7
+ 19934 0006 8D46     		mov	sp, r1
+ 19935 0008 01B5     		push	{r0, lr}
+ 19936              	.LCFI1:
+ 19937              		.cfi_def_cfa_offset 8
+ 19938              		.cfi_offset 14, -4
+ 19939              		.cfi_offset 13, -8
+ 19940              		.loc 1 137 0
+ 19941 000a 064B     		ldr	r3, .L13
+ 19942 000c 00E0     		b	.L11
+ 19943              	.LVL13:
+ 19944              	.L12:
+ 19945              	.LBB4:
+ 19946              	.LBB5:
+   1:./../include/appdefs.h **** #ifndef __APPDEFS_H__
+   2:./../include/appdefs.h **** #define __APPDEFS_H__
+   3:./../include/appdefs.h **** 
+   4:./../include/appdefs.h **** #include <stdint.h>
+   5:./../include/appdefs.h **** #include <string.h>
+   6:./../include/appdefs.h **** 
+   7:./../include/appdefs.h **** #define _BV(val) (1<<val)
+   8:./../include/appdefs.h **** 
+   9:./../include/appdefs.h **** typedef enum {FAILED = 0, PASSED = !FAILED} TestStatus;
+  10:./../include/appdefs.h **** 
+  11:./../include/appdefs.h **** typedef enum
+  12:./../include/appdefs.h **** {
+  13:./../include/appdefs.h ****   stsSocketEmpty       ,
+  14:./../include/appdefs.h ****   stsCardInSocket      ,
+  15:./../include/appdefs.h ****   stsSDItitialize      ,
+  16:./../include/appdefs.h ****   stsCardInfo          ,
+  17:./../include/appdefs.h ****   stsSDSelectDeselect  ,
+  18:./../include/appdefs.h ****   stsSDEnableWideBusOperation  ,
+  19:./../include/appdefs.h ****   stsSDSetDeviceMode   ,
+  20:./../include/appdefs.h ****   stsFaFsMount         ,
+  21:./../include/appdefs.h ****   stsFatFsOpen         ,
+  22:./../include/appdefs.h ****   stsFatFsWrite        ,
+  23:./../include/appdefs.h ****   stsFatFsClose
+  24:./../include/appdefs.h **** 
+  25:./../include/appdefs.h **** } TSdioTestStage ;
+  26:./../include/appdefs.h **** 
+  27:./../include/appdefs.h **** typedef enum
+  28:./../include/appdefs.h **** { vridMemoryAccess = 0  ,  // чтение/запись данных по физическому адресу
+  29:./../include/appdefs.h ****   vridLibVersion        ,  // чтение версий компонент
+  30:./../include/appdefs.h ****   //-------------------------------------------------------
+  31:./../include/appdefs.h ****   vridGetTestSDIO       ,  // чтение результата тестирования SDIO
+  32:./../include/appdefs.h ****   vridGetTestADC        ,  // чтение результата тестирования ADC
+  33:./../include/appdefs.h ****   vridGetTestCAN        ,  // чтение результата тестирования CAN
+  34:./../include/appdefs.h ****   vridGetCpuClock        ,
+  35:./../include/appdefs.h ****   //-------------------------------------------------------
+  36:./../include/appdefs.h ****   vridRequestCount
+  37:./../include/appdefs.h **** } VendorRequestId ;
+  38:./../include/appdefs.h **** 
+  39:./../include/appdefs.h **** #ifdef __arm__
+  40:./../include/appdefs.h **** 
+  41:./../include/appdefs.h ****   #include "platform_config.h"
+  42:./../include/appdefs.h ****   #include "stm32f10x_conf.h"
+  43:./../include/appdefs.h ****   #include "stm32f10x.h"
+  44:./../include/appdefs.h **** 
+  45:./../include/appdefs.h ****   #define  NOP()   asm volatile ("nop")
+  46:./../include/appdefs.h ****   #define  NULL    (void*)0
+  47:./../include/appdefs.h ****   #define __RAM__  __attribute__ ((section(".fast")))
+  48:./../include/appdefs.h **** 
+  49:./../include/appdefs.h ****   inline void Delay(uint32_t msec)
+  50:./../include/appdefs.h ****   {
+  51:./../include/appdefs.h ****     uint32_t tmp = 7000 * msec  ;
+  52:./../include/appdefs.h ****     while( tmp-- )
+  53:./../include/appdefs.h ****      {
+  54:./../include/appdefs.h ****        NOP();
+ 19947              		.loc 2 54 0
+ 19948              	@ 54 "./../include/appdefs.h" 1
+ 19949 000e 00BF     		nop
+ 19950              	@ 0 "" 2
+ 19951              		.thumb
+ 19952              	.L11:
+  52:./../include/appdefs.h ****     while( tmp-- )
+ 19953              		.loc 2 52 0
+ 19954 0010 013B     		subs	r3, r3, #1
+ 19955 0012 FCD1     		bne	.L12
+ 19956              	.LBE5:
+ 19957              	.LBE4:
+ 138:crt.c         ****    #if ( DELAY_FOR_GDB == 1 )
+ 139:crt.c         **** 	  Delay(250) ;
+ 140:crt.c         ****    #endif
+ 141:crt.c         ****    crt_init();
+ 19958              		.loc 1 141 0
+ 19959 0014 0448     		ldr	r0, .L13+4
+ 19960 0016 8047     		blx	r0
+ 142:crt.c         **** 
+ 143:crt.c         ****    main();
+ 19961              		.loc 1 143 0
+ 19962 0018 044B     		ldr	r3, .L13+8
+ 19963 001a 9847     		blx	r3
+ 144:crt.c         **** }
+ 19964              		.loc 1 144 0
+ 19965 001c BDE80140 		pop	{r0, lr}
+ 19966 0020 8546     		mov	sp, r0
+ 19967 0022 7047     		bx	lr
+ 19968              	.L14:
+ 19969              		.align	2
+ 19970              	.L13:
+ 19971 0024 F1B31A00 		.word	1750001
+ 19972 0028 00000000 		.word	crt_init
+ 19973 002c 00000000 		.word	main
+ 19974              		.cfi_endproc
+ 19975              	.LFE32:
+ 19977              		.section	.text._init,"ax",%progbits
+ 19978              		.align	1
+ 19979              		.global	_init
+ 19980              		.thumb
+ 19981              		.thumb_func
+ 19983              	_init:
+ 19984              	.LFB31:
+ 134:crt.c         **** {}
+ 19985              		.loc 1 134 0
+ 19986              		.cfi_startproc
+ 19987              		@ args = 0, pretend = 0, frame = 0
+ 19988              		@ frame_needed = 0, uses_anonymous_args = 0
+ 19989              		@ link register save eliminated.
+ 134:crt.c         **** {}
+ 19990              		.loc 1 134 0
+ 19991 0000 7047     		bx	lr
+ 19992              		.cfi_endproc
+ 19993              	.LFE31:
+ 19995              		.global	flash_vec_table
+ 19996              		.section	.flash_vec_table,"aw",%progbits
+ 19997              		.align	2
+ 20000              	flash_vec_table:
+ 20001 0000 00000000 		.word	_stack_end_
+ 20002 0004 00000000 		.word	Reset_Handler
+ 20003 0008 00000000 		.word	NMIException
+ 20004 000c 00000000 		.word	HardFaultException
+ 20005 0010 00000000 		.word	MemManageException
+ 20006 0014 00000000 		.word	BusFaultException
+ 20007 0018 00000000 		.word	UsageFaultException
+ 20008 001c 00000000 		.word	0
+ 20009 0020 00000000 		.word	0
+ 20010 0024 00000000 		.word	0
+ 20011 0028 00000000 		.word	0
+ 20012 002c 00000000 		.word	SVCHandler
+ 20013 0030 00000000 		.word	DebugMonitor
+ 20014 0034 00000000 		.word	0
+ 20015 0038 00000000 		.word	PendSVC
+ 20016 003c 00000000 		.word	SysTickHandler
+ 20017 0040 00000000 		.word	WWDG_IRQHandler
+ 20018 0044 00000000 		.word	PVD_IRQHandler
+ 20019 0048 00000000 		.word	TAMPER_IRQHandler
+ 20020 004c 00000000 		.word	RTC_IRQHandler
+ 20021 0050 00000000 		.word	FLASH_IRQHandler
+ 20022 0054 00000000 		.word	RCC_IRQHandler
+ 20023 0058 00000000 		.word	EXTI0_IRQHandler
+ 20024 005c 00000000 		.word	EXTI1_IRQHandler
+ 20025 0060 00000000 		.word	EXTI2_IRQHandler
+ 20026 0064 00000000 		.word	EXTI3_IRQHandler
+ 20027 0068 00000000 		.word	EXTI4_IRQHandler
+ 20028 006c 00000000 		.word	DMA1_Channel1_IRQHandler
+ 20029 0070 00000000 		.word	DMA1_Channel2_IRQHandler
+ 20030 0074 00000000 		.word	DMA1_Channel3_IRQHandler
+ 20031 0078 00000000 		.word	DMA1_Channel4_IRQHandler
+ 20032 007c 00000000 		.word	DMA1_Channel5_IRQHandler
+ 20033 0080 00000000 		.word	DMA1_Channel6_IRQHandler
+ 20034 0084 00000000 		.word	DMA1_Channel7_IRQHandler
+ 20035 0088 00000000 		.word	ADC1_2_IRQHandler
+ 20036 008c 00000000 		.word	USB_HP_CAN_TX_IRQHandler
+ 20037 0090 00000000 		.word	USB_LP_CAN_RX0_IRQHandler
+ 20038 0094 00000000 		.word	CAN_RX1_IRQHandler
+ 20039 0098 00000000 		.word	CAN_SCE_IRQHandler
+ 20040 009c 00000000 		.word	EXTI9_5_IRQHandler
+ 20041 00a0 00000000 		.word	TIM1_BRK_IRQHandler
+ 20042 00a4 00000000 		.word	TIM1_UP_IRQHandler
+ 20043 00a8 00000000 		.word	TIM1_TRG_COM_IRQHandler
+ 20044 00ac 00000000 		.word	TIM1_CC_IRQHandler
+ 20045 00b0 00000000 		.word	TIM2_IRQHandler
+ 20046 00b4 00000000 		.word	TIM3_IRQHandler
+ 20047 00b8 00000000 		.word	TIM4_IRQHandler
+ 20048 00bc 00000000 		.word	I2C1_EV_IRQHandler
+ 20049 00c0 00000000 		.word	I2C1_ER_IRQHandler
+ 20050 00c4 00000000 		.word	I2C2_EV_IRQHandler
+ 20051 00c8 00000000 		.word	I2C2_ER_IRQHandler
+ 20052 00cc 00000000 		.word	SPI1_IRQHandler
+ 20053 00d0 00000000 		.word	SPI2_IRQHandler
+ 20054 00d4 00000000 		.word	USART1_IRQHandler
+ 20055 00d8 00000000 		.word	USART2_IRQHandler
+ 20056 00dc 00000000 		.word	USART3_IRQHandler
+ 20057 00e0 00000000 		.word	EXTI15_10_IRQHandler
+ 20058 00e4 00000000 		.word	RTCAlarm_IRQHandler
+ 20059 00e8 00000000 		.word	USBWakeUp_IRQHandler
+ 20060 00ec 00000000 		.word	TIM8_BRK_IRQHandler
+ 20061 00f0 00000000 		.word	TIM8_UP_IRQHandler
+ 20062 00f4 00000000 		.word	TIM8_TRG_COM_IRQHandler
+ 20063 00f8 00000000 		.word	TIM8_CC_IRQHandler
+ 20064 00fc 00000000 		.word	ADC3_IRQHandler
+ 20065 0100 00000000 		.word	FSMC_IRQHandler
+ 20066 0104 00000000 		.word	SDIO_IRQHandler
+ 20067 0108 00000000 		.word	TIM5_IRQHandler
+ 20068 010c 00000000 		.word	SPI3_IRQHandler
+ 20069 0110 00000000 		.word	UART4_IRQHandler
+ 20070 0114 00000000 		.word	UART5_IRQHandler
+ 20071 0118 00000000 		.word	TIM6_IRQHandler
+ 20072 011c 00000000 		.word	TIM7_IRQHandler
+ 20073 0120 00000000 		.word	DMA2_Channel1_IRQHandler
+ 20074 0124 00000000 		.word	DMA2_Channel2_IRQHandler
+ 20075 0128 00000000 		.word	DMA2_Channel3_IRQHandler
+ 20076 012c 00000000 		.word	DMA2_Channel4_5_IRQHandler
+ 20077              		.text
+ 20078              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 crt.c
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccKiTH7g.s:19827  .text.crt_init:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccKiTH7g.s:19832  .text.crt_init:00000000 crt_init
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccKiTH7g.s:19905  .text.crt_init:00000040 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccKiTH7g.s:19918  .text.Reset_Handler:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccKiTH7g.s:19923  .text.Reset_Handler:00000000 Reset_Handler
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccKiTH7g.s:19971  .text.Reset_Handler:00000024 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccKiTH7g.s:19978  .text._init:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccKiTH7g.s:19983  .text._init:00000000 _init
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccKiTH7g.s:20000  .flash_vec_table:00000000 flash_vec_table
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccKiTH7g.s:19997  .flash_vec_table:00000000 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+_data_load_start_
+_data_start_
+_data_end_
+_fast_load_start_
+_fast_start_
+_fast_end_
+_bss_start_
+_bss_end_
+__libc_init_array
+main
+_stack_end_
+NMIException
+HardFaultException
+MemManageException
+BusFaultException
+UsageFaultException
+SVCHandler
+DebugMonitor
+PendSVC
+SysTickHandler
+WWDG_IRQHandler
+PVD_IRQHandler
+TAMPER_IRQHandler
+RTC_IRQHandler
+FLASH_IRQHandler
+RCC_IRQHandler
+EXTI0_IRQHandler
+EXTI1_IRQHandler
+EXTI2_IRQHandler
+EXTI3_IRQHandler
+EXTI4_IRQHandler
+DMA1_Channel1_IRQHandler
+DMA1_Channel2_IRQHandler
+DMA1_Channel3_IRQHandler
+DMA1_Channel4_IRQHandler
+DMA1_Channel5_IRQHandler
+DMA1_Channel6_IRQHandler
+DMA1_Channel7_IRQHandler
+ADC1_2_IRQHandler
+USB_HP_CAN_TX_IRQHandler
+USB_LP_CAN_RX0_IRQHandler
+CAN_RX1_IRQHandler
+CAN_SCE_IRQHandler
+EXTI9_5_IRQHandler
+TIM1_BRK_IRQHandler
+TIM1_UP_IRQHandler
+TIM1_TRG_COM_IRQHandler
+TIM1_CC_IRQHandler
+TIM2_IRQHandler
+TIM3_IRQHandler
+TIM4_IRQHandler
+I2C1_EV_IRQHandler
+I2C1_ER_IRQHandler
+I2C2_EV_IRQHandler
+I2C2_ER_IRQHandler
+SPI1_IRQHandler
+SPI2_IRQHandler
+USART1_IRQHandler
+USART2_IRQHandler
+USART3_IRQHandler
+EXTI15_10_IRQHandler
+RTCAlarm_IRQHandler
+USBWakeUp_IRQHandler
+TIM8_BRK_IRQHandler
+TIM8_UP_IRQHandler
+TIM8_TRG_COM_IRQHandler
+TIM8_CC_IRQHandler
+ADC3_IRQHandler
+FSMC_IRQHandler
+SDIO_IRQHandler
+TIM5_IRQHandler
+SPI3_IRQHandler
+UART4_IRQHandler
+UART5_IRQHandler
+TIM6_IRQHandler
+TIM7_IRQHandler
+DMA2_Channel1_IRQHandler
+DMA2_Channel2_IRQHandler
+DMA2_Channel3_IRQHandler
+DMA2_Channel4_5_IRQHandler

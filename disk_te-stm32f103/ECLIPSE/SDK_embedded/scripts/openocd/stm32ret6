@@ -1,0 +1,11 @@
+#source [find interface/olimex-arm-usb-ocd.cfg]
+#source [find interface/olimex-jtag-tiny.cfg]
+source [find interface/jlink.cfg]
+
+source [find target/stm32.cfg]
+
+$_TARGETNAME configure -work-area-phys 0x20000000 -work-area-size 0x10000 -work-area-backup 0
+
+set _FLASHNAME $_CHIPNAME.flash
+#flash bank <name> <driver> <base> <size> <chip_width> <bus_width>
+flash bank $_FLASHNAME stm32x 0x08000000 0x00080000 0 0 $_TARGETNAME

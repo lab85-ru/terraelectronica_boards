@@ -1,0 +1,284 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 18, 4
+  12              		.thumb
+  13              		.file	"main.c"
+  23              	.Ltext0:
+ 19862              		.align	1
+ 19863              		.global	main
+ 19864              		.thumb
+ 19865              		.thumb_func
+ 19867              	main:
+ 19868              	.LFB30:
+   1:main.c        **** #include "appdefs.h"
+   2:main.c        **** 
+   3:main.c        **** #include "usb_startup.h"
+   4:main.c        **** #include "hw_config.h"
+   5:main.c        **** 
+   6:main.c        **** #include "adc.h"
+   7:main.c        **** #include "can.h"
+   8:main.c        **** #include "sdio.h"
+   9:main.c        **** #include "debug_led.h"
+  10:main.c        **** 
+  11:main.c        **** volatile TUsbModeMode usb_can_mode ;
+  12:main.c        **** volatile uint32_t can_activity  ;
+  13:main.c        **** //--------------------------------------------------------------------------
+  14:main.c        **** int main()
+  15:main.c        **** {
+ 19869              		.loc 1 15 0
+ 19870              		.cfi_startproc
+ 19871              		@ args = 0, pretend = 0, frame = 0
+ 19872              		@ frame_needed = 0, uses_anonymous_args = 0
+ 19873 0000 38B5     		push	{r3, r4, r5, lr}
+ 19874              	.LCFI0:
+ 19875              		.cfi_def_cfa_offset 16
+ 19876              		.cfi_offset 14, -4
+ 19877              		.cfi_offset 5, -8
+ 19878              		.cfi_offset 4, -12
+ 19879              		.cfi_offset 3, -16
+  16:main.c        ****   //инициализация системной периферии
+  17:main.c        ****   SystemStartup();
+ 19880              		.loc 1 17 0
+ 19881 0002 1A4A     		ldr	r2, .L10
+ 19882 0004 9047     		blx	r2
+  18:main.c        **** 
+  19:main.c        ****     // установка флага режима  CAN
+  20:main.c        ****   usb_can_mode = ucmCan ;
+  21:main.c        ****   can_activity = FALSE  ;
+ 19883              		.loc 1 21 0
+ 19884 0006 1A4D     		ldr	r5, .L10+4
+  20:main.c        ****   usb_can_mode = ucmCan ;
+ 19885              		.loc 1 20 0
+ 19886 0008 1A49     		ldr	r1, .L10+8
+ 19887 000a 0024     		movs	r4, #0
+ 19888 000c 0C70     		strb	r4, [r1, #0]
+  22:main.c        **** 
+  23:main.c        ****   // инициализация выводов свветодиодов
+  24:main.c        ****   DebugLedInit();
+ 19889              		.loc 1 24 0
+ 19890 000e 1A48     		ldr	r0, .L10+12
+  21:main.c        ****   can_activity = FALSE  ;
+ 19891              		.loc 1 21 0
+ 19892 0010 2C60     		str	r4, [r5, #0]
+ 19893              		.loc 1 24 0
+ 19894 0012 8047     		blx	r0
+  25:main.c        **** 
+  26:main.c        ****   // если uSD отсутствует в сокете - принимается что плата CAN сервер
+  27:main.c        ****   // иначе принимается решение что плата CAN клиент
+  28:main.c        ****   bool disk_sd_present();
+  29:main.c        ****   if ( !disk_sd_present() )
+ 19895              		.loc 1 29 0
+ 19896 0014 194B     		ldr	r3, .L10+16
+ 19897 0016 9847     		blx	r3
+ 19898 0018 194B     		ldr	r3, .L10+20
+ 19899 001a 10B9     		cbnz	r0, .L2
+  30:main.c        **** 	  can_test( cgtServer ) ;
+ 19900              		.loc 1 30 0
+ 19901 001c 0120     		movs	r0, #1
+ 19902 001e 9847     		blx	r3
+ 19903 0020 1CE0     		b	.L3
+ 19904              	.L2:
+  31:main.c        ****   else
+  32:main.c        ****     {
+  33:main.c        **** 	  can_test(cgtClient);
+ 19905              		.loc 1 33 0
+ 19906 0022 2046     		mov	r0, r4
+ 19907 0024 9847     		blx	r3
+  34:main.c        **** 	  sdio_test();
+ 19908              		.loc 1 34 0
+ 19909 0026 1748     		ldr	r0, .L10+24
+ 19910 0028 8047     		blx	r0
+  35:main.c        ****       adc_test();
+  36:main.c        **** 	  DebugLedInitIndication((can_get_test_result() || can_activity) ,
+ 19911              		.loc 1 36 0
+ 19912 002a 174C     		ldr	r4, .L10+28
+  35:main.c        ****       adc_test();
+ 19913              		.loc 1 35 0
+ 19914 002c 174B     		ldr	r3, .L10+32
+ 19915 002e 9847     		blx	r3
+ 19916              		.loc 1 36 0
+ 19917 0030 A047     		blx	r4
+ 19918 0032 0124     		movs	r4, #1
+ 19919 0034 18B9     		cbnz	r0, .L4
+ 19920              		.loc 1 36 0 is_stmt 0 discriminator 2
+ 19921 0036 2D68     		ldr	r5, [r5, #0]
+ 19922 0038 2C1C     		adds	r4, r5, #0
+ 19923 003a 18BF     		it	ne
+ 19924 003c 0124     		movne	r4, #1
+ 19925              	.L4:
+  37:main.c        **** 			                  adc_get_test_result()->result ,
+ 19926              		.loc 1 37 0 is_stmt 1 discriminator 3
+ 19927 003e 1449     		ldr	r1, .L10+36
+ 19928 0040 8847     		blx	r1
+  36:main.c        **** 	  DebugLedInitIndication((can_get_test_result() || can_activity) ,
+ 19929              		.loc 1 36 0 discriminator 3
+ 19930 0042 0578     		ldrb	r5, [r0, #0]	@ zero_extendqisi2
+ 19931 0044 1348     		ldr	r0, .L10+40
+ 19932 0046 8047     		blx	r0
+ 19933 0048 2946     		mov	r1, r5
+ 19934 004a 0246     		mov	r2, r0
+ 19935 004c 124B     		ldr	r3, .L10+44
+ 19936 004e E0B2     		uxtb	r0, r4
+  38:main.c        **** 			                  sdio_get_test_result()) ;
+  39:main.c        **** 
+  40:main.c        ****       // установка флага режима  USB
+  41:main.c        ****       usb_can_mode = ucmUsb ;
+ 19937              		.loc 1 41 0 discriminator 3
+ 19938 0050 084C     		ldr	r4, .L10+8
+  36:main.c        **** 	  DebugLedInitIndication((can_get_test_result() || can_activity) ,
+ 19939              		.loc 1 36 0 discriminator 3
+ 19940 0052 9847     		blx	r3
+ 19941              		.loc 1 41 0 discriminator 3
+ 19942 0054 0122     		movs	r2, #1
+ 19943 0056 2270     		strb	r2, [r4, #0]
+  42:main.c        ****       // инициализация  и запуск модуля USB
+  43:main.c        ****       UsbStartup();
+ 19944              		.loc 1 43 0 discriminator 3
+ 19945 0058 1049     		ldr	r1, .L10+48
+ 19946 005a 8847     		blx	r1
+ 19947              	.L3:
+  44:main.c        ****     }
+  45:main.c        **** 
+  46:main.c        ****   // обработка запросов по шине USB происходит по прерыванию
+  47:main.c        ****   while(1)
+  48:main.c        ****    {
+  49:main.c        ****     // моргание светодиодамим с периодом ~200 мс
+  50:main.c        ****     Delay(200);
+  51:main.c        ****     DebugLedsToggle();
+ 19948              		.loc 1 51 0 discriminator 1
+ 19949 005c 104C     		ldr	r4, .L10+52
+ 19950              	.L9:
+ 19951              	.LVL0:
+  36:main.c        **** 	  DebugLedInitIndication((can_get_test_result() || can_activity) ,
+ 19952              		.loc 1 36 0 discriminator 1
+ 19953 005e 114B     		ldr	r3, .L10+56
+ 19954 0060 00E0     		b	.L6
+ 19955              	.LVL1:
+ 19956              	.L7:
+ 19957              	.LBB4:
+ 19958              	.LBB5:
+   1:./../include/appdefs.h **** #ifndef __APPDEFS_H__
+   2:./../include/appdefs.h **** #define __APPDEFS_H__
+   3:./../include/appdefs.h **** 
+   4:./../include/appdefs.h **** #include <stdint.h>
+   5:./../include/appdefs.h **** #include <string.h>
+   6:./../include/appdefs.h **** 
+   7:./../include/appdefs.h **** #define _BV(val) (1<<val)
+   8:./../include/appdefs.h **** 
+   9:./../include/appdefs.h **** typedef enum {FAILED = 0, PASSED = !FAILED} TestStatus;
+  10:./../include/appdefs.h **** 
+  11:./../include/appdefs.h **** typedef enum
+  12:./../include/appdefs.h **** {
+  13:./../include/appdefs.h ****   stsSocketEmpty       ,
+  14:./../include/appdefs.h ****   stsCardInSocket      ,
+  15:./../include/appdefs.h ****   stsSDItitialize      ,
+  16:./../include/appdefs.h ****   stsCardInfo          ,
+  17:./../include/appdefs.h ****   stsSDSelectDeselect  ,
+  18:./../include/appdefs.h ****   stsSDEnableWideBusOperation  ,
+  19:./../include/appdefs.h ****   stsSDSetDeviceMode   ,
+  20:./../include/appdefs.h ****   stsFaFsMount         ,
+  21:./../include/appdefs.h ****   stsFatFsOpen         ,
+  22:./../include/appdefs.h ****   stsFatFsWrite        ,
+  23:./../include/appdefs.h ****   stsFatFsClose
+  24:./../include/appdefs.h **** 
+  25:./../include/appdefs.h **** } TSdioTestStage ;
+  26:./../include/appdefs.h **** 
+  27:./../include/appdefs.h **** typedef enum
+  28:./../include/appdefs.h **** { vridMemoryAccess = 0  ,  // чтение/запись данных по физическому адресу
+  29:./../include/appdefs.h ****   vridLibVersion        ,  // чтение версий компонент
+  30:./../include/appdefs.h ****   //-------------------------------------------------------
+  31:./../include/appdefs.h ****   vridGetTestSDIO       ,  // чтение результата тестирования SDIO
+  32:./../include/appdefs.h ****   vridGetTestADC        ,  // чтение результата тестирования ADC
+  33:./../include/appdefs.h ****   vridGetTestCAN        ,  // чтение результата тестирования CAN
+  34:./../include/appdefs.h ****   vridGetCpuClock        ,
+  35:./../include/appdefs.h ****   //-------------------------------------------------------
+  36:./../include/appdefs.h ****   vridRequestCount
+  37:./../include/appdefs.h **** } VendorRequestId ;
+  38:./../include/appdefs.h **** 
+  39:./../include/appdefs.h **** #ifdef __arm__
+  40:./../include/appdefs.h **** 
+  41:./../include/appdefs.h ****   #include "platform_config.h"
+  42:./../include/appdefs.h ****   #include "stm32f10x_conf.h"
+  43:./../include/appdefs.h ****   #include "stm32f10x.h"
+  44:./../include/appdefs.h **** 
+  45:./../include/appdefs.h ****   #define  NOP()   asm volatile ("nop")
+  46:./../include/appdefs.h ****   #define  NULL    (void*)0
+  47:./../include/appdefs.h ****   #define __RAM__  __attribute__ ((section(".fast")))
+  48:./../include/appdefs.h **** 
+  49:./../include/appdefs.h ****   inline void Delay(uint32_t msec)
+  50:./../include/appdefs.h ****   {
+  51:./../include/appdefs.h ****     uint32_t tmp = 7000 * msec  ;
+  52:./../include/appdefs.h ****     while( tmp-- )
+  53:./../include/appdefs.h ****      {
+  54:./../include/appdefs.h ****        NOP();
+ 19959              		.loc 2 54 0
+ 19960              	@ 54 "./../include/appdefs.h" 1
+ 19961 0062 00BF     		nop
+ 19962              	@ 0 "" 2
+ 19963              		.thumb
+ 19964              	.L6:
+  52:./../include/appdefs.h ****     while( tmp-- )
+ 19965              		.loc 2 52 0
+ 19966 0064 013B     		subs	r3, r3, #1
+ 19967 0066 FCD1     		bne	.L7
+ 19968              	.LBE5:
+ 19969              	.LBE4:
+ 19970              		.loc 1 51 0 discriminator 1
+ 19971 0068 A047     		blx	r4
+  52:main.c        ****    }
+ 19972              		.loc 1 52 0 discriminator 1
+ 19973 006a F8E7     		b	.L9
+ 19974              	.L11:
+ 19975              		.align	2
+ 19976              	.L10:
+ 19977 006c 00000000 		.word	SystemStartup
+ 19978 0070 00000000 		.word	can_activity
+ 19979 0074 00000000 		.word	usb_can_mode
+ 19980 0078 00000000 		.word	DebugLedInit
+ 19981 007c 00000000 		.word	disk_sd_present
+ 19982 0080 00000000 		.word	can_test
+ 19983 0084 00000000 		.word	sdio_test
+ 19984 0088 00000000 		.word	can_get_test_result
+ 19985 008c 00000000 		.word	adc_test
+ 19986 0090 00000000 		.word	adc_get_test_result
+ 19987 0094 00000000 		.word	sdio_get_test_result
+ 19988 0098 00000000 		.word	DebugLedInitIndication
+ 19989 009c 00000000 		.word	UsbStartup
+ 19990 00a0 00000000 		.word	DebugLedsToggle
+ 19991 00a4 C15C1500 		.word	1400001
+ 19992              		.cfi_endproc
+ 19993              	.LFE30:
+ 19995              		.comm	can_activity,4,4
+ 19996              		.comm	usb_can_mode,1,1
+ 19997              		.text
+ 19998              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccRyL6VV.s:19862  .text.main:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccRyL6VV.s:19867  .text.main:00000000 main
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccRyL6VV.s:19977  .text.main:0000006c $d
+                            *COM*:00000004 can_activity
+                            *COM*:00000001 usb_can_mode
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+SystemStartup
+DebugLedInit
+disk_sd_present
+can_test
+sdio_test
+can_get_test_result
+adc_test
+adc_get_test_result
+sdio_get_test_result
+DebugLedInitIndication
+UsbStartup
+DebugLedsToggle

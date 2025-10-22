@@ -1,0 +1,719 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 18, 4
+  12              		.thumb
+  13              		.file	"stm32f10x_bkp.c"
+  23              	.Ltext0:
+ 16521              		.align	1
+ 16522              		.global	BKP_DeInit
+ 16523              		.thumb
+ 16524              		.thumb_func
+ 16526              	BKP_DeInit:
+ 16527              	.LFB29:
+   1:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /**
+   2:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   ******************************************************************************
+   3:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @file    stm32f10x_bkp.c
+   4:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @author  MCD Application Team
+   5:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @version V3.3.0
+   6:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @date    04/16/2010
+   7:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @brief   This file provides all the BKP firmware functions.
+   8:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   ******************************************************************************
+   9:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @copy
+  10:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   *
+  11:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+  12:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+  13:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+  14:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+  15:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+  16:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  17:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   *
+  18:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * <h2><center>&copy; COPYRIGHT 2010 STMicroelectronics</center></h2>
+  19:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */ 
+  20:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+  21:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /* Includes ------------------------------------------------------------------*/
+  22:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** #include "stm32f10x_bkp.h"
+  23:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** #include "stm32f10x_rcc.h"
+  24:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+  25:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /** @addtogroup STM32F10x_StdPeriph_Driver
+  26:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @{
+  27:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */
+  28:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+  29:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /** @defgroup BKP 
+  30:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @brief BKP driver modules
+  31:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @{
+  32:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */
+  33:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+  34:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /** @defgroup BKP_Private_TypesDefinitions
+  35:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @{
+  36:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */
+  37:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+  38:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /**
+  39:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @}
+  40:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */
+  41:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+  42:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /** @defgroup BKP_Private_Defines
+  43:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @{
+  44:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */
+  45:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+  46:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /* ------------ BKP registers bit address in the alias region --------------- */
+  47:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** #define BKP_OFFSET        (BKP_BASE - PERIPH_BASE)
+  48:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+  49:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /* --- CR Register ----*/
+  50:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+  51:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /* Alias word address of TPAL bit */
+  52:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** #define CR_OFFSET         (BKP_OFFSET + 0x30)
+  53:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** #define TPAL_BitNumber    0x01
+  54:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** #define CR_TPAL_BB        (PERIPH_BB_BASE + (CR_OFFSET * 32) + (TPAL_BitNumber * 4))
+  55:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+  56:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /* Alias word address of TPE bit */
+  57:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** #define TPE_BitNumber     0x00
+  58:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** #define CR_TPE_BB         (PERIPH_BB_BASE + (CR_OFFSET * 32) + (TPE_BitNumber * 4))
+  59:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+  60:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /* --- CSR Register ---*/
+  61:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+  62:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /* Alias word address of TPIE bit */
+  63:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** #define CSR_OFFSET        (BKP_OFFSET + 0x34)
+  64:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** #define TPIE_BitNumber    0x02
+  65:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** #define CSR_TPIE_BB       (PERIPH_BB_BASE + (CSR_OFFSET * 32) + (TPIE_BitNumber * 4))
+  66:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+  67:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /* Alias word address of TIF bit */
+  68:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** #define TIF_BitNumber     0x09
+  69:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** #define CSR_TIF_BB        (PERIPH_BB_BASE + (CSR_OFFSET * 32) + (TIF_BitNumber * 4))
+  70:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+  71:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /* Alias word address of TEF bit */
+  72:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** #define TEF_BitNumber     0x08
+  73:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** #define CSR_TEF_BB        (PERIPH_BB_BASE + (CSR_OFFSET * 32) + (TEF_BitNumber * 4))
+  74:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+  75:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /* ---------------------- BKP registers bit mask ------------------------ */
+  76:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+  77:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /* RTCCR register bit mask */
+  78:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** #define RTCCR_CAL_Mask    ((uint16_t)0xFF80)
+  79:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** #define RTCCR_Mask        ((uint16_t)0xFC7F)
+  80:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+  81:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /* CSR register bit mask */
+  82:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** #define CSR_CTE_Set       ((uint16_t)0x0001)
+  83:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** #define CSR_CTI_Set       ((uint16_t)0x0002)
+  84:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+  85:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /**
+  86:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @}
+  87:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */ 
+  88:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+  89:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+  90:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /** @defgroup BKP_Private_Macros
+  91:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @{
+  92:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */
+  93:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+  94:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /**
+  95:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @}
+  96:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */
+  97:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+  98:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /** @defgroup BKP_Private_Variables
+  99:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @{
+ 100:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */
+ 101:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+ 102:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /**
+ 103:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @}
+ 104:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */
+ 105:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+ 106:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /** @defgroup BKP_Private_FunctionPrototypes
+ 107:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @{
+ 108:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */
+ 109:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+ 110:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /**
+ 111:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @}
+ 112:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */
+ 113:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+ 114:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /** @defgroup BKP_Private_Functions
+ 115:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @{
+ 116:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */
+ 117:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+ 118:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /**
+ 119:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @brief  Deinitializes the BKP peripheral registers to their default reset values.
+ 120:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @param  None
+ 121:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @retval None
+ 122:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */
+ 123:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** void BKP_DeInit(void)
+ 124:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** {
+ 16528              		.loc 1 124 0
+ 16529              		.cfi_startproc
+ 16530              		@ args = 0, pretend = 0, frame = 0
+ 16531              		@ frame_needed = 0, uses_anonymous_args = 0
+ 16532 0000 10B5     		push	{r4, lr}
+ 16533              	.LCFI0:
+ 16534              		.cfi_def_cfa_offset 8
+ 16535              		.cfi_offset 14, -4
+ 16536              		.cfi_offset 4, -8
+ 125:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   RCC_BackupResetCmd(ENABLE);
+ 16537              		.loc 1 125 0
+ 16538 0002 0120     		movs	r0, #1
+ 16539 0004 024C     		ldr	r4, .L2
+ 16540 0006 A047     		blx	r4
+ 126:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   RCC_BackupResetCmd(DISABLE);
+ 16541              		.loc 1 126 0
+ 16542 0008 0020     		movs	r0, #0
+ 16543 000a A047     		blx	r4
+ 127:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** }
+ 16544              		.loc 1 127 0
+ 16545 000c 10BD     		pop	{r4, pc}
+ 16546              	.L3:
+ 16547 000e 00BF     		.align	2
+ 16548              	.L2:
+ 16549 0010 00000000 		.word	RCC_BackupResetCmd
+ 16550              		.cfi_endproc
+ 16551              	.LFE29:
+ 16553              		.section	.text.BKP_TamperPinLevelConfig,"ax",%progbits
+ 16554              		.align	1
+ 16555              		.global	BKP_TamperPinLevelConfig
+ 16556              		.thumb
+ 16557              		.thumb_func
+ 16559              	BKP_TamperPinLevelConfig:
+ 16560              	.LFB30:
+ 128:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+ 129:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /**
+ 130:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @brief  Configures the Tamper Pin active level.
+ 131:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @param  BKP_TamperPinLevel: specifies the Tamper Pin active level.
+ 132:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   *   This parameter can be one of the following values:
+ 133:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   *     @arg BKP_TamperPinLevel_High: Tamper pin active on high level
+ 134:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   *     @arg BKP_TamperPinLevel_Low: Tamper pin active on low level
+ 135:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @retval None
+ 136:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */
+ 137:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** void BKP_TamperPinLevelConfig(uint16_t BKP_TamperPinLevel)
+ 138:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** {
+ 16561              		.loc 1 138 0
+ 16562              		.cfi_startproc
+ 16563              		@ args = 0, pretend = 0, frame = 0
+ 16564              		@ frame_needed = 0, uses_anonymous_args = 0
+ 16565              		@ link register save eliminated.
+ 16566              	.LVL0:
+ 139:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   /* Check the parameters */
+ 140:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   assert_param(IS_BKP_TAMPER_PIN_LEVEL(BKP_TamperPinLevel));
+ 141:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   *(__IO uint32_t *) CR_TPAL_BB = BKP_TamperPinLevel;
+ 16567              		.loc 1 141 0
+ 16568 0000 014B     		ldr	r3, .L5
+ 16569 0002 1860     		str	r0, [r3, #0]
+ 142:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** }
+ 16570              		.loc 1 142 0
+ 16571 0004 7047     		bx	lr
+ 16572              	.L6:
+ 16573 0006 00BF     		.align	2
+ 16574              	.L5:
+ 16575 0008 04860D42 		.word	1108182532
+ 16576              		.cfi_endproc
+ 16577              	.LFE30:
+ 16579              		.section	.text.BKP_TamperPinCmd,"ax",%progbits
+ 16580              		.align	1
+ 16581              		.global	BKP_TamperPinCmd
+ 16582              		.thumb
+ 16583              		.thumb_func
+ 16585              	BKP_TamperPinCmd:
+ 16586              	.LFB31:
+ 143:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+ 144:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /**
+ 145:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @brief  Enables or disables the Tamper Pin activation.
+ 146:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @param  NewState: new state of the Tamper Pin activation.
+ 147:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   *   This parameter can be: ENABLE or DISABLE.
+ 148:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @retval None
+ 149:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */
+ 150:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** void BKP_TamperPinCmd(FunctionalState NewState)
+ 151:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** {
+ 16587              		.loc 1 151 0
+ 16588              		.cfi_startproc
+ 16589              		@ args = 0, pretend = 0, frame = 0
+ 16590              		@ frame_needed = 0, uses_anonymous_args = 0
+ 16591              		@ link register save eliminated.
+ 16592              	.LVL1:
+ 152:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   /* Check the parameters */
+ 153:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
+ 154:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   *(__IO uint32_t *) CR_TPE_BB = (uint32_t)NewState;
+ 16593              		.loc 1 154 0
+ 16594 0000 014B     		ldr	r3, .L8
+ 16595 0002 1860     		str	r0, [r3, #0]
+ 155:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** }
+ 16596              		.loc 1 155 0
+ 16597 0004 7047     		bx	lr
+ 16598              	.L9:
+ 16599 0006 00BF     		.align	2
+ 16600              	.L8:
+ 16601 0008 00860D42 		.word	1108182528
+ 16602              		.cfi_endproc
+ 16603              	.LFE31:
+ 16605              		.section	.text.BKP_ITConfig,"ax",%progbits
+ 16606              		.align	1
+ 16607              		.global	BKP_ITConfig
+ 16608              		.thumb
+ 16609              		.thumb_func
+ 16611              	BKP_ITConfig:
+ 16612              	.LFB32:
+ 156:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+ 157:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /**
+ 158:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @brief  Enables or disables the Tamper Pin Interrupt.
+ 159:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @param  NewState: new state of the Tamper Pin Interrupt.
+ 160:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   *   This parameter can be: ENABLE or DISABLE.
+ 161:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @retval None
+ 162:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */
+ 163:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** void BKP_ITConfig(FunctionalState NewState)
+ 164:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** {
+ 16613              		.loc 1 164 0
+ 16614              		.cfi_startproc
+ 16615              		@ args = 0, pretend = 0, frame = 0
+ 16616              		@ frame_needed = 0, uses_anonymous_args = 0
+ 16617              		@ link register save eliminated.
+ 16618              	.LVL2:
+ 165:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   /* Check the parameters */
+ 166:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
+ 167:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   *(__IO uint32_t *) CSR_TPIE_BB = (uint32_t)NewState;
+ 16619              		.loc 1 167 0
+ 16620 0000 014B     		ldr	r3, .L11
+ 16621 0002 1860     		str	r0, [r3, #0]
+ 168:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** }
+ 16622              		.loc 1 168 0
+ 16623 0004 7047     		bx	lr
+ 16624              	.L12:
+ 16625 0006 00BF     		.align	2
+ 16626              	.L11:
+ 16627 0008 88860D42 		.word	1108182664
+ 16628              		.cfi_endproc
+ 16629              	.LFE32:
+ 16631              		.section	.text.BKP_RTCOutputConfig,"ax",%progbits
+ 16632              		.align	1
+ 16633              		.global	BKP_RTCOutputConfig
+ 16634              		.thumb
+ 16635              		.thumb_func
+ 16637              	BKP_RTCOutputConfig:
+ 16638              	.LFB33:
+ 169:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+ 170:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /**
+ 171:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @brief  Select the RTC output source to output on the Tamper pin.
+ 172:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @param  BKP_RTCOutputSource: specifies the RTC output source.
+ 173:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   *   This parameter can be one of the following values:
+ 174:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   *     @arg BKP_RTCOutputSource_None: no RTC output on the Tamper pin.
+ 175:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   *     @arg BKP_RTCOutputSource_CalibClock: output the RTC clock with frequency
+ 176:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   *                                          divided by 64 on the Tamper pin.
+ 177:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   *     @arg BKP_RTCOutputSource_Alarm: output the RTC Alarm pulse signal on
+ 178:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   *                                     the Tamper pin.
+ 179:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   *     @arg BKP_RTCOutputSource_Second: output the RTC Second pulse signal on
+ 180:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   *                                      the Tamper pin.  
+ 181:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @retval None
+ 182:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */
+ 183:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** void BKP_RTCOutputConfig(uint16_t BKP_RTCOutputSource)
+ 184:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** {
+ 16639              		.loc 1 184 0
+ 16640              		.cfi_startproc
+ 16641              		@ args = 0, pretend = 0, frame = 0
+ 16642              		@ frame_needed = 0, uses_anonymous_args = 0
+ 16643              		@ link register save eliminated.
+ 16644              	.LVL3:
+ 185:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   uint16_t tmpreg = 0;
+ 186:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   /* Check the parameters */
+ 187:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   assert_param(IS_BKP_RTC_OUTPUT_SOURCE(BKP_RTCOutputSource));
+ 188:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   tmpreg = BKP->RTCCR;
+ 16645              		.loc 1 188 0
+ 16646 0000 054A     		ldr	r2, .L14
+ 16647 0002 B2F82CC0 		ldrh	ip, [r2, #44]
+ 16648              	.LVL4:
+ 189:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   /* Clear CCO, ASOE and ASOS bits */
+ 190:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   tmpreg &= RTCCR_Mask;
+ 16649              		.loc 1 190 0
+ 16650 0006 2CF46071 		bic	r1, ip, #896
+ 16651 000a 0B04     		lsls	r3, r1, #16
+ 16652 000c 190C     		lsrs	r1, r3, #16
+ 16653              	.LVL5:
+ 191:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   
+ 192:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   /* Set CCO, ASOE and ASOS bits according to BKP_RTCOutputSource value */
+ 193:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   tmpreg |= BKP_RTCOutputSource;
+ 16654              		.loc 1 193 0
+ 16655 000e 40EA0103 		orr	r3, r0, r1
+ 16656              	.LVL6:
+ 194:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   /* Store the new value */
+ 195:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   BKP->RTCCR = tmpreg;
+ 16657              		.loc 1 195 0
+ 16658 0012 9385     		strh	r3, [r2, #44]	@ movhi
+ 196:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** }
+ 16659              		.loc 1 196 0
+ 16660 0014 7047     		bx	lr
+ 16661              	.L15:
+ 16662 0016 00BF     		.align	2
+ 16663              	.L14:
+ 16664 0018 006C0040 		.word	1073769472
+ 16665              		.cfi_endproc
+ 16666              	.LFE33:
+ 16668              		.section	.text.BKP_SetRTCCalibrationValue,"ax",%progbits
+ 16669              		.align	1
+ 16670              		.global	BKP_SetRTCCalibrationValue
+ 16671              		.thumb
+ 16672              		.thumb_func
+ 16674              	BKP_SetRTCCalibrationValue:
+ 16675              	.LFB34:
+ 197:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+ 198:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /**
+ 199:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @brief  Sets RTC Clock Calibration value.
+ 200:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @param  CalibrationValue: specifies the RTC Clock Calibration value.
+ 201:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   *   This parameter must be a number between 0 and 0x7F.
+ 202:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @retval None
+ 203:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */
+ 204:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** void BKP_SetRTCCalibrationValue(uint8_t CalibrationValue)
+ 205:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** {
+ 16676              		.loc 1 205 0
+ 16677              		.cfi_startproc
+ 16678              		@ args = 0, pretend = 0, frame = 0
+ 16679              		@ frame_needed = 0, uses_anonymous_args = 0
+ 16680              		@ link register save eliminated.
+ 16681              	.LVL7:
+ 206:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   uint16_t tmpreg = 0;
+ 207:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   /* Check the parameters */
+ 208:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   assert_param(IS_BKP_CALIBRATION_VALUE(CalibrationValue));
+ 209:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   tmpreg = BKP->RTCCR;
+ 16682              		.loc 1 209 0
+ 16683 0000 054A     		ldr	r2, .L17
+ 16684 0002 B2F82CC0 		ldrh	ip, [r2, #44]
+ 16685              	.LVL8:
+ 210:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   /* Clear CAL[6:0] bits */
+ 211:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   tmpreg &= RTCCR_CAL_Mask;
+ 16686              		.loc 1 211 0
+ 16687 0006 2CF07F01 		bic	r1, ip, #127
+ 16688 000a 0B04     		lsls	r3, r1, #16
+ 16689 000c 190C     		lsrs	r1, r3, #16
+ 16690              	.LVL9:
+ 212:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   /* Set CAL[6:0] bits according to CalibrationValue value */
+ 213:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   tmpreg |= CalibrationValue;
+ 16691              		.loc 1 213 0
+ 16692 000e 40EA0103 		orr	r3, r0, r1
+ 16693              	.LVL10:
+ 214:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   /* Store the new value */
+ 215:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   BKP->RTCCR = tmpreg;
+ 16694              		.loc 1 215 0
+ 16695 0012 9385     		strh	r3, [r2, #44]	@ movhi
+ 216:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** }
+ 16696              		.loc 1 216 0
+ 16697 0014 7047     		bx	lr
+ 16698              	.L18:
+ 16699 0016 00BF     		.align	2
+ 16700              	.L17:
+ 16701 0018 006C0040 		.word	1073769472
+ 16702              		.cfi_endproc
+ 16703              	.LFE34:
+ 16705              		.section	.text.BKP_WriteBackupRegister,"ax",%progbits
+ 16706              		.align	1
+ 16707              		.global	BKP_WriteBackupRegister
+ 16708              		.thumb
+ 16709              		.thumb_func
+ 16711              	BKP_WriteBackupRegister:
+ 16712              	.LFB35:
+ 217:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+ 218:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /**
+ 219:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @brief  Writes user data to the specified Data Backup Register.
+ 220:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @param  BKP_DR: specifies the Data Backup Register.
+ 221:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   *   This parameter can be BKP_DRx where x:[1, 42]
+ 222:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @param  Data: data to write
+ 223:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @retval None
+ 224:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */
+ 225:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** void BKP_WriteBackupRegister(uint16_t BKP_DR, uint16_t Data)
+ 226:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** {
+ 16713              		.loc 1 226 0
+ 16714              		.cfi_startproc
+ 16715              		@ args = 0, pretend = 0, frame = 8
+ 16716              		@ frame_needed = 0, uses_anonymous_args = 0
+ 16717              		@ link register save eliminated.
+ 16718              	.LVL11:
+ 227:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   __IO uint32_t tmp = 0;
+ 228:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+ 229:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   /* Check the parameters */
+ 230:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   assert_param(IS_BKP_DR(BKP_DR));
+ 231:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+ 232:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   tmp = (uint32_t)BKP_BASE; 
+ 16719              		.loc 1 232 0
+ 16720 0000 054B     		ldr	r3, .L20
+ 226:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** {
+ 16721              		.loc 1 226 0
+ 16722 0002 82B0     		sub	sp, sp, #8
+ 16723              	.LCFI1:
+ 16724              		.cfi_def_cfa_offset 8
+ 227:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   __IO uint32_t tmp = 0;
+ 16725              		.loc 1 227 0
+ 16726 0004 0022     		movs	r2, #0
+ 16727 0006 0192     		str	r2, [sp, #4]
+ 16728              	.LVL12:
+ 16729              		.loc 1 232 0
+ 16730 0008 0193     		str	r3, [sp, #4]
+ 233:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   tmp += BKP_DR;
+ 16731              		.loc 1 233 0
+ 16732 000a 019A     		ldr	r2, [sp, #4]
+ 16733 000c 8018     		adds	r0, r0, r2
+ 16734              	.LVL13:
+ 16735 000e 0190     		str	r0, [sp, #4]
+ 16736              	.LVL14:
+ 234:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+ 235:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   *(__IO uint32_t *) tmp = Data;
+ 16737              		.loc 1 235 0
+ 16738 0010 019B     		ldr	r3, [sp, #4]
+ 16739 0012 1960     		str	r1, [r3, #0]
+ 236:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** }
+ 16740              		.loc 1 236 0
+ 16741 0014 02B0     		add	sp, sp, #8
+ 16742 0016 7047     		bx	lr
+ 16743              	.L21:
+ 16744              		.align	2
+ 16745              	.L20:
+ 16746 0018 006C0040 		.word	1073769472
+ 16747              		.cfi_endproc
+ 16748              	.LFE35:
+ 16750              		.section	.text.BKP_ReadBackupRegister,"ax",%progbits
+ 16751              		.align	1
+ 16752              		.global	BKP_ReadBackupRegister
+ 16753              		.thumb
+ 16754              		.thumb_func
+ 16756              	BKP_ReadBackupRegister:
+ 16757              	.LFB36:
+ 237:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+ 238:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /**
+ 239:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @brief  Reads data from the specified Data Backup Register.
+ 240:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @param  BKP_DR: specifies the Data Backup Register.
+ 241:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   *   This parameter can be BKP_DRx where x:[1, 42]
+ 242:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @retval The content of the specified Data Backup Register
+ 243:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */
+ 244:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** uint16_t BKP_ReadBackupRegister(uint16_t BKP_DR)
+ 245:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** {
+ 16758              		.loc 1 245 0
+ 16759              		.cfi_startproc
+ 16760              		@ args = 0, pretend = 0, frame = 8
+ 16761              		@ frame_needed = 0, uses_anonymous_args = 0
+ 16762              		@ link register save eliminated.
+ 16763              	.LVL15:
+ 246:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   __IO uint32_t tmp = 0;
+ 247:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+ 248:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   /* Check the parameters */
+ 249:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   assert_param(IS_BKP_DR(BKP_DR));
+ 250:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+ 251:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   tmp = (uint32_t)BKP_BASE; 
+ 16764              		.loc 1 251 0
+ 16765 0000 064B     		ldr	r3, .L23
+ 245:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** {
+ 16766              		.loc 1 245 0
+ 16767 0002 82B0     		sub	sp, sp, #8
+ 16768              	.LCFI2:
+ 16769              		.cfi_def_cfa_offset 8
+ 246:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   __IO uint32_t tmp = 0;
+ 16770              		.loc 1 246 0
+ 16771 0004 0021     		movs	r1, #0
+ 16772 0006 0191     		str	r1, [sp, #4]
+ 16773              	.LVL16:
+ 16774              		.loc 1 251 0
+ 16775 0008 0193     		str	r3, [sp, #4]
+ 252:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   tmp += BKP_DR;
+ 16776              		.loc 1 252 0
+ 16777 000a 019A     		ldr	r2, [sp, #4]
+ 16778 000c 8118     		adds	r1, r0, r2
+ 16779              	.LVL17:
+ 16780 000e 0191     		str	r1, [sp, #4]
+ 16781              	.LVL18:
+ 253:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+ 254:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   return (*(__IO uint16_t *) tmp);
+ 16782              		.loc 1 254 0
+ 16783 0010 019B     		ldr	r3, [sp, #4]
+ 16784 0012 1888     		ldrh	r0, [r3, #0]
+ 16785              	.LVL19:
+ 16786 0014 80B2     		uxth	r0, r0
+ 255:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** }
+ 16787              		.loc 1 255 0
+ 16788 0016 02B0     		add	sp, sp, #8
+ 16789 0018 7047     		bx	lr
+ 16790              	.L24:
+ 16791 001a 00BF     		.align	2
+ 16792              	.L23:
+ 16793 001c 006C0040 		.word	1073769472
+ 16794              		.cfi_endproc
+ 16795              	.LFE36:
+ 16797              		.section	.text.BKP_GetFlagStatus,"ax",%progbits
+ 16798              		.align	1
+ 16799              		.global	BKP_GetFlagStatus
+ 16800              		.thumb
+ 16801              		.thumb_func
+ 16803              	BKP_GetFlagStatus:
+ 16804              	.LFB37:
+ 256:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+ 257:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /**
+ 258:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @brief  Checks whether the Tamper Pin Event flag is set or not.
+ 259:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @param  None
+ 260:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @retval The new state of the Tamper Pin Event flag (SET or RESET).
+ 261:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */
+ 262:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** FlagStatus BKP_GetFlagStatus(void)
+ 263:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** {
+ 16805              		.loc 1 263 0
+ 16806              		.cfi_startproc
+ 16807              		@ args = 0, pretend = 0, frame = 0
+ 16808              		@ frame_needed = 0, uses_anonymous_args = 0
+ 16809              		@ link register save eliminated.
+ 264:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   return (FlagStatus)(*(__IO uint32_t *) CSR_TEF_BB);
+ 16810              		.loc 1 264 0
+ 16811 0000 014B     		ldr	r3, .L26
+ 16812 0002 1868     		ldr	r0, [r3, #0]
+ 16813 0004 C0B2     		uxtb	r0, r0
+ 265:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** }
+ 16814              		.loc 1 265 0
+ 16815 0006 7047     		bx	lr
+ 16816              	.L27:
+ 16817              		.align	2
+ 16818              	.L26:
+ 16819 0008 A0860D42 		.word	1108182688
+ 16820              		.cfi_endproc
+ 16821              	.LFE37:
+ 16823              		.section	.text.BKP_ClearFlag,"ax",%progbits
+ 16824              		.align	1
+ 16825              		.global	BKP_ClearFlag
+ 16826              		.thumb
+ 16827              		.thumb_func
+ 16829              	BKP_ClearFlag:
+ 16830              	.LFB38:
+ 266:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+ 267:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /**
+ 268:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @brief  Clears Tamper Pin Event pending flag.
+ 269:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @param  None
+ 270:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @retval None
+ 271:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */
+ 272:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** void BKP_ClearFlag(void)
+ 273:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** {
+ 16831              		.loc 1 273 0
+ 16832              		.cfi_startproc
+ 16833              		@ args = 0, pretend = 0, frame = 0
+ 16834              		@ frame_needed = 0, uses_anonymous_args = 0
+ 16835              		@ link register save eliminated.
+ 274:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   /* Set CTE bit to clear Tamper Pin Event flag */
+ 275:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   BKP->CSR |= CSR_CTE_Set;
+ 16836              		.loc 1 275 0
+ 16837 0000 034B     		ldr	r3, .L29
+ 16838 0002 998E     		ldrh	r1, [r3, #52]
+ 16839 0004 88B2     		uxth	r0, r1
+ 16840 0006 40F00102 		orr	r2, r0, #1
+ 16841 000a 9A86     		strh	r2, [r3, #52]	@ movhi
+ 276:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** }
+ 16842              		.loc 1 276 0
+ 16843 000c 7047     		bx	lr
+ 16844              	.L30:
+ 16845 000e 00BF     		.align	2
+ 16846              	.L29:
+ 16847 0010 006C0040 		.word	1073769472
+ 16848              		.cfi_endproc
+ 16849              	.LFE38:
+ 16851              		.section	.text.BKP_GetITStatus,"ax",%progbits
+ 16852              		.align	1
+ 16853              		.global	BKP_GetITStatus
+ 16854              		.thumb
+ 16855              		.thumb_func
+ 16857              	BKP_GetITStatus:
+ 16858              	.LFB39:
+ 277:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+ 278:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /**
+ 279:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @brief  Checks whether the Tamper Pin Interrupt has occurred or not.
+ 280:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @param  None
+ 281:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @retval The new state of the Tamper Pin Interrupt (SET or RESET).
+ 282:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */
+ 283:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** ITStatus BKP_GetITStatus(void)
+ 284:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** {
+ 16859              		.loc 1 284 0
+ 16860              		.cfi_startproc
+ 16861              		@ args = 0, pretend = 0, frame = 0
+ 16862              		@ frame_needed = 0, uses_anonymous_args = 0
+ 16863              		@ link register save eliminated.
+ 285:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   return (ITStatus)(*(__IO uint32_t *) CSR_TIF_BB);
+ 16864              		.loc 1 285 0
+ 16865 0000 014B     		ldr	r3, .L32
+ 16866 0002 1868     		ldr	r0, [r3, #0]
+ 16867 0004 C0B2     		uxtb	r0, r0
+ 286:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** }
+ 16868              		.loc 1 286 0
+ 16869 0006 7047     		bx	lr
+ 16870              	.L33:
+ 16871              		.align	2
+ 16872              	.L32:
+ 16873 0008 A4860D42 		.word	1108182692
+ 16874              		.cfi_endproc
+ 16875              	.LFE39:
+ 16877              		.section	.text.BKP_ClearITPendingBit,"ax",%progbits
+ 16878              		.align	1
+ 16879              		.global	BKP_ClearITPendingBit
+ 16880              		.thumb
+ 16881              		.thumb_func
+ 16883              	BKP_ClearITPendingBit:
+ 16884              	.LFB40:
+ 287:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** 
+ 288:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** /**
+ 289:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @brief  Clears Tamper Pin Interrupt pending bit.
+ 290:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @param  None
+ 291:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   * @retval None
+ 292:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   */
+ 293:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** void BKP_ClearITPendingBit(void)
+ 294:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** {
+ 16885              		.loc 1 294 0
+ 16886              		.cfi_startproc
+ 16887              		@ args = 0, pretend = 0, frame = 0
+ 16888              		@ frame_needed = 0, uses_anonymous_args = 0
+ 16889              		@ link register save eliminated.
+ 295:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   /* Set CTI bit to clear Tamper Pin Interrupt pending bit */
+ 296:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c ****   BKP->CSR |= CSR_CTI_Set;
+ 16890              		.loc 1 296 0
+ 16891 0000 034B     		ldr	r3, .L35
+ 16892 0002 998E     		ldrh	r1, [r3, #52]
+ 16893 0004 88B2     		uxth	r0, r1
+ 16894 0006 40F00202 		orr	r2, r0, #2
+ 16895 000a 9A86     		strh	r2, [r3, #52]	@ movhi
+ 297:../../../SDK_embedded/libs/stm32/STM32F10x_StdPeriph_Driver/stm32f10x_bkp.c **** }
+ 16896              		.loc 1 297 0
+ 16897 000c 7047     		bx	lr
+ 16898              	.L36:
+ 16899 000e 00BF     		.align	2
+ 16900              	.L35:
+ 16901 0010 006C0040 		.word	1073769472
+ 16902              		.cfi_endproc
+ 16903              	.LFE40:
+ 16905              		.text
+ 16906              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32f10x_bkp.c
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16521  .text.BKP_DeInit:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16526  .text.BKP_DeInit:00000000 BKP_DeInit
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16549  .text.BKP_DeInit:00000010 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16554  .text.BKP_TamperPinLevelConfig:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16559  .text.BKP_TamperPinLevelConfig:00000000 BKP_TamperPinLevelConfig
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16575  .text.BKP_TamperPinLevelConfig:00000008 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16580  .text.BKP_TamperPinCmd:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16585  .text.BKP_TamperPinCmd:00000000 BKP_TamperPinCmd
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16601  .text.BKP_TamperPinCmd:00000008 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16606  .text.BKP_ITConfig:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16611  .text.BKP_ITConfig:00000000 BKP_ITConfig
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16627  .text.BKP_ITConfig:00000008 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16632  .text.BKP_RTCOutputConfig:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16637  .text.BKP_RTCOutputConfig:00000000 BKP_RTCOutputConfig
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16664  .text.BKP_RTCOutputConfig:00000018 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16669  .text.BKP_SetRTCCalibrationValue:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16674  .text.BKP_SetRTCCalibrationValue:00000000 BKP_SetRTCCalibrationValue
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16701  .text.BKP_SetRTCCalibrationValue:00000018 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16706  .text.BKP_WriteBackupRegister:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16711  .text.BKP_WriteBackupRegister:00000000 BKP_WriteBackupRegister
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16746  .text.BKP_WriteBackupRegister:00000018 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16751  .text.BKP_ReadBackupRegister:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16756  .text.BKP_ReadBackupRegister:00000000 BKP_ReadBackupRegister
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16793  .text.BKP_ReadBackupRegister:0000001c $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16798  .text.BKP_GetFlagStatus:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16803  .text.BKP_GetFlagStatus:00000000 BKP_GetFlagStatus
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16819  .text.BKP_GetFlagStatus:00000008 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16824  .text.BKP_ClearFlag:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16829  .text.BKP_ClearFlag:00000000 BKP_ClearFlag
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16847  .text.BKP_ClearFlag:00000010 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16852  .text.BKP_GetITStatus:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16857  .text.BKP_GetITStatus:00000000 BKP_GetITStatus
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16873  .text.BKP_GetITStatus:00000008 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16878  .text.BKP_ClearITPendingBit:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16883  .text.BKP_ClearITPendingBit:00000000 BKP_ClearITPendingBit
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccwTEFVC.s:16901  .text.BKP_ClearITPendingBit:00000010 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+RCC_BackupResetCmd

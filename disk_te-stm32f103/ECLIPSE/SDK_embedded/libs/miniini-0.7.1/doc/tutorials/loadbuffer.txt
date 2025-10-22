@@ -1,0 +1,70 @@
+Loading ini data from memory
+
+
+== LoadBuffer ==
+
+Sometimes, you might already have ini file data in memory and might need to
+parse it from there. For example, you might store your ini file in a compressed
+file.
+
+MiniINI allows loading of INIFiles from memory using the **LoadBuffer** method
+of INIFile. This tutorial explains how to load a simple INI file to memory
+and parse it using LoadBuffer. You can find example code for this tutorial
+in **example/LoadBuffer** directory in the MiniINI package.
+
+== The code ==
+
+Create a file called example.ini in your project directory, with these contents:
+```
+[section]
+answer=42
+```
+
+First, we include what we need and start the main function.
+```
+#include<miniini.h>
+#include<iostream>
+#include<fstream>
+
+int main()
+{
+```
+
+Now we load the file from memory. (Static size buffer is used for the sake of
+simplicity. In real use, you'd want to find the size of the file and allocate
+enough space for it dynamically.) Notice that a trailing zero is added to the
+end of the buffer. This **must** be done in order for LoadBuffer to work
+properly.
+```
+    char buf[64];
+    std::ifstream fin( "example.ini" );
+    fin.read(buf, 63);
+    if(fin.bad())
+        std::cout << "ERROR: Could not read from example.ini";
+    buf[63] = '\0';
+```
+
+Now we create an INIFile and use LoadBuffer to initialize it. Like with
+OpenFile, you can only call LoadBuffer on an unitialised INIFile. LoadBuffer
+takes two arguments: buffer to read from and size of that buffer (including the
+trailing zero). It returns true if the buffer was successfully loaded, false
+otherwise.
+```
+    INIFile ini;
+    if(!ini.LoadBuffer(buf, 64))
+        std::cout << "ERROR: error in parsing ini file data";
+```
+
+Now we read and print data from the inifile to test if everything works
+correctly, and end the main function.
+```
+    INISection * section = ini.GetSection("section");
+    if(!section)
+        std::cout << "ERROR: Missing section [section]" << std::endl;
+    int answer;
+    if(!section->ReadInt("answer", answer))
+        std::cout << "ERROR: Missing tag answer=" << std::endl;
+    std::cout << "The answer is " << answer;
+    return 0;
+}
+```

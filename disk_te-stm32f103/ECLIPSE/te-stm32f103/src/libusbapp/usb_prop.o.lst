@@ -1,0 +1,1204 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 18, 4
+  12              		.thumb
+  13              		.file	"usb_prop.c"
+  23              	.Ltext0:
+ 20663              		.align	1
+ 20664              		.global	usb_dev_Status_In
+ 20665              		.thumb
+ 20666              		.thumb_func
+ 20668              	usb_dev_Status_In:
+ 20669              	.LFB32:
+   1:usb_prop.c    **** #include "appdefs.h"
+   2:usb_prop.c    **** 
+   3:usb_prop.c    **** #include "usb_lib.h"
+   4:usb_prop.c    **** #include "usb_conf.h"
+   5:usb_prop.c    **** #include "usb_prop.h"
+   6:usb_prop.c    **** #include "usb_desc.h"
+   7:usb_prop.c    **** #include "usb_pwr.h"
+   8:usb_prop.c    **** 
+   9:usb_prop.c    **** #include "usb_mem.h"
+  10:usb_prop.c    **** 
+  11:usb_prop.c    **** #include "usb_request_handlers.h"
+  12:usb_prop.c    **** 
+  13:usb_prop.c    **** DEVICE Device_Table =
+  14:usb_prop.c    ****   {
+  15:usb_prop.c    ****     EP_NUM,
+  16:usb_prop.c    ****     1
+  17:usb_prop.c    ****   };
+  18:usb_prop.c    **** 
+  19:usb_prop.c    **** DEVICE_PROP Device_Property =
+  20:usb_prop.c    ****   {
+  21:usb_prop.c    ****     usb_dev_Init,
+  22:usb_prop.c    ****     usb_dev_Reset,
+  23:usb_prop.c    ****     usb_dev_Status_In,
+  24:usb_prop.c    ****     usb_dev_Status_Out,
+  25:usb_prop.c    ****     usb_dev_Data_Setup,
+  26:usb_prop.c    ****     usb_dev_NoData_Setup,
+  27:usb_prop.c    ****     usb_dev_Get_Interface_Setting,
+  28:usb_prop.c    ****     usb_dev_GetDeviceDescriptor,
+  29:usb_prop.c    ****     usb_dev_GetConfigDescriptor,
+  30:usb_prop.c    ****     usb_dev_GetStringDescriptor,
+  31:usb_prop.c    ****     0,
+  32:usb_prop.c    ****     0x40 /*MAX PACKET SIZE*/
+  33:usb_prop.c    ****   };
+  34:usb_prop.c    **** 
+  35:usb_prop.c    **** USER_STANDARD_REQUESTS User_Standard_Requests =
+  36:usb_prop.c    ****   {
+  37:usb_prop.c    ****     USB_DEV_GetConfiguration ,
+  38:usb_prop.c    ****     USB_DEV_SetConfiguration ,
+  39:usb_prop.c    ****     USB_DEV_GetInterface ,
+  40:usb_prop.c    ****     USB_DEV_SetInterface ,
+  41:usb_prop.c    ****     USB_DEV_GetStatus ,
+  42:usb_prop.c    ****     USB_DEV_ClearFeature ,
+  43:usb_prop.c    ****     USB_DEV_SetEndPointFeature ,
+  44:usb_prop.c    ****     USB_DEV_SetDeviceFeature ,
+  45:usb_prop.c    ****     USB_DEV_SetDeviceAddress
+  46:usb_prop.c    ****   };
+  47:usb_prop.c    **** 
+  48:usb_prop.c    **** ONE_DESCRIPTOR Device_Descriptor =
+  49:usb_prop.c    ****   { (u8*)usb_dev_DeviceDescriptor, USB_DEV_DEVICE_DESC_SIZE };
+  50:usb_prop.c    **** 
+  51:usb_prop.c    **** ONE_DESCRIPTOR Config_Descriptor =
+  52:usb_prop.c    ****   { (u8*)usb_dev_ConfigDescriptor, USB_DEV_CONFIG_DESC_SIZE };
+  53:usb_prop.c    **** 
+  54:usb_prop.c    **** ONE_DESCRIPTOR String_Descriptor[5] =
+  55:usb_prop.c    ****   {
+  56:usb_prop.c    ****     {(u8*)usb_dev_StringLangID,    USB_DEV_STRING_LANGID_SIZE},
+  57:usb_prop.c    ****     {(u8*)usb_dev_StringVendor,    USB_DEV_STRING_VENDOR_SIZE},
+  58:usb_prop.c    ****     {(u8*)usb_dev_StringProduct,   USB_DEV_STRING_PRODUCT_SIZE},
+  59:usb_prop.c    ****     {(u8*)usb_dev_StringSerial,    USB_DEV_STRING_SERIAL_SIZE},
+  60:usb_prop.c    ****     {(u8*)usb_dev_StringInterface, USB_DEV_STRING_INTERFACE_SIZE}
+  61:usb_prop.c    ****   };
+  62:usb_prop.c    **** //---------------------------------------------------------------------------
+  63:usb_prop.c    **** void usb_dev_Init(void)
+  64:usb_prop.c    **** {
+  65:usb_prop.c    **** 
+  66:usb_prop.c    ****   /* Update the serial number string descriptor with the data from the unique
+  67:usb_prop.c    ****   ID*/
+  68:usb_prop.c    **** 
+  69:usb_prop.c    ****   //GetSerialNum();
+  70:usb_prop.c    **** 
+  71:usb_prop.c    ****   pInformation->Current_Configuration = 0;
+  72:usb_prop.c    **** 
+  73:usb_prop.c    ****   /* Connect the device */
+  74:usb_prop.c    ****    PowerOn();
+  75:usb_prop.c    **** 
+  76:usb_prop.c    ****   /* USB interrupts initialization */
+  77:usb_prop.c    ****   /* clear pending interrupts */
+  78:usb_prop.c    ****   _SetISTR(0);
+  79:usb_prop.c    ****   wInterrupt_Mask = IMR_MSK;
+  80:usb_prop.c    ****   /* set interrupts mask */
+  81:usb_prop.c    ****   _SetCNTR(wInterrupt_Mask);
+  82:usb_prop.c    **** 
+  83:usb_prop.c    **** 
+  84:usb_prop.c    **** 
+  85:usb_prop.c    ****   bDeviceState = UNCONNECTED;
+  86:usb_prop.c    **** }
+  87:usb_prop.c    **** //---------------------------------------------------------------------------
+  88:usb_prop.c    **** void usb_dev_Reset(void)
+  89:usb_prop.c    **** {
+  90:usb_prop.c    ****   /* Set device as not configured */
+  91:usb_prop.c    ****   pInformation->Current_Configuration = 0;
+  92:usb_prop.c    **** 
+  93:usb_prop.c    ****   /* Current Feature initialization */
+  94:usb_prop.c    ****   pInformation->Current_Feature = usb_dev_ConfigDescriptor[7];
+  95:usb_prop.c    **** 
+  96:usb_prop.c    ****   /* Set device with the default Interface*/
+  97:usb_prop.c    ****   pInformation->Current_Interface = 0;
+  98:usb_prop.c    **** 
+  99:usb_prop.c    ****   SetBTABLE(BTABLE_ADDRESS);
+ 100:usb_prop.c    **** 
+ 101:usb_prop.c    ****   /* Initialize Endpoint 0 */
+ 102:usb_prop.c    ****   SetEPType(ENDP0, EP_CONTROL);
+ 103:usb_prop.c    ****   SetEPTxStatus(ENDP0, EP_TX_NAK);
+ 104:usb_prop.c    ****   SetEPRxAddr(ENDP0, ENDP0_RXADDR);
+ 105:usb_prop.c    ****   SetEPRxCount(ENDP0, Device_Property.MaxPacketSize);
+ 106:usb_prop.c    ****   SetEPRxValid(ENDP0);
+ 107:usb_prop.c    ****   SetEPTxAddr(ENDP0, ENDP0_TXADDR);
+ 108:usb_prop.c    ****   Clear_Status_Out(ENDP0);
+ 109:usb_prop.c    **** 
+ 110:usb_prop.c    **** 
+ 111:usb_prop.c    ****   /* Initialize Endpoint 1 */
+ 112:usb_prop.c    ****   SetEPType(ENDP1, EP_BULK);
+ 113:usb_prop.c    ****   SetEPTxAddr(ENDP1, ENDP1_TXADDR);
+ 114:usb_prop.c    ****   SetEPTxCount(ENDP1, Device_Property.MaxPacketSize);
+ 115:usb_prop.c    ****   SetEPTxStatus(ENDP1, EP_TX_NAK);
+ 116:usb_prop.c    ****   SetEPRxStatus(ENDP1, EP_RX_DIS);
+ 117:usb_prop.c    **** 
+ 118:usb_prop.c    ****   /* Initialize Endpoint 2 */
+ 119:usb_prop.c    ****   SetEPType(ENDP2, EP_BULK);
+ 120:usb_prop.c    ****   SetEPRxAddr(ENDP2, ENDP2_RXADDR);
+ 121:usb_prop.c    ****   SetEPRxCount(ENDP2, Device_Property.MaxPacketSize);
+ 122:usb_prop.c    ****   SetEPRxStatus(ENDP2, EP_RX_VALID);
+ 123:usb_prop.c    ****   SetEPTxStatus(ENDP2, EP_TX_DIS);
+ 124:usb_prop.c    **** 
+ 125:usb_prop.c    **** 
+ 126:usb_prop.c    **** 
+ 127:usb_prop.c    **** 
+ 128:usb_prop.c    ****   /* Set this device to response on default address */
+ 129:usb_prop.c    ****   SetDeviceAddress(0);
+ 130:usb_prop.c    **** 
+ 131:usb_prop.c    ****   bDeviceState = ATTACHED;
+ 132:usb_prop.c    **** }
+ 133:usb_prop.c    **** //---------------------------------------------------------------------------
+ 134:usb_prop.c    **** void usb_dev_Status_In(void)
+ 135:usb_prop.c    **** {
+ 20670              		.loc 1 135 0
+ 20671              		.cfi_startproc
+ 20672              		@ args = 0, pretend = 0, frame = 0
+ 20673              		@ frame_needed = 0, uses_anonymous_args = 0
+ 20674              		@ link register save eliminated.
+ 136:usb_prop.c    ****   NOP();
+ 20675              		.loc 1 136 0
+ 20676              	@ 136 "usb_prop.c" 1
+ 20677 0000 00BF     		nop
+ 20678              	@ 0 "" 2
+ 137:usb_prop.c    **** }
+ 20679              		.loc 1 137 0
+ 20680              		.thumb
+ 20681 0002 7047     		bx	lr
+ 20682              		.cfi_endproc
+ 20683              	.LFE32:
+ 20685              		.section	.text.usb_dev_Status_Out,"ax",%progbits
+ 20686              		.align	1
+ 20687              		.global	usb_dev_Status_Out
+ 20688              		.thumb
+ 20689              		.thumb_func
+ 20691              	usb_dev_Status_Out:
+ 20692              	.LFB33:
+ 138:usb_prop.c    **** //---------------------------------------------------------------------------
+ 139:usb_prop.c    **** void usb_dev_Status_Out(void)
+ 140:usb_prop.c    **** {
+ 20693              		.loc 1 140 0
+ 20694              		.cfi_startproc
+ 20695              		@ args = 0, pretend = 0, frame = 0
+ 20696              		@ frame_needed = 0, uses_anonymous_args = 0
+ 20697              		@ link register save eliminated.
+ 141:usb_prop.c    ****   NOP();
+ 20698              		.loc 1 141 0
+ 20699              	@ 141 "usb_prop.c" 1
+ 20700 0000 00BF     		nop
+ 20701              	@ 0 "" 2
+ 142:usb_prop.c    **** }
+ 20702              		.loc 1 142 0
+ 20703              		.thumb
+ 20704 0002 7047     		bx	lr
+ 20705              		.cfi_endproc
+ 20706              	.LFE33:
+ 20708              		.section	.text.usb_dev_Get_Interface_Setting,"ax",%progbits
+ 20709              		.align	1
+ 20710              		.global	usb_dev_Get_Interface_Setting
+ 20711              		.thumb
+ 20712              		.thumb_func
+ 20714              	usb_dev_Get_Interface_Setting:
+ 20715              	.LFB36:
+ 143:usb_prop.c    **** //---------------------------------------------------------------------------
+ 144:usb_prop.c    **** RESULT usb_dev_Data_Setup(u8 RequestNo)
+ 145:usb_prop.c    **** {
+ 146:usb_prop.c    ****   if ( Type_Recipient != VENDOR_REQUEST ) return USB_UNSUPPORT;
+ 147:usb_prop.c    ****   if ( RequestNo >= vridRequestCount ) return USB_UNSUPPORT;
+ 148:usb_prop.c    ****   pInformation->Ctrl_Info.CopyData = CopyRoutineTable[RequestNo] ;
+ 149:usb_prop.c    ****   pInformation->Ctrl_Info.Usb_wOffset = 0;
+ 150:usb_prop.c    **** 
+ 151:usb_prop.c    ****   pInformation->USBwIndexs.w = ByteSwap(pInformation->USBwIndexs.w);
+ 152:usb_prop.c    ****   pInformation->USBwValues.w = ByteSwap(pInformation->USBwValues.w);
+ 153:usb_prop.c    ****   CopyRoutineTable[RequestNo](0);
+ 154:usb_prop.c    ****   return USB_SUCCESS;
+ 155:usb_prop.c    **** }
+ 156:usb_prop.c    **** //---------------------------------------------------------------------------
+ 157:usb_prop.c    **** RESULT usb_dev_NoData_Setup(u8 RequestNo)
+ 158:usb_prop.c    **** {
+ 159:usb_prop.c    ****   if ( Type_Recipient != VENDOR_REQUEST ) return USB_UNSUPPORT;
+ 160:usb_prop.c    ****   if ( RequestNo >= vridRequestCount ) return USB_UNSUPPORT;
+ 161:usb_prop.c    **** 
+ 162:usb_prop.c    ****   // коррекция pInformation (перестановка байт)
+ 163:usb_prop.c    ****   pInformation->USBwIndexs.w = ByteSwap(pInformation->USBwIndexs.w);
+ 164:usb_prop.c    ****   pInformation->USBwValues.w = ByteSwap(pInformation->USBwValues.w);
+ 165:usb_prop.c    ****   // вызов обработчика
+ 166:usb_prop.c    ****   CopyRoutineTable[RequestNo](0);
+ 167:usb_prop.c    ****   return USB_SUCCESS;
+ 168:usb_prop.c    **** }
+ 169:usb_prop.c    **** //---------------------------------------------------------------------------
+ 170:usb_prop.c    **** RESULT usb_dev_Get_Interface_Setting(u8 Interface, u8 AlternateSetting)
+ 171:usb_prop.c    **** {
+ 20716              		.loc 1 171 0
+ 20717              		.cfi_startproc
+ 20718              		@ args = 0, pretend = 0, frame = 0
+ 20719              		@ frame_needed = 0, uses_anonymous_args = 0
+ 20720              		@ link register save eliminated.
+ 20721              	.LVL0:
+ 172:usb_prop.c    ****   if (AlternateSetting > 0)
+ 20722              		.loc 1 172 0
+ 20723 0000 21B9     		cbnz	r1, .L5
+ 173:usb_prop.c    ****   {
+ 174:usb_prop.c    ****     return USB_UNSUPPORT; /* in this application we don't have AlternateSetting*/
+ 175:usb_prop.c    ****   }
+ 176:usb_prop.c    ****   else if (Interface > 0) /*in this application we have only 1 interfaces*/
+ 177:usb_prop.c    ****   {
+ 178:usb_prop.c    ****     return USB_UNSUPPORT;
+ 20724              		.loc 1 178 0
+ 20725 0002 0028     		cmp	r0, #0
+ 20726 0004 14BF     		ite	ne
+ 20727 0006 0220     		movne	r0, #2
+ 20728 0008 0020     		moveq	r0, #0
+ 20729              	.LVL1:
+ 20730 000a 7047     		bx	lr
+ 20731              	.LVL2:
+ 20732              	.L5:
+ 174:usb_prop.c    ****     return USB_UNSUPPORT; /* in this application we don't have AlternateSetting*/
+ 20733              		.loc 1 174 0
+ 20734 000c 0220     		movs	r0, #2
+ 20735              	.LVL3:
+ 179:usb_prop.c    ****   }
+ 180:usb_prop.c    ****   return USB_SUCCESS;
+ 181:usb_prop.c    **** }
+ 20736              		.loc 1 181 0
+ 20737 000e 7047     		bx	lr
+ 20738              		.cfi_endproc
+ 20739              	.LFE36:
+ 20741              		.section	.text.USB_DEV_SetDeviceAddress,"ax",%progbits
+ 20742              		.align	1
+ 20743              		.global	USB_DEV_SetDeviceAddress
+ 20744              		.thumb
+ 20745              		.thumb_func
+ 20747              	USB_DEV_SetDeviceAddress:
+ 20748              	.LFB41:
+ 182:usb_prop.c    **** //---------------------------------------------------------------------------
+ 183:usb_prop.c    **** u8 *usb_dev_GetDeviceDescriptor(u16 Length)
+ 184:usb_prop.c    **** {
+ 185:usb_prop.c    ****   return Standard_GetDescriptorData(Length, &Device_Descriptor);
+ 186:usb_prop.c    **** }
+ 187:usb_prop.c    **** //---------------------------------------------------------------------------
+ 188:usb_prop.c    **** u8 *usb_dev_GetConfigDescriptor(u16 Length)
+ 189:usb_prop.c    **** {
+ 190:usb_prop.c    ****   return Standard_GetDescriptorData(Length, &Config_Descriptor);
+ 191:usb_prop.c    **** }
+ 192:usb_prop.c    **** //---------------------------------------------------------------------------
+ 193:usb_prop.c    **** u8 *usb_dev_GetStringDescriptor(u16 Length)
+ 194:usb_prop.c    **** {
+ 195:usb_prop.c    ****   u8 wValue0 = pInformation->USBwValue0;
+ 196:usb_prop.c    ****   if (wValue0 > 4) // число строковых дескрипторов в String_Descriptor[]
+ 197:usb_prop.c    ****   {
+ 198:usb_prop.c    ****     return NULL;
+ 199:usb_prop.c    ****   }
+ 200:usb_prop.c    ****   else
+ 201:usb_prop.c    ****   {
+ 202:usb_prop.c    ****     return Standard_GetDescriptorData(Length, &String_Descriptor[wValue0]);
+ 203:usb_prop.c    ****   }
+ 204:usb_prop.c    **** }
+ 205:usb_prop.c    **** 
+ 206:usb_prop.c    **** /*******************************************************************************
+ 207:usb_prop.c    **** * Function Name  : Virtual_Com_Port_SetConfiguration.
+ 208:usb_prop.c    **** * Description    : Udpade the device state to configured.
+ 209:usb_prop.c    **** * Input          : None.
+ 210:usb_prop.c    **** * Output         : None.
+ 211:usb_prop.c    **** * Return         : None.
+ 212:usb_prop.c    **** *******************************************************************************/
+ 213:usb_prop.c    **** void usb_dev_SetConfiguration(void)
+ 214:usb_prop.c    **** {
+ 215:usb_prop.c    ****   DEVICE_INFO *pInfo = &Device_Info;
+ 216:usb_prop.c    **** 
+ 217:usb_prop.c    ****   if (pInfo->Current_Configuration != 0)
+ 218:usb_prop.c    ****   {
+ 219:usb_prop.c    ****     /* Device configured */
+ 220:usb_prop.c    ****     bDeviceState = CONFIGURED;
+ 221:usb_prop.c    ****   }
+ 222:usb_prop.c    **** }
+ 223:usb_prop.c    **** 
+ 224:usb_prop.c    **** /*******************************************************************************
+ 225:usb_prop.c    **** * Function Name  : Virtual_Com_Port_SetConfiguration.
+ 226:usb_prop.c    **** * Description    : Udpade the device state to addressed.
+ 227:usb_prop.c    **** * Input          : None.
+ 228:usb_prop.c    **** * Output         : None.
+ 229:usb_prop.c    **** * Return         : None.
+ 230:usb_prop.c    **** *******************************************************************************/
+ 231:usb_prop.c    **** void USB_DEV_SetDeviceAddress (void)
+ 232:usb_prop.c    **** {
+ 20749              		.loc 1 232 0
+ 20750              		.cfi_startproc
+ 20751              		@ args = 0, pretend = 0, frame = 0
+ 20752              		@ frame_needed = 0, uses_anonymous_args = 0
+ 20753              		@ link register save eliminated.
+ 233:usb_prop.c    ****   bDeviceState = ADDRESSED;
+ 20754              		.loc 1 233 0
+ 20755 0000 014B     		ldr	r3, .L8
+ 20756 0002 0422     		movs	r2, #4
+ 20757 0004 1A60     		str	r2, [r3, #0]
+ 234:usb_prop.c    **** }
+ 20758              		.loc 1 234 0
+ 20759 0006 7047     		bx	lr
+ 20760              	.L9:
+ 20761              		.align	2
+ 20762              	.L8:
+ 20763 0008 00000000 		.word	bDeviceState
+ 20764              		.cfi_endproc
+ 20765              	.LFE41:
+ 20767              		.section	.text.USB_DEV_ClearFeature,"ax",%progbits
+ 20768              		.align	1
+ 20769              		.global	USB_DEV_ClearFeature
+ 20770              		.thumb
+ 20771              		.thumb_func
+ 20773              	USB_DEV_ClearFeature:
+ 20774              	.LFB43:
+ 235:usb_prop.c    **** 
+ 236:usb_prop.c    **** /*******************************************************************************
+ 237:usb_prop.c    **** * Function Name  : Mass_Storage_SetConfiguration
+ 238:usb_prop.c    **** * Description    : Handle the SetConfiguration request.
+ 239:usb_prop.c    **** * Input          : None.
+ 240:usb_prop.c    **** * Output         : None.
+ 241:usb_prop.c    **** * Return         : None. */
+ 242:usb_prop.c    **** void USB_DEV_SetConfiguration(void)
+ 243:usb_prop.c    **** {
+ 244:usb_prop.c    ****   if (pInformation->Current_Configuration != 0)
+ 245:usb_prop.c    ****   {
+ 246:usb_prop.c    ****     /* Device configured */
+ 247:usb_prop.c    ****     bDeviceState = CONFIGURED;
+ 248:usb_prop.c    **** 
+ 249:usb_prop.c    ****     ClearDTOG_TX(ENDP1);
+ 250:usb_prop.c    ****     ClearDTOG_RX(ENDP2);
+ 251:usb_prop.c    ****   }
+ 252:usb_prop.c    **** }
+ 253:usb_prop.c    **** 
+ 254:usb_prop.c    **** /*******************************************************************************
+ 255:usb_prop.c    **** * Function Name  : Mass_Storage_ClearFeature
+ 256:usb_prop.c    **** * Description    : Handle the ClearFeature request.
+ 257:usb_prop.c    **** * Input          : None.
+ 258:usb_prop.c    **** * Output         : None.
+ 259:usb_prop.c    **** * Return         : None.
+ 260:usb_prop.c    **** *******************************************************************************/
+ 261:usb_prop.c    **** void USB_DEV_ClearFeature(void)
+ 262:usb_prop.c    **** {
+ 20775              		.loc 1 262 0
+ 20776              		.cfi_startproc
+ 20777              		@ args = 0, pretend = 0, frame = 0
+ 20778              		@ frame_needed = 0, uses_anonymous_args = 0
+ 20779              		@ link register save eliminated.
+ 263:usb_prop.c    ****   NOP();
+ 20780              		.loc 1 263 0
+ 20781              	@ 263 "usb_prop.c" 1
+ 20782 0000 00BF     		nop
+ 20783              	@ 0 "" 2
+ 264:usb_prop.c    **** }
+ 20784              		.loc 1 264 0
+ 20785              		.thumb
+ 20786 0002 7047     		bx	lr
+ 20787              		.cfi_endproc
+ 20788              	.LFE43:
+ 20790              		.section	.text.usb_dev_GetStringDescriptor,"ax",%progbits
+ 20791              		.align	1
+ 20792              		.global	usb_dev_GetStringDescriptor
+ 20793              		.thumb
+ 20794              		.thumb_func
+ 20796              	usb_dev_GetStringDescriptor:
+ 20797              	.LFB39:
+ 194:usb_prop.c    **** {
+ 20798              		.loc 1 194 0
+ 20799              		.cfi_startproc
+ 20800              		@ args = 0, pretend = 0, frame = 0
+ 20801              		@ frame_needed = 0, uses_anonymous_args = 0
+ 20802              	.LVL4:
+ 20803 0000 08B5     		push	{r3, lr}
+ 20804              	.LCFI0:
+ 20805              		.cfi_def_cfa_offset 8
+ 20806              		.cfi_offset 14, -4
+ 20807              		.cfi_offset 3, -8
+ 195:usb_prop.c    ****   u8 wValue0 = pInformation->USBwValue0;
+ 20808              		.loc 1 195 0
+ 20809 0002 0649     		ldr	r1, .L14
+ 20810 0004 0B68     		ldr	r3, [r1, #0]
+ 20811 0006 DB78     		ldrb	r3, [r3, #3]	@ zero_extendqisi2
+ 20812              	.LVL5:
+ 196:usb_prop.c    ****   if (wValue0 > 4) // число строковых дескрипторов в String_Descriptor[]
+ 20813              		.loc 1 196 0
+ 20814 0008 042B     		cmp	r3, #4
+ 20815 000a 05D8     		bhi	.L13
+ 202:usb_prop.c    ****     return Standard_GetDescriptorData(Length, &String_Descriptor[wValue0]);
+ 20816              		.loc 1 202 0
+ 20817 000c 0449     		ldr	r1, .L14+4
+ 20818 000e 054A     		ldr	r2, .L14+8
+ 20819 0010 01EBC301 		add	r1, r1, r3, lsl #3
+ 20820 0014 9047     		blx	r2
+ 20821              	.LVL6:
+ 20822 0016 08BD     		pop	{r3, pc}
+ 20823              	.LVL7:
+ 20824              	.L13:
+ 198:usb_prop.c    ****     return NULL;
+ 20825              		.loc 1 198 0
+ 20826 0018 0020     		movs	r0, #0
+ 20827              	.LVL8:
+ 204:usb_prop.c    **** }
+ 20828              		.loc 1 204 0
+ 20829 001a 08BD     		pop	{r3, pc}
+ 20830              	.L15:
+ 20831              		.align	2
+ 20832              	.L14:
+ 20833 001c 00000000 		.word	pInformation
+ 20834 0020 00000000 		.word	.LANCHOR0
+ 20835 0024 00000000 		.word	Standard_GetDescriptorData
+ 20836              		.cfi_endproc
+ 20837              	.LFE39:
+ 20839              		.section	.text.usb_dev_GetConfigDescriptor,"ax",%progbits
+ 20840              		.align	1
+ 20841              		.global	usb_dev_GetConfigDescriptor
+ 20842              		.thumb
+ 20843              		.thumb_func
+ 20845              	usb_dev_GetConfigDescriptor:
+ 20846              	.LFB38:
+ 189:usb_prop.c    **** {
+ 20847              		.loc 1 189 0
+ 20848              		.cfi_startproc
+ 20849              		@ args = 0, pretend = 0, frame = 0
+ 20850              		@ frame_needed = 0, uses_anonymous_args = 0
+ 20851              	.LVL9:
+ 20852 0000 08B5     		push	{r3, lr}
+ 20853              	.LCFI1:
+ 20854              		.cfi_def_cfa_offset 8
+ 20855              		.cfi_offset 14, -4
+ 20856              		.cfi_offset 3, -8
+ 190:usb_prop.c    ****   return Standard_GetDescriptorData(Length, &Config_Descriptor);
+ 20857              		.loc 1 190 0
+ 20858 0002 0249     		ldr	r1, .L17
+ 20859 0004 024B     		ldr	r3, .L17+4
+ 20860 0006 9847     		blx	r3
+ 20861              	.LVL10:
+ 191:usb_prop.c    **** }
+ 20862              		.loc 1 191 0
+ 20863 0008 08BD     		pop	{r3, pc}
+ 20864              	.L18:
+ 20865 000a 00BF     		.align	2
+ 20866              	.L17:
+ 20867 000c 00000000 		.word	.LANCHOR1
+ 20868 0010 00000000 		.word	Standard_GetDescriptorData
+ 20869              		.cfi_endproc
+ 20870              	.LFE38:
+ 20872              		.section	.text.usb_dev_GetDeviceDescriptor,"ax",%progbits
+ 20873              		.align	1
+ 20874              		.global	usb_dev_GetDeviceDescriptor
+ 20875              		.thumb
+ 20876              		.thumb_func
+ 20878              	usb_dev_GetDeviceDescriptor:
+ 20879              	.LFB37:
+ 184:usb_prop.c    **** {
+ 20880              		.loc 1 184 0
+ 20881              		.cfi_startproc
+ 20882              		@ args = 0, pretend = 0, frame = 0
+ 20883              		@ frame_needed = 0, uses_anonymous_args = 0
+ 20884              	.LVL11:
+ 20885 0000 08B5     		push	{r3, lr}
+ 20886              	.LCFI2:
+ 20887              		.cfi_def_cfa_offset 8
+ 20888              		.cfi_offset 14, -4
+ 20889              		.cfi_offset 3, -8
+ 185:usb_prop.c    ****   return Standard_GetDescriptorData(Length, &Device_Descriptor);
+ 20890              		.loc 1 185 0
+ 20891 0002 0249     		ldr	r1, .L20
+ 20892 0004 024B     		ldr	r3, .L20+4
+ 20893 0006 9847     		blx	r3
+ 20894              	.LVL12:
+ 186:usb_prop.c    **** }
+ 20895              		.loc 1 186 0
+ 20896 0008 08BD     		pop	{r3, pc}
+ 20897              	.L21:
+ 20898 000a 00BF     		.align	2
+ 20899              	.L20:
+ 20900 000c 00000000 		.word	.LANCHOR2
+ 20901 0010 00000000 		.word	Standard_GetDescriptorData
+ 20902              		.cfi_endproc
+ 20903              	.LFE37:
+ 20905              		.section	.text.usb_dev_Reset,"ax",%progbits
+ 20906              		.align	1
+ 20907              		.global	usb_dev_Reset
+ 20908              		.thumb
+ 20909              		.thumb_func
+ 20911              	usb_dev_Reset:
+ 20912              	.LFB31:
+  89:usb_prop.c    **** {
+ 20913              		.loc 1 89 0
+ 20914              		.cfi_startproc
+ 20915              		@ args = 0, pretend = 0, frame = 0
+ 20916              		@ frame_needed = 0, uses_anonymous_args = 0
+ 20917 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, sl, lr}
+ 20918              	.LCFI3:
+ 20919              		.cfi_def_cfa_offset 32
+ 20920              		.cfi_offset 14, -4
+ 20921              		.cfi_offset 10, -8
+ 20922              		.cfi_offset 9, -12
+ 20923              		.cfi_offset 8, -16
+ 20924              		.cfi_offset 7, -20
+ 20925              		.cfi_offset 6, -24
+ 20926              		.cfi_offset 5, -28
+ 20927              		.cfi_offset 4, -32
+  91:usb_prop.c    ****   pInformation->Current_Configuration = 0;
+ 20928              		.loc 1 91 0
+ 20929 0004 2B4C     		ldr	r4, .L23
+  94:usb_prop.c    ****   pInformation->Current_Feature = usb_dev_ConfigDescriptor[7];
+ 20930              		.loc 1 94 0
+ 20931 0006 2C4F     		ldr	r7, .L23+4
+  91:usb_prop.c    ****   pInformation->Current_Configuration = 0;
+ 20932              		.loc 1 91 0
+ 20933 0008 2068     		ldr	r0, [r4, #0]
+  94:usb_prop.c    ****   pInformation->Current_Feature = usb_dev_ConfigDescriptor[7];
+ 20934              		.loc 1 94 0
+ 20935 000a FE79     		ldrb	r6, [r7, #7]	@ zero_extendqisi2
+  91:usb_prop.c    ****   pInformation->Current_Configuration = 0;
+ 20936              		.loc 1 91 0
+ 20937 000c 0024     		movs	r4, #0
+  94:usb_prop.c    ****   pInformation->Current_Feature = usb_dev_ConfigDescriptor[7];
+ 20938              		.loc 1 94 0
+ 20939 000e 4672     		strb	r6, [r0, #9]
+  91:usb_prop.c    ****   pInformation->Current_Configuration = 0;
+ 20940              		.loc 1 91 0
+ 20941 0010 8472     		strb	r4, [r0, #10]
+  97:usb_prop.c    ****   pInformation->Current_Interface = 0;
+ 20942              		.loc 1 97 0
+ 20943 0012 C472     		strb	r4, [r0, #11]
+  99:usb_prop.c    ****   SetBTABLE(BTABLE_ADDRESS);
+ 20944              		.loc 1 99 0
+ 20945 0014 294D     		ldr	r5, .L23+8
+ 20946 0016 2046     		mov	r0, r4
+ 20947 0018 A847     		blx	r5
+ 102:usb_prop.c    ****   SetEPType(ENDP0, EP_CONTROL);
+ 20948              		.loc 1 102 0
+ 20949 001a 294F     		ldr	r7, .L23+12
+ 20950 001c 2046     		mov	r0, r4
+ 20951 001e 4FF40071 		mov	r1, #512
+ 20952 0022 B847     		blx	r7
+ 103:usb_prop.c    ****   SetEPTxStatus(ENDP0, EP_TX_NAK);
+ 20953              		.loc 1 103 0
+ 20954 0024 274D     		ldr	r5, .L23+16
+ 20955 0026 2021     		movs	r1, #32
+ 105:usb_prop.c    ****   SetEPRxCount(ENDP0, Device_Property.MaxPacketSize);
+ 20956              		.loc 1 105 0
+ 20957 0028 274E     		ldr	r6, .L23+20
+ 103:usb_prop.c    ****   SetEPTxStatus(ENDP0, EP_TX_NAK);
+ 20958              		.loc 1 103 0
+ 20959 002a 2046     		mov	r0, r4
+ 20960 002c A847     		blx	r5
+ 104:usb_prop.c    ****   SetEPRxAddr(ENDP0, ENDP0_RXADDR);
+ 20961              		.loc 1 104 0
+ 20962 002e DFF8B0A0 		ldr	sl, .L23+44
+ 20963 0032 4021     		movs	r1, #64
+ 20964 0034 2046     		mov	r0, r4
+ 20965 0036 D047     		blx	sl
+ 105:usb_prop.c    ****   SetEPRxCount(ENDP0, Device_Property.MaxPacketSize);
+ 20966              		.loc 1 105 0
+ 20967 0038 DFF8A890 		ldr	r9, .L23+48
+ 20968 003c 96F82C10 		ldrb	r1, [r6, #44]	@ zero_extendqisi2
+ 20969 0040 2046     		mov	r0, r4
+ 20970 0042 C847     		blx	r9
+ 106:usb_prop.c    ****   SetEPRxValid(ENDP0);
+ 20971              		.loc 1 106 0
+ 20972 0044 2046     		mov	r0, r4
+ 20973 0046 2149     		ldr	r1, .L23+24
+ 20974 0048 8847     		blx	r1
+ 107:usb_prop.c    ****   SetEPTxAddr(ENDP0, ENDP0_TXADDR);
+ 20975              		.loc 1 107 0
+ 20976 004a DFF89C80 		ldr	r8, .L23+52
+ 20977 004e 8021     		movs	r1, #128
+ 20978 0050 2046     		mov	r0, r4
+ 20979 0052 C047     		blx	r8
+ 108:usb_prop.c    ****   Clear_Status_Out(ENDP0);
+ 20980              		.loc 1 108 0
+ 20981 0054 1E4B     		ldr	r3, .L23+28
+ 20982 0056 2046     		mov	r0, r4
+ 20983 0058 9847     		blx	r3
+ 112:usb_prop.c    ****   SetEPType(ENDP1, EP_BULK);
+ 20984              		.loc 1 112 0
+ 20985 005a 0120     		movs	r0, #1
+ 20986 005c 2146     		mov	r1, r4
+ 20987 005e B847     		blx	r7
+ 113:usb_prop.c    ****   SetEPTxAddr(ENDP1, ENDP1_TXADDR);
+ 20988              		.loc 1 113 0
+ 20989 0060 0120     		movs	r0, #1
+ 20990 0062 C021     		movs	r1, #192
+ 20991 0064 C047     		blx	r8
+ 114:usb_prop.c    ****   SetEPTxCount(ENDP1, Device_Property.MaxPacketSize);
+ 20992              		.loc 1 114 0
+ 20993 0066 1B4A     		ldr	r2, .L23+32
+ 20994 0068 0120     		movs	r0, #1
+ 20995 006a 96F82C10 		ldrb	r1, [r6, #44]	@ zero_extendqisi2
+ 20996 006e 9047     		blx	r2
+ 115:usb_prop.c    ****   SetEPTxStatus(ENDP1, EP_TX_NAK);
+ 20997              		.loc 1 115 0
+ 20998 0070 0120     		movs	r0, #1
+ 20999 0072 2021     		movs	r1, #32
+ 21000 0074 A847     		blx	r5
+ 116:usb_prop.c    ****   SetEPRxStatus(ENDP1, EP_RX_DIS);
+ 21001              		.loc 1 116 0
+ 21002 0076 DFF87480 		ldr	r8, .L23+56
+ 21003 007a 0120     		movs	r0, #1
+ 21004 007c 2146     		mov	r1, r4
+ 21005 007e C047     		blx	r8
+ 119:usb_prop.c    ****   SetEPType(ENDP2, EP_BULK);
+ 21006              		.loc 1 119 0
+ 21007 0080 0220     		movs	r0, #2
+ 21008 0082 2146     		mov	r1, r4
+ 21009 0084 B847     		blx	r7
+ 120:usb_prop.c    ****   SetEPRxAddr(ENDP2, ENDP2_RXADDR);
+ 21010              		.loc 1 120 0
+ 21011 0086 0220     		movs	r0, #2
+ 21012 0088 4FF48071 		mov	r1, #256
+ 21013 008c D047     		blx	sl
+ 121:usb_prop.c    ****   SetEPRxCount(ENDP2, Device_Property.MaxPacketSize);
+ 21014              		.loc 1 121 0
+ 21015 008e 0220     		movs	r0, #2
+ 21016 0090 96F82C10 		ldrb	r1, [r6, #44]	@ zero_extendqisi2
+ 21017 0094 C847     		blx	r9
+ 122:usb_prop.c    ****   SetEPRxStatus(ENDP2, EP_RX_VALID);
+ 21018              		.loc 1 122 0
+ 21019 0096 0220     		movs	r0, #2
+ 21020 0098 4FF44051 		mov	r1, #12288
+ 21021 009c C047     		blx	r8
+ 123:usb_prop.c    ****   SetEPTxStatus(ENDP2, EP_TX_DIS);
+ 21022              		.loc 1 123 0
+ 21023 009e 0220     		movs	r0, #2
+ 21024 00a0 2146     		mov	r1, r4
+ 21025 00a2 A847     		blx	r5
+ 129:usb_prop.c    ****   SetDeviceAddress(0);
+ 21026              		.loc 1 129 0
+ 21027 00a4 2046     		mov	r0, r4
+ 21028 00a6 0C49     		ldr	r1, .L23+36
+ 21029 00a8 8847     		blx	r1
+ 131:usb_prop.c    ****   bDeviceState = ATTACHED;
+ 21030              		.loc 1 131 0
+ 21031 00aa 0C4B     		ldr	r3, .L23+40
+ 21032 00ac 0122     		movs	r2, #1
+ 21033 00ae 1A60     		str	r2, [r3, #0]
+ 132:usb_prop.c    **** }
+ 21034              		.loc 1 132 0
+ 21035 00b0 BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, sl, pc}
+ 21036              	.L24:
+ 21037              		.align	2
+ 21038              	.L23:
+ 21039 00b4 00000000 		.word	pInformation
+ 21040 00b8 00000000 		.word	usb_dev_ConfigDescriptor
+ 21041 00bc 00000000 		.word	SetBTABLE
+ 21042 00c0 00000000 		.word	SetEPType
+ 21043 00c4 00000000 		.word	SetEPTxStatus
+ 21044 00c8 00000000 		.word	.LANCHOR3
+ 21045 00cc 00000000 		.word	SetEPRxValid
+ 21046 00d0 00000000 		.word	Clear_Status_Out
+ 21047 00d4 00000000 		.word	SetEPTxCount
+ 21048 00d8 00000000 		.word	SetDeviceAddress
+ 21049 00dc 00000000 		.word	bDeviceState
+ 21050 00e0 00000000 		.word	SetEPRxAddr
+ 21051 00e4 00000000 		.word	SetEPRxCount
+ 21052 00e8 00000000 		.word	SetEPTxAddr
+ 21053 00ec 00000000 		.word	SetEPRxStatus
+ 21054              		.cfi_endproc
+ 21055              	.LFE31:
+ 21057              		.section	.text.usb_dev_Init,"ax",%progbits
+ 21058              		.align	1
+ 21059              		.global	usb_dev_Init
+ 21060              		.thumb
+ 21061              		.thumb_func
+ 21063              	usb_dev_Init:
+ 21064              	.LFB30:
+  64:usb_prop.c    **** {
+ 21065              		.loc 1 64 0
+ 21066              		.cfi_startproc
+ 21067              		@ args = 0, pretend = 0, frame = 0
+ 21068              		@ frame_needed = 0, uses_anonymous_args = 0
+ 21069 0000 10B5     		push	{r4, lr}
+ 21070              	.LCFI4:
+ 21071              		.cfi_def_cfa_offset 8
+ 21072              		.cfi_offset 14, -4
+ 21073              		.cfi_offset 4, -8
+  71:usb_prop.c    ****   pInformation->Current_Configuration = 0;
+ 21074              		.loc 1 71 0
+ 21075 0002 084C     		ldr	r4, .L26
+  74:usb_prop.c    ****    PowerOn();
+ 21076              		.loc 1 74 0
+ 21077 0004 084A     		ldr	r2, .L26+4
+  71:usb_prop.c    ****   pInformation->Current_Configuration = 0;
+ 21078              		.loc 1 71 0
+ 21079 0006 2068     		ldr	r0, [r4, #0]
+ 21080 0008 0024     		movs	r4, #0
+ 21081 000a 8472     		strb	r4, [r0, #10]
+  74:usb_prop.c    ****    PowerOn();
+ 21082              		.loc 1 74 0
+ 21083 000c 9047     		blx	r2
+  78:usb_prop.c    ****   _SetISTR(0);
+ 21084              		.loc 1 78 0
+ 21085 000e 074B     		ldr	r3, .L26+8
+  79:usb_prop.c    ****   wInterrupt_Mask = IMR_MSK;
+ 21086              		.loc 1 79 0
+ 21087 0010 0749     		ldr	r1, .L26+12
+  78:usb_prop.c    ****   _SetISTR(0);
+ 21088              		.loc 1 78 0
+ 21089 0012 1C60     		str	r4, [r3, #0]
+  81:usb_prop.c    ****   _SetCNTR(wInterrupt_Mask);
+ 21090              		.loc 1 81 0
+ 21091 0014 074A     		ldr	r2, .L26+16
+  85:usb_prop.c    ****   bDeviceState = UNCONNECTED;
+ 21092              		.loc 1 85 0
+ 21093 0016 084B     		ldr	r3, .L26+20
+  79:usb_prop.c    ****   wInterrupt_Mask = IMR_MSK;
+ 21094              		.loc 1 79 0
+ 21095 0018 4FF40440 		mov	r0, #33792
+ 21096 001c 0880     		strh	r0, [r1, #0]	@ movhi
+  81:usb_prop.c    ****   _SetCNTR(wInterrupt_Mask);
+ 21097              		.loc 1 81 0
+ 21098 001e 1060     		str	r0, [r2, #0]
+  85:usb_prop.c    ****   bDeviceState = UNCONNECTED;
+ 21099              		.loc 1 85 0
+ 21100 0020 1C60     		str	r4, [r3, #0]
+  86:usb_prop.c    **** }
+ 21101              		.loc 1 86 0
+ 21102 0022 10BD     		pop	{r4, pc}
+ 21103              	.L27:
+ 21104              		.align	2
+ 21105              	.L26:
+ 21106 0024 00000000 		.word	pInformation
+ 21107 0028 00000000 		.word	PowerOn
+ 21108 002c 445C0040 		.word	1073765444
+ 21109 0030 00000000 		.word	wInterrupt_Mask
+ 21110 0034 405C0040 		.word	1073765440
+ 21111 0038 00000000 		.word	bDeviceState
+ 21112              		.cfi_endproc
+ 21113              	.LFE30:
+ 21115              		.section	.text.USB_DEV_SetConfiguration,"ax",%progbits
+ 21116              		.align	1
+ 21117              		.global	USB_DEV_SetConfiguration
+ 21118              		.thumb
+ 21119              		.thumb_func
+ 21121              	USB_DEV_SetConfiguration:
+ 21122              	.LFB42:
+ 243:usb_prop.c    **** {
+ 21123              		.loc 1 243 0
+ 21124              		.cfi_startproc
+ 21125              		@ args = 0, pretend = 0, frame = 0
+ 21126              		@ frame_needed = 0, uses_anonymous_args = 0
+ 21127 0000 08B5     		push	{r3, lr}
+ 21128              	.LCFI5:
+ 21129              		.cfi_def_cfa_offset 8
+ 21130              		.cfi_offset 14, -4
+ 21131              		.cfi_offset 3, -8
+ 244:usb_prop.c    ****   if (pInformation->Current_Configuration != 0)
+ 21132              		.loc 1 244 0
+ 21133 0002 0749     		ldr	r1, .L30
+ 21134 0004 0868     		ldr	r0, [r1, #0]
+ 21135 0006 837A     		ldrb	r3, [r0, #10]	@ zero_extendqisi2
+ 21136 0008 43B1     		cbz	r3, .L28
+ 21137              	.LBB4:
+ 21138              	.LBB5:
+ 247:usb_prop.c    ****     bDeviceState = CONFIGURED;
+ 21139              		.loc 1 247 0
+ 21140 000a 0649     		ldr	r1, .L30+4
+ 21141 000c 0520     		movs	r0, #5
+ 21142 000e 0860     		str	r0, [r1, #0]
+ 249:usb_prop.c    ****     ClearDTOG_TX(ENDP1);
+ 21143              		.loc 1 249 0
+ 21144 0010 054B     		ldr	r3, .L30+8
+ 21145 0012 0120     		movs	r0, #1
+ 21146 0014 9847     		blx	r3
+ 250:usb_prop.c    ****     ClearDTOG_RX(ENDP2);
+ 21147              		.loc 1 250 0
+ 21148 0016 0220     		movs	r0, #2
+ 21149 0018 044A     		ldr	r2, .L30+12
+ 21150 001a 9047     		blx	r2
+ 21151              	.L28:
+ 21152 001c 08BD     		pop	{r3, pc}
+ 21153              	.L31:
+ 21154 001e 00BF     		.align	2
+ 21155              	.L30:
+ 21156 0020 00000000 		.word	pInformation
+ 21157 0024 00000000 		.word	bDeviceState
+ 21158 0028 00000000 		.word	ClearDTOG_TX
+ 21159 002c 00000000 		.word	ClearDTOG_RX
+ 21160              	.LBE5:
+ 21161              	.LBE4:
+ 21162              		.cfi_endproc
+ 21163              	.LFE42:
+ 21165              		.section	.text.usb_dev_NoData_Setup,"ax",%progbits
+ 21166              		.align	1
+ 21167              		.global	usb_dev_NoData_Setup
+ 21168              		.thumb
+ 21169              		.thumb_func
+ 21171              	usb_dev_NoData_Setup:
+ 21172              	.LFB35:
+ 158:usb_prop.c    **** {
+ 21173              		.loc 1 158 0
+ 21174              		.cfi_startproc
+ 21175              		@ args = 0, pretend = 0, frame = 0
+ 21176              		@ frame_needed = 0, uses_anonymous_args = 0
+ 21177              	.LVL13:
+ 21178 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 21179              	.LCFI6:
+ 21180              		.cfi_def_cfa_offset 24
+ 21181              		.cfi_offset 14, -4
+ 21182              		.cfi_offset 7, -8
+ 21183              		.cfi_offset 6, -12
+ 21184              		.cfi_offset 5, -16
+ 21185              		.cfi_offset 4, -20
+ 21186              		.cfi_offset 3, -24
+ 159:usb_prop.c    ****   if ( Type_Recipient != VENDOR_REQUEST ) return USB_UNSUPPORT;
+ 21187              		.loc 1 159 0
+ 21188 0002 0E4F     		ldr	r7, .L36
+ 158:usb_prop.c    **** {
+ 21189              		.loc 1 158 0
+ 21190 0004 0546     		mov	r5, r0
+ 159:usb_prop.c    ****   if ( Type_Recipient != VENDOR_REQUEST ) return USB_UNSUPPORT;
+ 21191              		.loc 1 159 0
+ 21192 0006 3C68     		ldr	r4, [r7, #0]
+ 21193 0008 2078     		ldrb	r0, [r4, #0]	@ zero_extendqisi2
+ 21194              	.LVL14:
+ 21195 000a 00F07F03 		and	r3, r0, #127
+ 21196 000e 402B     		cmp	r3, #64
+ 21197 0010 10D1     		bne	.L34
+ 160:usb_prop.c    ****   if ( RequestNo >= vridRequestCount ) return USB_UNSUPPORT;
+ 21198              		.loc 1 160 0
+ 21199 0012 052D     		cmp	r5, #5
+ 21200 0014 10D8     		bhi	.L35
+ 21201              	.LVL15:
+ 21202              	.LBB8:
+ 21203              	.LBB9:
+ 163:usb_prop.c    ****   pInformation->USBwIndexs.w = ByteSwap(pInformation->USBwIndexs.w);
+ 21204              		.loc 1 163 0
+ 21205 0016 A088     		ldrh	r0, [r4, #4]
+ 21206 0018 094E     		ldr	r6, .L36+4
+ 21207 001a B047     		blx	r6
+ 21208 001c A080     		strh	r0, [r4, #4]	@ movhi
+ 164:usb_prop.c    ****   pInformation->USBwValues.w = ByteSwap(pInformation->USBwValues.w);
+ 21209              		.loc 1 164 0
+ 21210 001e 3C68     		ldr	r4, [r7, #0]
+ 21211 0020 6088     		ldrh	r0, [r4, #2]
+ 21212 0022 B047     		blx	r6
+ 166:usb_prop.c    ****   CopyRoutineTable[RequestNo](0);
+ 21213              		.loc 1 166 0
+ 21214 0024 074A     		ldr	r2, .L36+8
+ 164:usb_prop.c    ****   pInformation->USBwValues.w = ByteSwap(pInformation->USBwValues.w);
+ 21215              		.loc 1 164 0
+ 21216 0026 6080     		strh	r0, [r4, #2]	@ movhi
+ 166:usb_prop.c    ****   CopyRoutineTable[RequestNo](0);
+ 21217              		.loc 1 166 0
+ 21218 0028 52F82510 		ldr	r1, [r2, r5, lsl #2]
+ 21219 002c 0020     		movs	r0, #0
+ 21220 002e 8847     		blx	r1
+ 21221 0030 0020     		movs	r0, #0
+ 21222 0032 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 21223              	.LVL16:
+ 21224              	.L34:
+ 21225              	.LBE9:
+ 21226              	.LBE8:
+ 159:usb_prop.c    ****   if ( Type_Recipient != VENDOR_REQUEST ) return USB_UNSUPPORT;
+ 21227              		.loc 1 159 0
+ 21228 0034 0220     		movs	r0, #2
+ 21229 0036 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 21230              	.L35:
+ 160:usb_prop.c    ****   if ( RequestNo >= vridRequestCount ) return USB_UNSUPPORT;
+ 21231              		.loc 1 160 0
+ 21232 0038 0220     		movs	r0, #2
+ 168:usb_prop.c    **** }
+ 21233              		.loc 1 168 0
+ 21234 003a F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 21235              	.L37:
+ 21236              		.align	2
+ 21237              	.L36:
+ 21238 003c 00000000 		.word	pInformation
+ 21239 0040 00000000 		.word	ByteSwap
+ 21240 0044 00000000 		.word	CopyRoutineTable
+ 21241              		.cfi_endproc
+ 21242              	.LFE35:
+ 21244              		.section	.text.usb_dev_Data_Setup,"ax",%progbits
+ 21245              		.align	1
+ 21246              		.global	usb_dev_Data_Setup
+ 21247              		.thumb
+ 21248              		.thumb_func
+ 21250              	usb_dev_Data_Setup:
+ 21251              	.LFB34:
+ 145:usb_prop.c    **** {
+ 21252              		.loc 1 145 0
+ 21253              		.cfi_startproc
+ 21254              		@ args = 0, pretend = 0, frame = 0
+ 21255              		@ frame_needed = 0, uses_anonymous_args = 0
+ 21256              	.LVL17:
+ 21257 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 21258              	.LCFI7:
+ 21259              		.cfi_def_cfa_offset 24
+ 21260              		.cfi_offset 14, -4
+ 21261              		.cfi_offset 8, -8
+ 21262              		.cfi_offset 7, -12
+ 21263              		.cfi_offset 6, -16
+ 21264              		.cfi_offset 5, -20
+ 21265              		.cfi_offset 4, -24
+ 146:usb_prop.c    ****   if ( Type_Recipient != VENDOR_REQUEST ) return USB_UNSUPPORT;
+ 21266              		.loc 1 146 0
+ 21267 0004 DFF85480 		ldr	r8, .L42+8
+ 145:usb_prop.c    **** {
+ 21268              		.loc 1 145 0
+ 21269 0008 0546     		mov	r5, r0
+ 146:usb_prop.c    ****   if ( Type_Recipient != VENDOR_REQUEST ) return USB_UNSUPPORT;
+ 21270              		.loc 1 146 0
+ 21271 000a D8F80040 		ldr	r4, [r8, #0]
+ 21272 000e 2078     		ldrb	r0, [r4, #0]	@ zero_extendqisi2
+ 21273              	.LVL18:
+ 21274 0010 00F07F03 		and	r3, r0, #127
+ 21275 0014 402B     		cmp	r3, #64
+ 21276 0016 17D1     		bne	.L40
+ 147:usb_prop.c    ****   if ( RequestNo >= vridRequestCount ) return USB_UNSUPPORT;
+ 21277              		.loc 1 147 0
+ 21278 0018 052D     		cmp	r5, #5
+ 21279 001a 18D8     		bhi	.L41
+ 21280              	.LVL19:
+ 21281              	.LBB12:
+ 21282              	.LBB13:
+ 148:usb_prop.c    ****   pInformation->Ctrl_Info.CopyData = CopyRoutineTable[RequestNo] ;
+ 21283              		.loc 1 148 0
+ 21284 001c 0D4E     		ldr	r6, .L42
+ 149:usb_prop.c    ****   pInformation->Ctrl_Info.Usb_wOffset = 0;
+ 21285              		.loc 1 149 0
+ 21286 001e 0022     		movs	r2, #0
+ 148:usb_prop.c    ****   pInformation->Ctrl_Info.CopyData = CopyRoutineTable[RequestNo] ;
+ 21287              		.loc 1 148 0
+ 21288 0020 56F82570 		ldr	r7, [r6, r5, lsl #2]
+ 151:usb_prop.c    ****   pInformation->USBwIndexs.w = ByteSwap(pInformation->USBwIndexs.w);
+ 21289              		.loc 1 151 0
+ 21290 0024 A088     		ldrh	r0, [r4, #4]
+ 149:usb_prop.c    ****   pInformation->Ctrl_Info.Usb_wOffset = 0;
+ 21291              		.loc 1 149 0
+ 21292 0026 6282     		strh	r2, [r4, #18]	@ movhi
+ 148:usb_prop.c    ****   pInformation->Ctrl_Info.CopyData = CopyRoutineTable[RequestNo] ;
+ 21293              		.loc 1 148 0
+ 21294 0028 A761     		str	r7, [r4, #24]
+ 151:usb_prop.c    ****   pInformation->USBwIndexs.w = ByteSwap(pInformation->USBwIndexs.w);
+ 21295              		.loc 1 151 0
+ 21296 002a 0B4F     		ldr	r7, .L42+4
+ 21297 002c B847     		blx	r7
+ 21298 002e A080     		strh	r0, [r4, #4]	@ movhi
+ 152:usb_prop.c    ****   pInformation->USBwValues.w = ByteSwap(pInformation->USBwValues.w);
+ 21299              		.loc 1 152 0
+ 21300 0030 D8F80040 		ldr	r4, [r8, #0]
+ 21301 0034 6088     		ldrh	r0, [r4, #2]
+ 21302 0036 B847     		blx	r7
+ 21303 0038 6080     		strh	r0, [r4, #2]	@ movhi
+ 153:usb_prop.c    ****   CopyRoutineTable[RequestNo](0);
+ 21304              		.loc 1 153 0
+ 21305 003a 56F82510 		ldr	r1, [r6, r5, lsl #2]
+ 21306 003e 0020     		movs	r0, #0
+ 21307 0040 8847     		blx	r1
+ 21308 0042 0020     		movs	r0, #0
+ 21309 0044 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 21310              	.LVL20:
+ 21311              	.L40:
+ 21312              	.LBE13:
+ 21313              	.LBE12:
+ 146:usb_prop.c    ****   if ( Type_Recipient != VENDOR_REQUEST ) return USB_UNSUPPORT;
+ 21314              		.loc 1 146 0
+ 21315 0048 0220     		movs	r0, #2
+ 21316 004a BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 21317              	.L41:
+ 147:usb_prop.c    ****   if ( RequestNo >= vridRequestCount ) return USB_UNSUPPORT;
+ 21318              		.loc 1 147 0
+ 21319 004e 0220     		movs	r0, #2
+ 155:usb_prop.c    **** }
+ 21320              		.loc 1 155 0
+ 21321 0050 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 21322              	.L43:
+ 21323              		.align	2
+ 21324              	.L42:
+ 21325 0054 00000000 		.word	CopyRoutineTable
+ 21326 0058 00000000 		.word	ByteSwap
+ 21327 005c 00000000 		.word	pInformation
+ 21328              		.cfi_endproc
+ 21329              	.LFE34:
+ 21331              		.section	.text.usb_dev_SetConfiguration,"ax",%progbits
+ 21332              		.align	1
+ 21333              		.global	usb_dev_SetConfiguration
+ 21334              		.thumb
+ 21335              		.thumb_func
+ 21337              	usb_dev_SetConfiguration:
+ 21338              	.LFB40:
+ 214:usb_prop.c    **** {
+ 21339              		.loc 1 214 0
+ 21340              		.cfi_startproc
+ 21341              		@ args = 0, pretend = 0, frame = 0
+ 21342              		@ frame_needed = 0, uses_anonymous_args = 0
+ 21343              		@ link register save eliminated.
+ 21344              	.LVL21:
+ 217:usb_prop.c    ****   if (pInfo->Current_Configuration != 0)
+ 21345              		.loc 1 217 0
+ 21346 0000 0348     		ldr	r0, .L46
+ 21347 0002 837A     		ldrb	r3, [r0, #10]	@ zero_extendqisi2
+ 21348 0004 13B1     		cbz	r3, .L44
+ 220:usb_prop.c    ****     bDeviceState = CONFIGURED;
+ 21349              		.loc 1 220 0
+ 21350 0006 0349     		ldr	r1, .L46+4
+ 21351 0008 0522     		movs	r2, #5
+ 21352 000a 0A60     		str	r2, [r1, #0]
+ 21353              	.L44:
+ 21354 000c 7047     		bx	lr
+ 21355              	.L47:
+ 21356 000e 00BF     		.align	2
+ 21357              	.L46:
+ 21358 0010 00000000 		.word	Device_Info
+ 21359 0014 00000000 		.word	bDeviceState
+ 21360              		.cfi_endproc
+ 21361              	.LFE40:
+ 21363              		.global	String_Descriptor
+ 21364              		.global	Config_Descriptor
+ 21365              		.global	Device_Descriptor
+ 21366              		.global	User_Standard_Requests
+ 21367              		.global	Device_Property
+ 21368              		.global	Device_Table
+ 21369              		.section	.data.Config_Descriptor,"aw",%progbits
+ 21370              		.align	2
+ 21371              		.set	.LANCHOR1,. + 0
+ 21374              	Config_Descriptor:
+ 21375 0000 00000000 		.word	usb_dev_ConfigDescriptor
+ 21376 0004 2000     		.short	32
+ 21377 0006 0000     		.space	2
+ 21378              		.section	.data.Device_Property,"aw",%progbits
+ 21379              		.align	2
+ 21380              		.set	.LANCHOR3,. + 0
+ 21383              	Device_Property:
+ 21384 0000 00000000 		.word	usb_dev_Init
+ 21385 0004 00000000 		.word	usb_dev_Reset
+ 21386 0008 00000000 		.word	usb_dev_Status_In
+ 21387 000c 00000000 		.word	usb_dev_Status_Out
+ 21388 0010 00000000 		.word	usb_dev_Data_Setup
+ 21389 0014 00000000 		.word	usb_dev_NoData_Setup
+ 21390 0018 00000000 		.word	usb_dev_Get_Interface_Setting
+ 21391 001c 00000000 		.word	usb_dev_GetDeviceDescriptor
+ 21392 0020 00000000 		.word	usb_dev_GetConfigDescriptor
+ 21393 0024 00000000 		.word	usb_dev_GetStringDescriptor
+ 21394 0028 00000000 		.word	0
+ 21395 002c 40       		.byte	64
+ 21396 002d 000000   		.space	3
+ 21397              		.section	.data.User_Standard_Requests,"aw",%progbits
+ 21398              		.align	2
+ 21401              	User_Standard_Requests:
+ 21402 0000 00000000 		.word	NOP_Process
+ 21403 0004 00000000 		.word	USB_DEV_SetConfiguration
+ 21404 0008 00000000 		.word	NOP_Process
+ 21405 000c 00000000 		.word	NOP_Process
+ 21406 0010 00000000 		.word	NOP_Process
+ 21407 0014 00000000 		.word	USB_DEV_ClearFeature
+ 21408 0018 00000000 		.word	NOP_Process
+ 21409 001c 00000000 		.word	NOP_Process
+ 21410 0020 00000000 		.word	USB_DEV_SetDeviceAddress
+ 21411              		.section	.data.Device_Descriptor,"aw",%progbits
+ 21412              		.align	2
+ 21413              		.set	.LANCHOR2,. + 0
+ 21416              	Device_Descriptor:
+ 21417 0000 00000000 		.word	usb_dev_DeviceDescriptor
+ 21418 0004 1200     		.short	18
+ 21419 0006 0000     		.space	2
+ 21420              		.section	.data.String_Descriptor,"aw",%progbits
+ 21421              		.align	2
+ 21422              		.set	.LANCHOR0,. + 0
+ 21425              	String_Descriptor:
+ 21426 0000 00000000 		.word	usb_dev_StringLangID
+ 21427 0004 0400     		.short	4
+ 21428 0006 0000     		.space	2
+ 21429 0008 00000000 		.word	usb_dev_StringVendor
+ 21430 000c 3200     		.short	50
+ 21431 000e 0000     		.space	2
+ 21432 0010 00000000 		.word	usb_dev_StringProduct
+ 21433 0014 3400     		.short	52
+ 21434 0016 0000     		.space	2
+ 21435 0018 00000000 		.word	usb_dev_StringSerial
+ 21436 001c 0A00     		.short	10
+ 21437 001e 0000     		.space	2
+ 21438 0020 00000000 		.word	usb_dev_StringInterface
+ 21439 0024 1400     		.short	20
+ 21440 0026 0000     		.space	2
+ 21441              		.section	.data.Device_Table,"aw",%progbits
+ 21444              	Device_Table:
+ 21445 0000 03       		.byte	3
+ 21446 0001 01       		.byte	1
+ 21447              		.text
+ 21448              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 usb_prop.c
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:20663  .text.usb_dev_Status_In:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:20668  .text.usb_dev_Status_In:00000000 usb_dev_Status_In
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:20686  .text.usb_dev_Status_Out:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:20691  .text.usb_dev_Status_Out:00000000 usb_dev_Status_Out
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:20709  .text.usb_dev_Get_Interface_Setting:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:20714  .text.usb_dev_Get_Interface_Setting:00000000 usb_dev_Get_Interface_Setting
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:20742  .text.USB_DEV_SetDeviceAddress:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:20747  .text.USB_DEV_SetDeviceAddress:00000000 USB_DEV_SetDeviceAddress
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:20763  .text.USB_DEV_SetDeviceAddress:00000008 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:20768  .text.USB_DEV_ClearFeature:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:20773  .text.USB_DEV_ClearFeature:00000000 USB_DEV_ClearFeature
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:20791  .text.usb_dev_GetStringDescriptor:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:20796  .text.usb_dev_GetStringDescriptor:00000000 usb_dev_GetStringDescriptor
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:20833  .text.usb_dev_GetStringDescriptor:0000001c $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:20840  .text.usb_dev_GetConfigDescriptor:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:20845  .text.usb_dev_GetConfigDescriptor:00000000 usb_dev_GetConfigDescriptor
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:20867  .text.usb_dev_GetConfigDescriptor:0000000c $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:20873  .text.usb_dev_GetDeviceDescriptor:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:20878  .text.usb_dev_GetDeviceDescriptor:00000000 usb_dev_GetDeviceDescriptor
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:20900  .text.usb_dev_GetDeviceDescriptor:0000000c $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:20906  .text.usb_dev_Reset:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:20911  .text.usb_dev_Reset:00000000 usb_dev_Reset
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21039  .text.usb_dev_Reset:000000b4 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21058  .text.usb_dev_Init:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21063  .text.usb_dev_Init:00000000 usb_dev_Init
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21106  .text.usb_dev_Init:00000024 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21116  .text.USB_DEV_SetConfiguration:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21121  .text.USB_DEV_SetConfiguration:00000000 USB_DEV_SetConfiguration
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21156  .text.USB_DEV_SetConfiguration:00000020 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21166  .text.usb_dev_NoData_Setup:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21171  .text.usb_dev_NoData_Setup:00000000 usb_dev_NoData_Setup
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21238  .text.usb_dev_NoData_Setup:0000003c $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21245  .text.usb_dev_Data_Setup:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21250  .text.usb_dev_Data_Setup:00000000 usb_dev_Data_Setup
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21325  .text.usb_dev_Data_Setup:00000054 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21332  .text.usb_dev_SetConfiguration:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21337  .text.usb_dev_SetConfiguration:00000000 usb_dev_SetConfiguration
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21358  .text.usb_dev_SetConfiguration:00000010 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21425  .data.String_Descriptor:00000000 String_Descriptor
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21374  .data.Config_Descriptor:00000000 Config_Descriptor
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21416  .data.Device_Descriptor:00000000 Device_Descriptor
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21401  .data.User_Standard_Requests:00000000 User_Standard_Requests
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21383  .data.Device_Property:00000000 Device_Property
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21444  .data.Device_Table:00000000 Device_Table
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21370  .data.Config_Descriptor:00000000 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21379  .data.Device_Property:00000000 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21398  .data.User_Standard_Requests:00000000 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21412  .data.Device_Descriptor:00000000 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\cccRQwAO.s:21421  .data.String_Descriptor:00000000 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+bDeviceState
+pInformation
+Standard_GetDescriptorData
+usb_dev_ConfigDescriptor
+SetBTABLE
+SetEPType
+SetEPTxStatus
+SetEPRxValid
+Clear_Status_Out
+SetEPTxCount
+SetDeviceAddress
+SetEPRxAddr
+SetEPRxCount
+SetEPTxAddr
+SetEPRxStatus
+PowerOn
+wInterrupt_Mask
+ClearDTOG_TX
+ClearDTOG_RX
+ByteSwap
+CopyRoutineTable
+Device_Info
+NOP_Process
+usb_dev_DeviceDescriptor
+usb_dev_StringLangID
+usb_dev_StringVendor
+usb_dev_StringProduct
+usb_dev_StringSerial
+usb_dev_StringInterface

@@ -1,0 +1,229 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 18, 4
+  12              		.thumb
+  13              		.file	"sdio.c"
+  23              	.Ltext0:
+ 20036              		.align	1
+ 20037              		.global	sdio_get_test_result
+ 20038              		.thumb
+ 20039              		.thumb_func
+ 20041              	sdio_get_test_result:
+ 20042              	.LFB30:
+   1:sdio.c        **** #include "sdio.h"
+   2:sdio.c        **** #include "ff.h"
+   3:sdio.c        **** 
+   4:sdio.c        **** static  sdio_dump_size = 0 ;
+   5:sdio.c        **** TestStatus sdio_test_result = FAILED ;
+   6:sdio.c        **** //---------------------------------------------------------------------
+   7:sdio.c        **** TestStatus sdio_get_test_result()
+   8:sdio.c        **** {
+ 20043              		.loc 1 8 0
+ 20044              		.cfi_startproc
+ 20045              		@ args = 0, pretend = 0, frame = 0
+ 20046              		@ frame_needed = 0, uses_anonymous_args = 0
+ 20047              		@ link register save eliminated.
+ 20048              		.loc 1 8 0
+ 20049 0000 014B     		ldr	r3, .L2
+ 20050 0002 1878     		ldrb	r0, [r3, #0]	@ zero_extendqisi2
+   9:sdio.c        ****   return sdio_test_result ;
+  10:sdio.c        **** }
+ 20051              		.loc 1 10 0
+ 20052 0004 7047     		bx	lr
+ 20053              	.L3:
+ 20054 0006 00BF     		.align	2
+ 20055              	.L2:
+ 20056 0008 00000000 		.word	.LANCHOR0
+ 20057              		.cfi_endproc
+ 20058              	.LFE30:
+ 20060              		.section	.text.sdio_get_dump_size,"ax",%progbits
+ 20061              		.align	1
+ 20062              		.global	sdio_get_dump_size
+ 20063              		.thumb
+ 20064              		.thumb_func
+ 20066              	sdio_get_dump_size:
+ 20067              	.LFB31:
+  11:sdio.c        **** //---------------------------------------------------------------------
+  12:sdio.c        **** uint32_t sdio_get_dump_size()
+  13:sdio.c        **** {
+ 20068              		.loc 1 13 0
+ 20069              		.cfi_startproc
+ 20070              		@ args = 0, pretend = 0, frame = 0
+ 20071              		@ frame_needed = 0, uses_anonymous_args = 0
+ 20072              		@ link register save eliminated.
+  14:sdio.c        ****   return sdio_dump_size ;
+  15:sdio.c        **** }
+ 20073              		.loc 1 15 0
+ 20074 0000 0020     		movs	r0, #0
+ 20075 0002 7047     		bx	lr
+ 20076              		.cfi_endproc
+ 20077              	.LFE31:
+ 20079              		.section	.text.sdio_test,"ax",%progbits
+ 20080              		.align	1
+ 20081              		.global	sdio_test
+ 20082              		.thumb
+ 20083              		.thumb_func
+ 20085              	sdio_test:
+ 20086              	.LFB32:
+  16:sdio.c        **** //---------------------------------------------------------------------
+  17:sdio.c        **** TestStatus sdio_test()
+  18:sdio.c        **** {
+ 20087              		.loc 1 18 0
+ 20088              		.cfi_startproc
+ 20089              		@ args = 0, pretend = 0, frame = 1120
+ 20090              		@ frame_needed = 0, uses_anonymous_args = 0
+ 20091              	.LVL0:
+ 20092 0000 10B5     		push	{r4, lr}
+ 20093              	.LCFI0:
+ 20094              		.cfi_def_cfa_offset 8
+ 20095              		.cfi_offset 14, -4
+ 20096              		.cfi_offset 4, -8
+ 20097 0002 ADF58C6D 		sub	sp, sp, #1120
+ 20098              	.LCFI1:
+ 20099              		.cfi_def_cfa_offset 1128
+  19:sdio.c        **** 	extern uint32_t _image_end_ ;
+  20:sdio.c        ****     extern uint32_t _image_start_;
+  21:sdio.c        **** 	const void* dump_ptr = &_image_start_ ; // дамп прошивки микроконтроллера
+  22:sdio.c        **** 	const uint32_t sdio_dump_size = (uint32_t)&_image_end_  - (uint32_t)&_image_start_ ; // размер про
+  23:sdio.c        **** 	uint32_t byte_readed ;
+  24:sdio.c        **** 	FRESULT fresult = FR_NOT_READY ;
+  25:sdio.c        **** 	FATFS  FileSystemObject ;
+  26:sdio.c        **** 	FIL    FileObject ;
+  27:sdio.c        **** 
+  28:sdio.c        **** 	// монтирование файловой системы
+  29:sdio.c        **** 	fresult = f_mount( 0 /* номер устройства, 0: SDIO*/, &FileSystemObject ) ;
+ 20100              		.loc 1 29 0
+ 20101 0006 0020     		movs	r0, #0
+ 20102 0008 01A9     		add	r1, sp, #4
+ 20103 000a 134B     		ldr	r3, .L8
+ 20104 000c 9847     		blx	r3
+ 20105 000e 0446     		mov	r4, r0
+ 20106              	.LVL1:
+  30:sdio.c        **** 
+  31:sdio.c        **** 	if ( fresult == FR_OK )
+ 20107              		.loc 1 31 0
+ 20108 0010 A8B9     		cbnz	r0, .L7
+  32:sdio.c        **** 		// создание файла в корне файловой системы
+  33:sdio.c        **** 		fresult = f_open( &FileObject , SDIO_FILE_NAME ,  FA_CREATE_ALWAYS | FA_WRITE | FA_READ ) ;
+ 20109              		.loc 1 33 0
+ 20110 0012 124C     		ldr	r4, .L8+4
+ 20111 0014 8EA8     		add	r0, sp, #568
+ 20112              	.LVL2:
+ 20113 0016 1249     		ldr	r1, .L8+8
+ 20114 0018 0B22     		movs	r2, #11
+ 20115 001a A047     		blx	r4
+ 20116 001c 0446     		mov	r4, r0
+ 20117              	.LVL3:
+  34:sdio.c        **** 
+  35:sdio.c        **** 	if ( fresult == FR_OK )
+ 20118              		.loc 1 35 0
+ 20119 001e 70B9     		cbnz	r0, .L7
+  36:sdio.c        **** 		// запись дампа прошивки в файл на накопителе
+  37:sdio.c        **** 		fresult = f_write( &FileObject , dump_ptr , sdio_dump_size ,  (UINT*)&byte_readed ) ;
+ 20120              		.loc 1 37 0
+ 20121 0020 1049     		ldr	r1, .L8+12
+  22:sdio.c        **** 	const uint32_t sdio_dump_size = (uint32_t)&_image_end_  - (uint32_t)&_image_start_ ; // размер про
+ 20122              		.loc 1 22 0
+ 20123 0022 114A     		ldr	r2, .L8+16
+ 20124              		.loc 1 37 0
+ 20125 0024 0DF58A63 		add	r3, sp, #1104
+ 20126 0028 104C     		ldr	r4, .L8+20
+  22:sdio.c        **** 	const uint32_t sdio_dump_size = (uint32_t)&_image_end_  - (uint32_t)&_image_start_ ; // размер про
+ 20127              		.loc 1 22 0
+ 20128 002a 521A     		subs	r2, r2, r1
+ 20129              		.loc 1 37 0
+ 20130 002c 8EA8     		add	r0, sp, #568
+ 20131              	.LVL4:
+ 20132 002e 0C33     		adds	r3, r3, #12
+ 20133 0030 A047     		blx	r4
+ 20134 0032 0446     		mov	r4, r0
+ 20135              	.LVL5:
+  38:sdio.c        **** 
+  39:sdio.c        **** 	if ( fresult == FR_OK )
+ 20136              		.loc 1 39 0
+ 20137 0034 18B9     		cbnz	r0, .L7
+  40:sdio.c        **** 		// закрытие файла
+  41:sdio.c        **** 		fresult = f_close(&FileObject) ;
+ 20138              		.loc 1 41 0
+ 20139 0036 8EA8     		add	r0, sp, #568
+ 20140              	.LVL6:
+ 20141 0038 0D49     		ldr	r1, .L8+24
+ 20142 003a 8847     		blx	r1
+ 20143 003c 0446     		mov	r4, r0
+ 20144              	.LVL7:
+ 20145              	.L7:
+  42:sdio.c        **** 
+  43:sdio.c        **** 	f_mount( 0 , NULL ) ;
+ 20146              		.loc 1 43 0
+ 20147 003e 0020     		movs	r0, #0
+ 20148 0040 0146     		mov	r1, r0
+ 20149 0042 054A     		ldr	r2, .L8
+ 20150 0044 9047     		blx	r2
+  44:sdio.c        **** 
+  45:sdio.c        **** 	sdio_test_result = !fresult ;
+ 20151              		.loc 1 45 0
+ 20152 0046 D4F10100 		rsbs	r0, r4, #1
+ 20153 004a 0A4B     		ldr	r3, .L8+28
+ 20154 004c 38BF     		it	cc
+ 20155 004e 0020     		movcc	r0, #0
+ 20156 0050 1870     		strb	r0, [r3, #0]
+  46:sdio.c        **** 
+  47:sdio.c        ****     return (TestStatus) !fresult ;
+  48:sdio.c        **** }
+ 20157              		.loc 1 48 0
+ 20158 0052 0DF58C6D 		add	sp, sp, #1120
+ 20159 0056 10BD     		pop	{r4, pc}
+ 20160              	.L9:
+ 20161              		.align	2
+ 20162              	.L8:
+ 20163 0058 00000000 		.word	f_mount
+ 20164 005c 00000000 		.word	f_open
+ 20165 0060 00000000 		.word	.LC0
+ 20166 0064 00000000 		.word	_image_start_
+ 20167 0068 00000000 		.word	_image_end_
+ 20168 006c 00000000 		.word	f_write
+ 20169 0070 00000000 		.word	f_close
+ 20170 0074 00000000 		.word	.LANCHOR0
+ 20171              		.cfi_endproc
+ 20172              	.LFE32:
+ 20174              		.global	sdio_test_result
+ 20175              		.section	.rodata.str1.1,"aMS",%progbits,1
+ 20176              	.LC0:
+ 20177 0000 303A696D 		.ascii	"0:image.bin\000"
+ 20177      6167652E 
+ 20177      62696E00 
+ 20178              		.section	.bss.sdio_test_result,"aw",%nobits
+ 20179              		.set	.LANCHOR0,. + 0
+ 20182              	sdio_test_result:
+ 20183 0000 00       		.space	1
+ 20184              		.text
+ 20185              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 sdio.c
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccVrHoZA.s:20036  .text.sdio_get_test_result:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccVrHoZA.s:20041  .text.sdio_get_test_result:00000000 sdio_get_test_result
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccVrHoZA.s:20056  .text.sdio_get_test_result:00000008 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccVrHoZA.s:20061  .text.sdio_get_dump_size:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccVrHoZA.s:20066  .text.sdio_get_dump_size:00000000 sdio_get_dump_size
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccVrHoZA.s:20080  .text.sdio_test:00000000 $t
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccVrHoZA.s:20085  .text.sdio_test:00000000 sdio_test
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccVrHoZA.s:20163  .text.sdio_test:00000058 $d
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccVrHoZA.s:20182  .bss.sdio_test_result:00000000 sdio_test_result
+C:\DOCUME~1\Admin\LOCALS~1\Temp\ccVrHoZA.s:20183  .bss.sdio_test_result:00000000 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+f_mount
+f_open
+_image_start_
+_image_end_
+f_write
+f_close
