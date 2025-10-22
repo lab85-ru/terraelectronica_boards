@@ -11,15 +11,15 @@ te-cc430f51-433
 TE-LPC4088LCD5.6
 te-am1705
 
-<img src="./te-stm32f103">
-<img src="./te-stm32f107">
-<img src="./te-stm32f207">
-<img src="./te-stm32f407">
-<img src="./te-stm32f417">
-<img src="./te-stm32f439lcd35">
-<img src="./te-tm4c123">
-<img src="./TE-LPC4088LCD5.6">
-<img src="./te-lpc2478lcd56">
-<img src="./te-cc430f51-433">
-<img src="./TE-LPC4088LCD5.6">
-<img src="./te-am1705">
+<img src="./te-stm32f103.jpg">
+<img src="./te-stm32f107.jpg">
+<img src="./te-stm32f207.jpg">
+<img src="./te-stm32f407.jpg">
+<img src="./te-stm32f417.jpg">
+<img src="./te-stm32f439lcd35.jpg">
+<img src="./te-tm4c123.jpg">
+<img src="./TE-LPC4088LCD5.6.jpg">
+<img src="./te-lpc2478lcd56.jpg">
+<img src="./te-cc430f51-433.jpg">
+<img src="./TE-LPC4088LCD5.6.jpg">
+<img src="./te-am1705.jpg">
