@@ -1,0 +1,51 @@
+//*****************************************************************************
+//
+// LIS302DLH.h - Prototypes for the MEMS digital output motion sensor.
+//
+//*****************************************************************************
+
+#ifndef __LIS302DLH_H__
+#define __LIS302DLH_H__
+
+//*****************************************************************************
+//
+// Register address map.
+//
+//*****************************************************************************
+#define WHO_AM_I					0x0F
+#define	CTRL_REG1					0x20
+#define	CTRL_REG2					0x21
+#define	CTRL_REG3					0x22
+#define	CTRL_REG4					0x23
+#define	CTRL_REG5					0x24
+#define	HP_FILTER_RESET		0x25
+#define REFERENCE					0x26
+#define STATUS_REG				0x27
+#define	OUT_X_L						0x28
+#define	OUT_X_H						0x29
+#define	OUT_Y_L						0x2A
+#define	OUT_Y_H						0x2B
+#define	OUT_Z_L						0x2C
+#define	OUT_Z_H						0x2D
+//*****************************************************************************
+//
+// Bit map STATUS_REG
+//
+//*****************************************************************************
+#define XDA						0x01
+#define YDA						0x02
+#define ZDA						0x04
+#define ZYXDA					0x08
+#define XOR						0x10
+#define YOR						0x20
+#define ZOR						0x40
+#define ZYXOR					0x80
+//*****************************************************************************
+//
+// Prototypes for the globals exported by this driver.
+//
+//*****************************************************************************
+extern void LIS302DLH_Init(void);
+extern unsigned long LIS302DLH_Read_Reg(unsigned char Adr_Reg);
+extern void LIS302DLH_Write_Reg(unsigned char Adr_Reg, unsigned char Data);
+#endif // __LIS302DLH_H__
